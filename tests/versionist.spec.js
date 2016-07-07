@@ -20,6 +20,7 @@ const m = require('mochainon');
 const _ = require('lodash');
 const childProcess = require('child_process');
 const versionist = require('../lib/versionist');
+const utils = require('./utils');
 
 describe('Versionist', function() {
 
@@ -57,13 +58,13 @@ describe('Versionist', function() {
 
       beforeEach(function() {
         this.childProcessExecStub = m.sinon.stub(childProcess, 'exec');
-        this.childProcessExecStub.yields(null, [
-          '- subject: >-',
-          '    refactor: group AppImage related stuff (#498)',
-          '  body: |-',
-          '    Currently we had AppImage scripts and other resources in various',
-          '    different places in the code base.'
-        ].join('\n'), '');
+        this.childProcessExecStub.yields(null, utils.formatCommit({
+          subject: 'refactor: group AppImage related stuff (#498)',
+          body: [
+            'Currently we had AppImage scripts and other resources in various',
+            'different places in the code base.'
+          ].join('\n')
+        }), '');
       });
 
       afterEach(function() {
