@@ -39,6 +39,7 @@ exports.formatCommit = (options) => {
     '- subject: >-',
     `    ${options.subject}`,
     '  body: |-',
+    '    XXX',
     indentString(options.body, 4)
   ].join('\n');
 };

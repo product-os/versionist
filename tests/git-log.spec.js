@@ -439,6 +439,63 @@ describe('GitLog', function() {
       ]);
     });
 
+    it('should parse a commit with an initial single space indented body', function() {
+      const result = gitLog.parseGitLogYAMLOutput(utils.formatCommit({
+        subject: 'refactor: group AppImage related stuff (#498)',
+        body: [
+          ' Currently we had AppImage scripts and other resources in various',
+          ' different places in the code base.',
+          '',
+          'Foo: bar',
+          'Bar: baz'
+        ].join('\n')
+      }));
+
+      m.chai.expect(result).to.deep.equal([
+        {
+          subject: 'refactor: group AppImage related stuff (#498)',
+          body: [
+            ' Currently we had AppImage scripts and other resources in various',
+            ' different places in the code base.',
+            ''
+          ].join('\n'),
+          footer: {
+            Foo: 'bar',
+            Bar: 'baz'
+          }
+        }
+      ]);
+    });
+
+    it('should parse a commit with an initial multiple space indented body', function() {
+
+      const result = gitLog.parseGitLogYAMLOutput(utils.formatCommit({
+        subject: 'refactor: group AppImage related stuff (#498)',
+        body: [
+          '    Currently we had AppImage scripts and other resources in various',
+          '    different places in the code base.',
+          '',
+          'Foo: bar',
+          'Bar: baz'
+        ].join('\n')
+      }));
+
+      m.chai.expect(result).to.deep.equal([
+        {
+          subject: 'refactor: group AppImage related stuff (#498)',
+          body: [
+            '    Currently we had AppImage scripts and other resources in various',
+            '    different places in the code base.',
+            ''
+          ].join('\n'),
+          footer: {
+            Foo: 'bar',
+            Bar: 'baz'
+          }
+        }
+      ]);
+    });
+
   });
 
 });
