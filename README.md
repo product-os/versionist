@@ -125,7 +125,7 @@ You may define the following options:
 
 ### `template (String)`
 
-**This option is required.**
+*Defaults to a simple demonstrational template.*
 
 This option takes a [Handlebars][handlebars] template. The following data is passed to it:
 
