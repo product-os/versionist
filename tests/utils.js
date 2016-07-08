@@ -16,6 +16,8 @@
 
 'use strict';
 
+const _ = require('lodash');
+const EventEmitter = require('events').EventEmitter;
 const indentString = require('indent-string');
 
 /**
@@ -42,4 +44,25 @@ exports.formatCommit = (options) => {
     '    XXX',
     indentString(options.body, 4)
   ].join('\n');
+};
+
+/**
+ * @summary Create a ChildProcess object stub
+ * @function
+ * @public
+ *
+ * @returns {EventEmitter} ChildProcess stub
+ *
+ * @example
+ * const child = utils.createChildProcessStub();
+ * child.stdout.emit('foo');
+ */
+exports.createChildProcessStub = () => {
+  const child = new EventEmitter();
+
+  child.stdout = new EventEmitter();
+  child.stderr = new EventEmitter();
+  child.kill = _.noop;
+
+  return child;
 };

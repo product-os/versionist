@@ -32,16 +32,21 @@ describe('Versionist', function() {
       }).to.throw('Missing gitDirectory');
     });
 
-    describe('given childProcess.exec yields an error', function() {
+    describe('given childProcess.spawn emits an error', function() {
 
       beforeEach(function() {
         this.error = new Error('foobar');
-        this.childProcessExecStub = m.sinon.stub(childProcess, 'exec');
-        this.childProcessExecStub.yields(this.error, '', '');
+        this.childProcessSpawnStub = m.sinon.stub(childProcess, 'spawn');
+        this.child = utils.createChildProcessStub();
+        this.childProcessSpawnStub.returns(this.child);
+
+        _.defer(() => {
+          this.child.emit('error', this.error);
+        });
       });
 
       afterEach(function() {
-        this.childProcessExecStub.restore();
+        this.childProcessSpawnStub.restore();
       });
 
       it('should yield back the error', function(done) {
@@ -54,21 +59,30 @@ describe('Versionist', function() {
 
     });
 
-    describe('given childProcess.exec yields stdout output', function() {
+    describe('given childProcess.spawn emits stdout output', function() {
 
       beforeEach(function() {
-        this.childProcessExecStub = m.sinon.stub(childProcess, 'exec');
-        this.childProcessExecStub.yields(null, utils.formatCommit({
-          subject: 'refactor: group AppImage related stuff (#498)',
-          body: [
-            'Currently we had AppImage scripts and other resources in various',
-            'different places in the code base.'
-          ].join('\n')
-        }), '');
+        this.childProcessSpawnStub = m.sinon.stub(childProcess, 'spawn');
+        this.child = utils.createChildProcessStub();
+        this.childProcessSpawnStub.returns(this.child);
+
+        _.defer(() => {
+          this.child.stdout.emit('data', utils.formatCommit({
+            subject: 'refactor: group AppImage related stuff (#498)',
+            body: [
+              'Currently we had AppImage scripts and other resources in various',
+              'different places in the code base.'
+            ].join('\n')
+          }));
+
+          _.defer(() => {
+            this.child.emit('close', 0);
+          });
+        });
       });
 
       afterEach(function() {
-        this.childProcessExecStub.restore();
+        this.childProcessSpawnStub.restore();
       });
 
       it('should parse stdout as YAML and yield it back', function(done) {
@@ -91,15 +105,47 @@ describe('Versionist', function() {
 
     });
 
-    describe('given childProcess.exec yields stderr output', function() {
+    describe('given childProcess.spawn closes with a non 0 exit code', function() {
 
       beforeEach(function() {
-        this.childProcessExecStub = m.sinon.stub(childProcess, 'exec');
-        this.childProcessExecStub.yields(null, '', 'an error happened');
+        this.childProcessSpawnStub = m.sinon.stub(childProcess, 'spawn');
+        this.child = utils.createChildProcessStub();
+        this.childProcessSpawnStub.returns(this.child);
+
+        _.defer(() => {
+          this.child.emit('close', 3);
+        });
       });
 
       afterEach(function() {
-        this.childProcessExecStub.restore();
+        this.childProcessSpawnStub.restore();
+      });
+
+      it('should yield an error', function(done) {
+        versionist.readCommitHistory('foo/bar/.git', {}, (error, commits) => {
+          m.chai.expect(error).to.be.an.instanceof(Error);
+          m.chai.expect(error.message).to.equal('Child process exitted with error code: 3');
+          m.chai.expect(commits).to.not.exist;
+          done();
+        });
+      });
+
+    });
+
+    describe('given childProcess.spawn emits stderr output', function() {
+
+      beforeEach(function() {
+        this.childProcessSpawnStub = m.sinon.stub(childProcess, 'spawn');
+        this.child = utils.createChildProcessStub();
+        this.childProcessSpawnStub.returns(this.child);
+
+        _.defer(() => {
+          this.child.stderr.emit('data', 'an error happened');
+        });
+      });
+
+      afterEach(function() {
+        this.childProcessSpawnStub.restore();
       });
 
       it('should yield stderr as an error', function(done) {
