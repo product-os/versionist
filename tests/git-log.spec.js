@@ -56,11 +56,11 @@ describe('GitLog', function() {
 
   });
 
-  describe('.getGitLogCommandThatOutputsYaml()', function() {
+  describe('.getGitLogCommandArgumentsThatOutputYaml()', function() {
 
     it('should throw if no gitDirectory option', function() {
       m.chai.expect(() => {
-        gitLog.getGitLogCommandThatOutputsYaml({
+        gitLog.getGitLogCommandArgumentsThatOutputYaml({
           startReference: 'foo',
           endReference: 'bar'
         });
@@ -70,18 +70,19 @@ describe('GitLog', function() {
     describe('given the includeMergeCommits = true option', function() {
 
       it('should construct the right command', function() {
-        const command = gitLog.getGitLogCommandThatOutputsYaml({
+        const command = gitLog.getGitLogCommandArgumentsThatOutputYaml({
           includeMergeCommits: true,
           gitDirectory: 'path/to/.git',
           startReference: 'foo',
           endReference: 'bar'
         });
 
-        m.chai.expect(command).to.equal([
-          'git --git-dir=path/to/.git log',
-          `--pretty="${gitLog.GIT_LOG_YAML_PRETTY_FORMAT}"`,
+        m.chai.expect(command).to.deep.equal([
+          '--git-dir=path/to/.git',
+          'log',
+          `--pretty=${gitLog.GIT_LOG_YAML_PRETTY_FORMAT}`,
           'foo..bar'
-        ].join(' '));
+        ]);
       });
 
     });
@@ -89,18 +90,19 @@ describe('GitLog', function() {
     describe('given both startReference and endReference options', function() {
 
       it('should construct the right command', function() {
-        const command = gitLog.getGitLogCommandThatOutputsYaml({
+        const command = gitLog.getGitLogCommandArgumentsThatOutputYaml({
           gitDirectory: 'path/to/.git',
           startReference: 'foo',
           endReference: 'bar'
         });
 
-        m.chai.expect(command).to.equal([
-          'git --git-dir=path/to/.git log',
-          `--pretty="${gitLog.GIT_LOG_YAML_PRETTY_FORMAT}"`,
+        m.chai.expect(command).to.deep.equal([
+          '--git-dir=path/to/.git',
+          'log',
+          `--pretty=${gitLog.GIT_LOG_YAML_PRETTY_FORMAT}`,
           '--no-merges',
           'foo..bar'
-        ].join(' '));
+        ]);
       });
 
     });
@@ -108,17 +110,18 @@ describe('GitLog', function() {
     describe('given startReference but no endReference option', function() {
 
       it('should construct the right command', function() {
-        const command = gitLog.getGitLogCommandThatOutputsYaml({
+        const command = gitLog.getGitLogCommandArgumentsThatOutputYaml({
           gitDirectory: 'path/to/.git',
           startReference: 'foo'
         });
 
-        m.chai.expect(command).to.equal([
-          'git --git-dir=path/to/.git log',
-          `--pretty="${gitLog.GIT_LOG_YAML_PRETTY_FORMAT}"`,
+        m.chai.expect(command).to.deep.equal([
+          '--git-dir=path/to/.git',
+          'log',
+          `--pretty=${gitLog.GIT_LOG_YAML_PRETTY_FORMAT}`,
           '--no-merges',
           'foo..HEAD'
-        ].join(' '));
+        ]);
       });
 
     });
@@ -126,17 +129,18 @@ describe('GitLog', function() {
     describe('given endReference but no startReference option', function() {
 
       it('should construct the right command', function() {
-        const command = gitLog.getGitLogCommandThatOutputsYaml({
+        const command = gitLog.getGitLogCommandArgumentsThatOutputYaml({
           gitDirectory: 'path/to/.git',
           endReference: 'foo'
         });
 
-        m.chai.expect(command).to.equal([
-          'git --git-dir=path/to/.git log',
-          `--pretty="${gitLog.GIT_LOG_YAML_PRETTY_FORMAT}"`,
+        m.chai.expect(command).to.deep.equal([
+          '--git-dir=path/to/.git',
+          'log',
+          `--pretty=${gitLog.GIT_LOG_YAML_PRETTY_FORMAT}`,
           '--no-merges',
           'foo'
-        ].join(' '));
+        ]);
       });
 
     });
@@ -144,16 +148,17 @@ describe('GitLog', function() {
     describe('given neither startReference nor endReference options', function() {
 
       it('should construct the right command', function() {
-        const command = gitLog.getGitLogCommandThatOutputsYaml({
+        const command = gitLog.getGitLogCommandArgumentsThatOutputYaml({
           gitDirectory: 'path/to/.git'
         });
 
-        m.chai.expect(command).to.equal([
-          'git --git-dir=path/to/.git log',
-          `--pretty="${gitLog.GIT_LOG_YAML_PRETTY_FORMAT}"`,
+        m.chai.expect(command).to.deep.equal([
+          '--git-dir=path/to/.git',
+          'log',
+          `--pretty=${gitLog.GIT_LOG_YAML_PRETTY_FORMAT}`,
           '--no-merges',
           'HEAD'
-        ].join(' '));
+        ]);
       });
 
     });
