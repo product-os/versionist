@@ -35,6 +35,3 @@ bower_components
 *.cer
 *.crt
 *.pem
-
-# Configuration Files
-*.conf.js
