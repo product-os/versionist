@@ -22,17 +22,33 @@ Versionist parses the `git` commit history between two references of your choice
 Example
 -------
 
-```
-$ versionist --from v1.0.0 --current v1.0.0
-```
-***
-```
-## v1.0.1 - 2016-07-06
+- Install Versionist
 
-- Incorrect ETA on certain timezones (#545)
-- Don't throw if state speed is 0 (#546)
-- Display zip in supported images tooltip (#539)
-- Uncaught exception in update notifier (#541)
+```
+$ npm install -g versionist
+```
+
+- Clone the Versionist repository, as an example
+
+```
+$ git clone https://github.com/resin-io/versionist
+$ cd versionist
+```
+
+- Run Versionist
+
+```
+$ versionist -u 1.0.0
+```
+
+***
+
+```
+## 1.1.0 - 2016-07-08
+
+- Add a simple default template.
+- Fix `stdout maxBuffer exceeded` when parsing big logs.
+- Support commits with indented bodies.
 ```
 
 Installation
