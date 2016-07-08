@@ -18,6 +18,7 @@
 
 const m = require('mochainon');
 const gitLog = require('../lib/git-log');
+const utils = require('./utils');
 
 describe('GitLog', function() {
 
@@ -162,13 +163,13 @@ describe('GitLog', function() {
   describe('.parseGitLogYAMLOutput()', function() {
 
     it('should parse the output as it is if no hooks', function() {
-      const result = gitLog.parseGitLogYAMLOutput([
-        '- subject: >-',
-        '    refactor: group AppImage related stuff (#498)',
-        '  body: |-',
-        '    Currently we had AppImage scripts and other resources in various',
-        '    different places in the code base.'
-      ].join('\n'));
+      const result = gitLog.parseGitLogYAMLOutput(utils.formatCommit({
+        subject: 'refactor: group AppImage related stuff (#498)',
+        body: [
+          'Currently we had AppImage scripts and other resources in various',
+          'different places in the code base.'
+        ].join('\n')
+      }));
 
       m.chai.expect(result).to.deep.equal([
         {
@@ -202,13 +203,13 @@ describe('GitLog', function() {
     });
 
     it('should support a subjectParser hook', function() {
-      const result = gitLog.parseGitLogYAMLOutput([
-        '- subject: >-',
-        '    refactor: group AppImage related stuff (#498)',
-        '  body: |-',
-        '    Currently we had AppImage scripts and other resources in various',
-        '    different places in the code base.'
-      ].join('\n'), {
+      const result = gitLog.parseGitLogYAMLOutput(utils.formatCommit({
+        subject: 'refactor: group AppImage related stuff (#498)',
+        body: [
+          'Currently we had AppImage scripts and other resources in various',
+          'different places in the code base.'
+        ].join('\n')
+      }), {
         subjectParser: (subject) => {
           return subject.toUpperCase();
         }
@@ -227,15 +228,15 @@ describe('GitLog', function() {
     });
 
     it('should support a bodyParser hook', function() {
-      const result = gitLog.parseGitLogYAMLOutput([
-        '- subject: >-',
-        '    refactor: group AppImage related stuff (#498)',
-        '  body: |-',
-        '    Currently we had AppImage scripts and other resources in various',
-        '    different places in the code base.'
-      ].join('\n'), {
-        bodyParser: (body) => {
-          return body.toUpperCase();
+      const result = gitLog.parseGitLogYAMLOutput(utils.formatCommit({
+        subject: 'refactor: group AppImage related stuff (#498)',
+        body: [
+          'Currently we had AppImage scripts and other resources in various',
+          'different places in the code base.'
+        ].join('\n')
+      }), {
+        bodyParser: (subject) => {
+          return subject.toUpperCase();
         }
       });
 
@@ -252,16 +253,16 @@ describe('GitLog', function() {
     });
 
     it('should parse footer tags by default', function() {
-      const result = gitLog.parseGitLogYAMLOutput([
-        '- subject: >-',
-        '    refactor: group AppImage related stuff (#498)',
-        '  body: |-',
-        '    Currently we had AppImage scripts and other resources in various',
-        '    different places in the code base.',
-        '',
-        '    Foo: bar',
-        '    Bar: baz'
-      ].join('\n'));
+      const result = gitLog.parseGitLogYAMLOutput(utils.formatCommit({
+        subject: 'refactor: group AppImage related stuff (#498)',
+        body: [
+          'Currently we had AppImage scripts and other resources in various',
+          'different places in the code base.',
+          '',
+          'Foo: bar',
+          'Bar: baz'
+        ].join('\n')
+      }));
 
       m.chai.expect(result).to.deep.equal([
         {
@@ -280,16 +281,16 @@ describe('GitLog', function() {
     });
 
     it('should not parse footer tags if parseFooterTags is false', function() {
-      const result = gitLog.parseGitLogYAMLOutput([
-        '- subject: >-',
-        '    refactor: group AppImage related stuff (#498)',
-        '  body: |-',
-        '    Currently we had AppImage scripts and other resources in various',
-        '    different places in the code base.',
-        '',
-        '    Foo: bar',
-        '    Bar: baz'
-      ].join('\n'), {
+      const result = gitLog.parseGitLogYAMLOutput(utils.formatCommit({
+        subject: 'refactor: group AppImage related stuff (#498)',
+        body: [
+          'Currently we had AppImage scripts and other resources in various',
+          'different places in the code base.',
+          '',
+          'Foo: bar',
+          'Bar: baz'
+        ].join('\n')
+      }), {
         parseFooterTags: false
       });
 
@@ -308,13 +309,13 @@ describe('GitLog', function() {
     });
 
     it('should parse footer tags when no body', function() {
-      const result = gitLog.parseGitLogYAMLOutput([
-        '- subject: >-',
-        '    refactor: group AppImage related stuff (#498)',
-        '  body: |-',
-        '    Foo: bar',
-        '    Bar: baz'
-      ].join('\n'));
+      const result = gitLog.parseGitLogYAMLOutput(utils.formatCommit({
+        subject: 'refactor: group AppImage related stuff (#498)',
+        body: [
+          'Foo: bar',
+          'Bar: baz'
+        ].join('\n')
+      }));
 
       m.chai.expect(result).to.deep.equal([
         {
@@ -329,14 +330,14 @@ describe('GitLog', function() {
     });
 
     it('should parse footer tags with hyphens', function() {
-      const result = gitLog.parseGitLogYAMLOutput([
-        '- subject: >-',
-        '    refactor: group AppImage related stuff (#498)',
-        '  body: |-',
-        '    Hello-World: bar',
-        '    -hey-: there',
-        '    Bar--Foo: baz'
-      ].join('\n'));
+      const result = gitLog.parseGitLogYAMLOutput(utils.formatCommit({
+        subject: 'refactor: group AppImage related stuff (#498)',
+        body: [
+          'Hello-World: bar',
+          '-hey-: there',
+          'Bar--Foo: baz'
+        ].join('\n')
+      }));
 
       m.chai.expect(result).to.deep.equal([
         {
@@ -352,18 +353,18 @@ describe('GitLog', function() {
     });
 
     it('should stop parsing footer tags after a new line', function() {
-      const result = gitLog.parseGitLogYAMLOutput([
-        '- subject: >-',
-        '    refactor: group AppImage related stuff (#498)',
-        '  body: |-',
-        '    Currently we had AppImage scripts and other resources in various',
-        '    different places in the code base.',
-        '',
-        '    Foo: bar',
-        '    Bar: baz',
-        '',
-        '    Baz: qux'
-      ].join('\n'));
+      const result = gitLog.parseGitLogYAMLOutput(utils.formatCommit({
+        subject: 'refactor: group AppImage related stuff (#498)',
+        body: [
+          'Currently we had AppImage scripts and other resources in various',
+          'different places in the code base.',
+          '',
+          'Foo: bar',
+          'Bar: baz',
+          '',
+          'Baz: qux'
+        ].join('\n')
+      }));
 
       m.chai.expect(result).to.deep.equal([
         {
@@ -384,17 +385,17 @@ describe('GitLog', function() {
     });
 
     it('should stop parsing footer tags after a non tag line', function() {
-      const result = gitLog.parseGitLogYAMLOutput([
-        '- subject: >-',
-        '    refactor: group AppImage related stuff (#498)',
-        '  body: |-',
-        '    Currently we had AppImage scripts and other resources in various',
-        '    different places in the code base.',
-        '',
-        '    Foo: bar',
-        '    Hello World',
-        '    Baz: qux'
-      ].join('\n'));
+      const result = gitLog.parseGitLogYAMLOutput(utils.formatCommit({
+        subject: 'refactor: group AppImage related stuff (#498)',
+        body: [
+          'Currently we had AppImage scripts and other resources in various',
+          'different places in the code base.',
+          '',
+          'Foo: bar',
+          'Hello World',
+          'Baz: qux'
+        ].join('\n')
+      }));
 
       m.chai.expect(result).to.deep.equal([
         {
@@ -414,15 +415,15 @@ describe('GitLog', function() {
     });
 
     it('should parse footer tags with weird colon spacings', function() {
-      const result = gitLog.parseGitLogYAMLOutput([
-        '- subject: >-',
-        '    refactor: group AppImage related stuff (#498)',
-        '  body: |-',
-        '    Foo     :     bar',
-        '    Bar:baz',
-        '    Baz    :qux',
-        '    Hey:    there'
-      ].join('\n'));
+      const result = gitLog.parseGitLogYAMLOutput(utils.formatCommit({
+        subject: 'refactor: group AppImage related stuff (#498)',
+        body: [
+          'Foo     :     bar',
+          'Bar:baz',
+          'Baz    :qux',
+          'Hey:    there'
+        ].join('\n')
+      }));
 
       m.chai.expect(result).to.deep.equal([
         {
@@ -433,6 +434,63 @@ describe('GitLog', function() {
             Bar: 'baz',
             Baz: 'qux',
             Hey: 'there'
+          }
+        }
+      ]);
+    });
+
+    it('should parse a commit with an initial single space indented body', function() {
+      const result = gitLog.parseGitLogYAMLOutput(utils.formatCommit({
+        subject: 'refactor: group AppImage related stuff (#498)',
+        body: [
+          ' Currently we had AppImage scripts and other resources in various',
+          ' different places in the code base.',
+          '',
+          'Foo: bar',
+          'Bar: baz'
+        ].join('\n')
+      }));
+
+      m.chai.expect(result).to.deep.equal([
+        {
+          subject: 'refactor: group AppImage related stuff (#498)',
+          body: [
+            ' Currently we had AppImage scripts and other resources in various',
+            ' different places in the code base.',
+            ''
+          ].join('\n'),
+          footer: {
+            Foo: 'bar',
+            Bar: 'baz'
+          }
+        }
+      ]);
+    });
+
+    it('should parse a commit with an initial multiple space indented body', function() {
+
+      const result = gitLog.parseGitLogYAMLOutput(utils.formatCommit({
+        subject: 'refactor: group AppImage related stuff (#498)',
+        body: [
+          '    Currently we had AppImage scripts and other resources in various',
+          '    different places in the code base.',
+          '',
+          'Foo: bar',
+          'Bar: baz'
+        ].join('\n')
+      }));
+
+      m.chai.expect(result).to.deep.equal([
+        {
+          subject: 'refactor: group AppImage related stuff (#498)',
+          body: [
+            '    Currently we had AppImage scripts and other resources in various',
+            '    different places in the code base.',
+            ''
+          ].join('\n'),
+          footer: {
+            Foo: 'bar',
+            Bar: 'baz'
           }
         }
       ]);
