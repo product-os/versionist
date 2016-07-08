@@ -76,17 +76,23 @@ const CONFIGURATION = {
   },
   template: {
     type: 'string',
-    required: true
+    default: [
+      '## {{version}} - {{moment date "Y-MM-DD"}}',
+      '',
+      '{{#each commits}}',
+      '{{#if this.subject.title}}',
+      '- {{capitalize this.subject.title}}',
+      '{{else}}',
+      '- {{capitalize this.subject}}',
+      '{{/if}}',
+      '{{/each}}'
+    ].join('\n')
   }
 };
 
 const parseConfiguration = (data) => {
   return _.mapValues(CONFIGURATION, (propertyDescription, propertyName) => {
     const value = _.get(data, propertyName) || propertyDescription.default;
-
-    if (!value && propertyDescription.required) {
-      throw new Error(`Missing required option: ${propertyName}`);
-    }
 
     if (_.isString(value) && propertyDescription.allowsPresets) {
       const propertyPresets = _.get(presets, propertyName, {});
