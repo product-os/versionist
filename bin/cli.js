@@ -42,6 +42,10 @@ const CONFIGURATION = {
     type: 'string',
     default: process.cwd()
   },
+  changelogFile: {
+    type: 'string',
+    default: 'CHANGELOG.md'
+  },
   gitDirectory: {
     type: 'string',
     default: '.git'

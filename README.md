@@ -173,6 +173,13 @@ module.exports = {
 };
 ```
 
+### `changelogFile (String)`
+
+*Defaults to `CHANGELOG.md`.*
+
+This option specifies the desired location of your `CHANGELOG` file, relative
+to the root of your project.
+
 ### `parseFooterTags (Boolean)`
 
 *Defaults to `true`.*
