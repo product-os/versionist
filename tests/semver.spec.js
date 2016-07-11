@@ -238,6 +238,24 @@ describe('Semver', function() {
 
   });
 
+  describe('.normalize()', function() {
+
+    it('should do nothing given a normalised version', function() {
+      m.chai.expect(semver.normalize('1.0.0')).to.equal('1.0.0');
+    });
+
+    it('should remove a leading `v` from the version', function() {
+      m.chai.expect(semver.normalize('v1.0.0')).to.equal('1.0.0');
+    });
+
+    it('should throw given an invalid version', function() {
+      m.chai.expect(() => {
+        semver.normalize('foo');
+      }).to.throw('Invalid version: foo');
+    });
+
+  });
+
   describe('.incrementVersion()', function() {
 
     it('should throw if the increment level is not valid', function() {
