@@ -279,6 +279,23 @@ module.exports = {
 The whole commit object, after any transformations applied by `subjectParser`
 and `bodyParser` is passed as an argument.
 
+### `addEntryToChangelog (Function)`
+
+*Defaults to `prepend`.*
+
+You can declare this function to customise how the generated entry is added to
+your project's `CHANGELOG` file.
+
+If defined, the function takes three arguments:
+
+- `(String) file`: The `CHANGELOG` file path as declared in `changelogFile`.
+- `(String) entry`: The generated `CHANGELOG` entry.
+- `(Function) callback`: The callback function, which accepts an optional
+error.
+
+Notice that the `callback` should be **always** explicitly called, even if you
+declare a synchronous function.
+
 ### `includeMergeCommits (Boolean)`
 
 *Defaults to `false`.*
@@ -354,6 +371,14 @@ outputs an object containing the following properties: `type`, `scope` and
 This preset only includes commits whose `commit.subject.type` is either `feat`,
 `fix` or `perf`. It should be used in conjunction with `subjectParser`'s
 `angular` preset.
+
+### `addEntryToChangelog`
+
+- `prepend`
+
+This presets prepends the entry to the CHANGELOG file specified in
+`changelogFile`, taking care of not adding unnecessary blank lines between the
+current content and the new entry.
 
 Support
 -------
