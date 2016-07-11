@@ -279,6 +279,21 @@ describe('Versionist', function() {
       }).to.throw('No commits to generate the CHANGELOG from');
     });
 
+    it('should throw the version is invalid', function() {
+      m.chai.expect(() => {
+        versionist.generateChangelog([
+          {
+            subject: 'hello world'
+          }
+        ], {
+          includeCommitWhen: _.constant(true),
+          version: 'foo',
+          date: new Date(),
+          template: 'foo'
+        });
+      }).to.throw('Invalid version: foo');
+    });
+
     it('should throw if no version', function() {
       m.chai.expect(() => {
         versionist.generateChangelog([
