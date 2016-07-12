@@ -74,6 +74,11 @@ const CONFIGURATION = {
     type: 'boolean',
     default: false
   },
+  getChangelogDocumentedVersions: {
+    type: 'function',
+    default: 'changelog-headers',
+    allowsPresets: true
+  },
   getIncrementLevelFromCommit: {
     type: 'function',
     default: _.constant(null),

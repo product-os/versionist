@@ -215,6 +215,145 @@ describe('Presets', function() {
 
   });
 
+  describe('.getChangelogDocumentedVersions', function() {
+
+    describe('.`changelog-headers`', function() {
+
+      describe('given there was an error reading the file', function() {
+
+        beforeEach(function() {
+          this.fsReadFileStub = m.sinon.stub(fs, 'readFile');
+          this.fsReadFileStub.yields(new Error('read error'));
+        });
+
+        afterEach(function() {
+          this.fsReadFileStub.restore();
+        });
+
+        it('should yield back the error', function(done) {
+          const fn = presets.getChangelogDocumentedVersions['changelog-headers'];
+          fn('CHANGELOG.md', (error, versions) => {
+            m.chai.expect(error).to.be.an.instanceof(Error);
+            m.chai.expect(error.message).to.equal('read error');
+            m.chai.expect(versions).to.not.exist;
+            done();
+          });
+        });
+
+      });
+
+      describe('given the file contained versions as headers', function() {
+
+        beforeEach(function() {
+          this.fsReadFileStub = m.sinon.stub(fs, 'readFile');
+          this.fsReadFileStub.yields(null, [
+            '# My markdown document',
+            '',
+            '## 1.1.0',
+            '',
+            '- foo',
+            '',
+            '## 1.0.0',
+            '',
+            '- foo'
+          ].join('\n'));
+        });
+
+        afterEach(function() {
+          this.fsReadFileStub.restore();
+        });
+
+        it('should yield the documented versions', function(done) {
+          const fn = presets.getChangelogDocumentedVersions['changelog-headers'];
+          fn('CHANGELOG.md', (error, versions) => {
+            m.chai.expect(error).to.not.exist;
+            m.chai.expect(versions).to.deep.equal([
+              '1.1.0',
+              '1.0.0'
+            ]);
+            done();
+          });
+
+        });
+
+      });
+
+      describe('given the file contained non-normalised versions as headers', function() {
+
+        beforeEach(function() {
+          this.fsReadFileStub = m.sinon.stub(fs, 'readFile');
+          this.fsReadFileStub.yields(null, [
+            '# My markdown document',
+            '',
+            '## v1.1.0',
+            '',
+            '- foo',
+            '',
+            '## v1.0.0',
+            '',
+            '- foo'
+          ].join('\n'));
+        });
+
+        afterEach(function() {
+          this.fsReadFileStub.restore();
+        });
+
+        it('should normalize the versions', function(done) {
+          const fn = presets.getChangelogDocumentedVersions['changelog-headers'];
+          fn('CHANGELOG.md', (error, versions) => {
+            m.chai.expect(error).to.not.exist;
+            m.chai.expect(versions).to.deep.equal([
+              '1.1.0',
+              '1.0.0'
+            ]);
+            done();
+          });
+
+        });
+
+      });
+
+      describe('given the file contained versions plus other text as headers', function() {
+
+        beforeEach(function() {
+          this.fsReadFileStub = m.sinon.stub(fs, 'readFile');
+          this.fsReadFileStub.yields(null, [
+            '# My markdown document',
+            '',
+            '## Foo 1.1.0',
+            '',
+            '- foo',
+            '',
+            '## 1.0.0 Bar',
+            '',
+            '- foo'
+          ].join('\n'));
+        });
+
+        afterEach(function() {
+          this.fsReadFileStub.restore();
+        });
+
+        it('should yield the documented versions', function(done) {
+          const fn = presets.getChangelogDocumentedVersions['changelog-headers'];
+          fn('CHANGELOG.md', (error, versions) => {
+            m.chai.expect(error).to.not.exist;
+            m.chai.expect(versions).to.deep.equal([
+              '1.1.0',
+              '1.0.0'
+            ]);
+            done();
+          });
+
+        });
+
+      });
+
+    });
+
+  });
+
   describe('.addEntryToChangelog', function() {
 
     describe('.prepend', function() {
