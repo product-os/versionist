@@ -29,6 +29,7 @@ const path = require('path');
 const chalk = require('chalk');
 const versionist = require('../lib/versionist');
 const presets = require('../lib/presets');
+const semver = require('../lib/semver');
 const packageJSON = require('../package.json');
 
 const showErrorAndQuit = (error) => {
@@ -82,6 +83,11 @@ const CONFIGURATION = {
   getIncrementLevelFromCommit: {
     type: 'function',
     default: _.constant(null),
+    allowsPresets: true
+  },
+  getGitReferenceFromVersion: {
+    type: 'function',
+    default: _.identity,
     allowsPresets: true
   },
   addEntryToChangelog: {
@@ -172,21 +178,10 @@ const argv = yargs
     }
   })
   .options({
-    from: {
-      describe: 'start reference',
-      string: true,
-      alias: 'f'
-    },
-    to: {
-      describe: 'end reference',
-      string: true,
-      alias: 't'
-    },
     current: {
       describe: 'current version',
       string: true,
-      alias: 'u',
-      required: true
+      alias: 'u'
     },
     config: {
       describe: 'configuration file',
@@ -205,7 +200,7 @@ const argv = yargs
       alias: 'v'
     }
   })
-  .example('$0 --from v1.0.0 --to v1.1.0 --current 1.1.0')
+  .example('$0 --current 1.1.0')
   .fail((message) => {
 
     // Prints to `stderr` by default
@@ -219,38 +214,38 @@ const argv = yargs
 async.waterfall([
 
   (callback) => {
-    versionist.readCommitHistory(path.join(argv.config.path, argv.config.gitDirectory), {
-      startReference: argv.from,
-      endReference: argv.to,
-      subjectParser: argv.config.subjectParser,
-      bodyParser: argv.config.bodyParser
-    }, callback);
+    argv.config.getChangelogDocumentedVersions(argv.config.changelogFile, callback);
   },
 
-  (history, callback) => {
+  (documentedVersions, callback) => {
+    versionist.readCommitHistory(path.join(argv.config.path, argv.config.gitDirectory), {
+      startReference: argv.config.getGitReferenceFromVersion(semver.getGreaterVersion(documentedVersions)),
+      endReference: 'HEAD',
+      subjectParser: argv.config.subjectParser,
+      bodyParser: argv.config.bodyParser
+    }, (error, history) => {
+      return callback(error, documentedVersions, history);
+    });
+  },
+
+  (documentedVersions, history, callback) => {
     const version = versionist.calculateNextVersion(history, {
       getIncrementLevelFromCommit: argv.config.getIncrementLevelFromCommit,
-      currentVersion: argv.current
+      currentVersion: argv.current || semver.getGreaterVersion(documentedVersions)
     });
 
-    argv.config.getChangelogDocumentedVersions(argv.config.changelogFile, (error, documentedVersions) => {
-      if (error) {
-        return callback(error);
-      }
+    if (_.includes(documentedVersions, version)) {
+      console.log(`Omitting: ${version}`);
+      return callback();
+    }
 
-      if (_.includes(documentedVersions, version)) {
-        console.log(`Omitting: ${version}`);
-        return callback();
-      }
-
-      const entry = versionist.generateChangelog(history, {
-        template: argv.config.template,
-        includeCommitWhen: argv.config.includeCommitWhen,
-        version: version
-      });
-
-      argv.config.addEntryToChangelog(argv.config.changelogFile, entry, callback);
+    const entry = versionist.generateChangelog(history, {
+      template: argv.config.template,
+      includeCommitWhen: argv.config.includeCommitWhen,
+      version: version
     });
+
+    argv.config.addEntryToChangelog(argv.config.changelogFile, entry, callback);
   }
 
 ], (error) => {

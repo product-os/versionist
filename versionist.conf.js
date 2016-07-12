@@ -2,6 +2,8 @@ module.exports = {
 
   subjectParser: 'angular',
 
+  getGitReferenceFromVersion: 'v-prefix',
+
   includeCommitWhen: (commit) => {
     return commit.footer['Changelog-Entry'];
   },

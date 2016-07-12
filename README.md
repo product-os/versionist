@@ -41,7 +41,7 @@ $ cd versionist
 - Run Versionist
 
 ```
-$ versionist -u 1.0.0
+$ versionist
 ```
 
 ***
@@ -76,33 +76,11 @@ Options:
   --help, -h     show help
   --version, -v  show version number
   --config, -c   configuration file
-  --from, -f     start reference
-  --to, -t       end reference
   --current, -u  current version
 
 Examples:
-  versionist --from v1.0.0 --to v1.1.0 --current 1.1.0
+  versionist --current 1.1.0
 ```
-
-Versionist will output the resulting entry to `stdout`, being your
-responsibility to append/preppend or include it the way you like in your
-project's main `CHANGELOG` file.
-
-### `--from`/`--to`
-
-These command line options allow you to select the exact range of commits
-you're interested in when attempting to generate your `CHANGELOG`. They can be
-any reference that git understands, like git tags, commit hashes, branch names,
-etc.
-
-- If you omit `--to`: Versionist will take every commit from the `--from`
-reference until `HEAD`.
-
-- If you omit `--from`: Versionist will take every commit since the beginning
-of the project, until the reference you passed to `--to`.
-
-- If you omit both `--to` and `--from`: Versionist will retrieve the whole
-history from your project, which is rarely what you want.
 
 ### `--current`
 
@@ -111,6 +89,9 @@ of your project.
 
 If you are making use of `getIncrementLevelFromCommit`, you'll want to pass the
 version number *before* the release, so it gets incremented automatically.
+
+If omitted, `--current` will equal the greater version from the versions
+returned by the `getChangelogDocumentedVersions` hook.
 
 ### `--config`
 
@@ -361,6 +342,15 @@ has been made), and should return either `major`, `minor` or `patch`.
 If the increment level returned from this function is not defined, the commit
 will not alter the final version.
 
+### `getGitReferenceFromVersion (Function)`
+
+*Defaults to the identity function.*
+
+Declare this function to resolve a git reference from a semantic version. If
+you add `x.y.z` annotated git tags you should not need to specify this hooks,
+however it can be handy if you have other conventions, like prefixing the
+version with `v`, etc.
+
 ### `path (String)`
 
 *Defaults to `$CWD`.*
@@ -411,6 +401,12 @@ This preset only includes commits whose `commit.subject.type` is either `feat`,
 This presets prepends the entry to the CHANGELOG file specified in
 `changelogFile`, taking care of not adding unnecessary blank lines between the
 current content and the new entry.
+
+### `getGitReferenceFromVersion`
+
+- `v-prefix`
+
+This presets simply prepends `v` to the version.
 
 Support
 -------
