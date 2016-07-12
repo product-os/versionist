@@ -292,4 +292,43 @@ describe('Semver', function() {
 
   });
 
+  describe('.getGreaterVersion()', function() {
+
+    it('should throw if there is an invalid version', function() {
+      m.chai.expect(() => {
+        semver.getGreaterVersion([
+          '=====',
+          '1.0.0'
+        ]);
+      }).to.throw('Invalid Version: =====');
+    });
+
+    it('should return the greater version', function() {
+      const greater = semver.getGreaterVersion([
+        '2.0.0',
+        '1.1.1',
+        '1.9.0-beta.1',
+        '2.0.1',
+        '2.1.1',
+        '1.0.0'
+      ]);
+
+      m.chai.expect(greater).to.equal('2.1.1');
+    });
+
+    it('should deal with non-normalised versions', function() {
+      const greater = semver.getGreaterVersion([
+        '2.0.0',
+        'v1.1.1',
+        '1.9.0-beta.1',
+        '  2.0.1',
+        '2.1.1   ',
+        'v1.0.0'
+      ]);
+
+      m.chai.expect(greater).to.equal('2.1.1');
+    });
+
+  });
+
 });
