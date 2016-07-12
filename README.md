@@ -17,7 +17,10 @@ us know what you think!**
 How it works
 ------------
 
-Versionist parses the `git` commit history between two references of your choice. You can customise how the parser works to retrieve the data you like, and how you like. The resulting history is then interpolated in a Handlebars template to generate the `CHANGELOG` entry.
+Versionist parses the `git` commit history between two references of your
+choice. You can customise how the parser works to retrieve the data you like,
+and how you like. The resulting history is then interpolated in a Handlebars
+template to generate the `CHANGELOG` entry.
 
 Example
 -------
@@ -143,7 +146,8 @@ You may define the following options:
 
 *Defaults to a simple demonstrational template.*
 
-This option takes a [Handlebars][handlebars] template. The following data is passed to it:
+This option takes a [Handlebars][handlebars] template. The following data is
+passed to it:
 
 - `(Object[]) commits`: All the commits that were not filtered out by
 `includeCommitWhen`.
@@ -177,7 +181,8 @@ module.exports = {
 
 *Defaults to `true`.*
 
-When this option is enabled, Versionsit will attempt to parse tags in the commit body, and append a `footer` object property on the commit object.
+When this option is enabled, Versionsit will attempt to parse tags in the
+commit body, and append a `footer` object property on the commit object.
 
 For example, consider the following commit:
 
@@ -219,7 +224,8 @@ line or a non-tag line.
 
 *Defaults to the identity function.*
 
-You can declare this property to customise how git commit subjects are parsed by Versionist.
+You can declare this property to customise how git commit subjects are parsed
+by Versionist.
 
 For example, you might be following Angular's commit guidelines, and would like
 a subject like `feat($ngInclude): add a feature` to be parsed as:
@@ -253,9 +259,12 @@ passing its name.
 
 *Defaults to a function that always returns `true`.*
 
-You can declare this function to control which commits are going to be included in your `CHANGELOG`.
+You can declare this function to control which commits are going to be included
+in your `CHANGELOG`.
 
-For example, if you use Angular's commit conventions, and declared an Angular friendly `subjectParser` as the example above, you might want to only include commits that have a type of `feat`, `fix` or `perf`:
+For example, if you use Angular's commit conventions, and declared an Angular
+friendly `subjectParser` as the example above, you might want to only include
+commits that have a type of `feat`, `fix` or `perf`:
 
 ```js
 module.exports = {
@@ -307,7 +316,8 @@ Now that this is all setup, the `version` property exposed to your `CHANGELOG`
 template will contain the appropriate new version, depending on the commit
 range your included.
 
-This function takes the whole commit object as an argument (after all parsing has been made), and should return either `major`, `minor` or `patch`.
+This function takes the whole commit object as an argument (after all parsing
+has been made), and should return either `major`, `minor` or `patch`.
 
 If the increment level returned from this function is not defined, the commit
 will not alter the final version.
