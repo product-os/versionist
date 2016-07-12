@@ -17,6 +17,8 @@
 'use strict';
 
 const m = require('mochainon');
+const fs = require('fs');
+const tmp = require('tmp');
 const presets = require('../lib/presets');
 
 describe('Presets', function() {
@@ -207,6 +209,198 @@ describe('Presets', function() {
         m.chai.expect(presets.includeCommitWhen.angular({
           subject: 'foobar($ngRepeat): hello world'
         })).to.be.false;
+      });
+
+    });
+
+  });
+
+  describe('.addEntryToChangelog', function() {
+
+    describe('.prepend', function() {
+
+      describe('given the file does not exist', function() {
+
+        beforeEach(function() {
+          this.tmp = tmp.tmpNameSync();
+        });
+
+        afterEach(function() {
+          fs.unlinkSync(this.tmp);
+        });
+
+        it('should create the file', function(done) {
+          presets.addEntryToChangelog.prepend(this.tmp, [
+            'Lorem ipsum'
+          ].join('\n'), (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            const contents = fs.readFileSync(this.tmp, {
+              encoding: 'utf8'
+            });
+
+            m.chai.expect(contents).to.equal([
+              'Lorem ipsum'
+            ].join('\n'));
+
+            done();
+          });
+        });
+
+      });
+
+      describe('given a temporary file with contents', function() {
+
+        beforeEach(function() {
+          this.tmp = tmp.fileSync();
+          fs.writeFileSync(this.tmp.fd, 'Foo Bar\nHello World');
+        });
+
+        afterEach(function() {
+          this.tmp.removeCallback();
+        });
+
+        it('should not add a white line if not necessary', function(done) {
+          presets.addEntryToChangelog.prepend(this.tmp.name, [
+            'Lorem ipsum',
+            ''
+          ].join('\n'), (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            const contents = fs.readFileSync(this.tmp.name, {
+              encoding: 'utf8'
+            });
+
+            m.chai.expect(contents).to.equal([
+              'Lorem ipsum',
+              '',
+              'Foo Bar',
+              'Hello World'
+            ].join('\n'));
+
+            done();
+          });
+        });
+
+        it('should add a white line if necessary', function(done) {
+          presets.addEntryToChangelog.prepend(this.tmp.name, [
+            'Lorem ipsum'
+          ].join('\n'), (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            const contents = fs.readFileSync(this.tmp.name, {
+              encoding: 'utf8'
+            });
+
+            m.chai.expect(contents).to.equal([
+              'Lorem ipsum',
+              '',
+              'Foo Bar',
+              'Hello World'
+            ].join('\n'));
+
+            done();
+          });
+        });
+
+        it('should remove extra white lines', function(done) {
+          presets.addEntryToChangelog.prepend(this.tmp.name, [
+            'Lorem ipsum',
+            '',
+            '',
+            ''
+          ].join('\n'), (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            const contents = fs.readFileSync(this.tmp.name, {
+              encoding: 'utf8'
+            });
+
+            m.chai.expect(contents).to.equal([
+              'Lorem ipsum',
+              '',
+              'Foo Bar',
+              'Hello World'
+            ].join('\n'));
+
+            done();
+          });
+        });
+
+      });
+
+      describe('given a temporary file with contents and leading white lines', function() {
+
+        beforeEach(function() {
+          this.tmp = tmp.fileSync();
+          fs.writeFileSync(this.tmp.fd, '\n\n\nFoo Bar\nHello World');
+        });
+
+        afterEach(function() {
+          this.tmp.removeCallback();
+        });
+
+        it('should normalize white lines', function(done) {
+          presets.addEntryToChangelog.prepend(this.tmp.name, [
+            'Lorem ipsum',
+            '',
+            '',
+            ''
+          ].join('\n'), (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            const contents = fs.readFileSync(this.tmp.name, {
+              encoding: 'utf8'
+            });
+
+            m.chai.expect(contents).to.equal([
+              'Lorem ipsum',
+              '',
+              'Foo Bar',
+              'Hello World'
+            ].join('\n'));
+
+            done();
+          });
+        });
+
+      });
+
+      describe('given a temporary file with contents and trailing white lines', function() {
+
+        beforeEach(function() {
+          this.tmp = tmp.fileSync();
+          fs.writeFileSync(this.tmp.fd, 'Foo Bar\nHello World\n\n');
+        });
+
+        afterEach(function() {
+          this.tmp.removeCallback();
+        });
+
+        it('should keep the trailing white lines intact', function(done) {
+          presets.addEntryToChangelog.prepend(this.tmp.name, [
+            'Lorem ipsum'
+          ].join('\n'), (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            const contents = fs.readFileSync(this.tmp.name, {
+              encoding: 'utf8'
+            });
+
+            m.chai.expect(contents).to.equal([
+              'Lorem ipsum',
+              '',
+              'Foo Bar',
+              'Hello World',
+              '',
+              ''
+            ].join('\n'));
+
+            done();
+          });
+
+        });
+
       });
 
     });

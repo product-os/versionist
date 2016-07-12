@@ -24,6 +24,7 @@
 
 const yargs = require('yargs');
 const _ = require('lodash');
+const async = require('async');
 const path = require('path');
 const chalk = require('chalk');
 const versionist = require('../lib/versionist');
@@ -41,6 +42,10 @@ const CONFIGURATION = {
   path: {
     type: 'string',
     default: process.cwd()
+  },
+  changelogFile: {
+    type: 'string',
+    default: 'CHANGELOG.md'
   },
   gitDirectory: {
     type: 'string',
@@ -72,6 +77,11 @@ const CONFIGURATION = {
   getIncrementLevelFromCommit: {
     type: 'function',
     default: _.constant(null),
+    allowsPresets: true
+  },
+  addEntryToChangelog: {
+    type: 'function',
+    default: 'prepend',
     allowsPresets: true
   },
   template: {
@@ -193,22 +203,34 @@ const argv = yargs
   })
   .argv;
 
-versionist.readCommitHistory(path.join(argv.config.path, argv.config.gitDirectory), {
-  startReference: argv.from,
-  endReference: argv.to,
-  subjectParser: argv.config.subjectParser,
-  bodyParser: argv.config.bodyParser
-}, (error, history) => {
+async.waterfall([
+
+  (callback) => {
+    versionist.readCommitHistory(path.join(argv.config.path, argv.config.gitDirectory), {
+      startReference: argv.from,
+      endReference: argv.to,
+      subjectParser: argv.config.subjectParser,
+      bodyParser: argv.config.bodyParser
+    }, callback);
+  },
+
+  (history, callback) => {
+    const entry = versionist.generateChangelog(history, {
+      template: argv.config.template,
+      includeCommitWhen: argv.config.includeCommitWhen,
+      version: versionist.calculateNextVersion(history, {
+        getIncrementLevelFromCommit: argv.config.getIncrementLevelFromCommit,
+        currentVersion: argv.current
+      })
+    });
+
+    argv.config.addEntryToChangelog(argv.config.changelogFile, entry, callback);
+  }
+
+], (error) => {
   if (error) {
     return showErrorAndQuit(error);
   }
 
-  console.log(versionist.generateChangelog(history, {
-    template: argv.config.template,
-    includeCommitWhen: argv.config.includeCommitWhen,
-    version: versionist.calculateNextVersion(history, {
-      getIncrementLevelFromCommit: argv.config.getIncrementLevelFromCommit,
-      currentVersion: argv.current
-    })
-  }));
+  console.log('Done');
 });
