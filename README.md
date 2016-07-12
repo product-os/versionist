@@ -379,7 +379,7 @@ Presets
 
 The preset list is currently very small. Please let us know if you have ny
 ideas that could benefit your project and are generic enough to be included in
-Versionist by default.k
+Versionist by default.
 
 ### `subjectParser`
 
