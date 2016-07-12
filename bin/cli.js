@@ -220,16 +220,29 @@ async.waterfall([
   },
 
   (history, callback) => {
-    const entry = versionist.generateChangelog(history, {
-      template: argv.config.template,
-      includeCommitWhen: argv.config.includeCommitWhen,
-      version: versionist.calculateNextVersion(history, {
-        getIncrementLevelFromCommit: argv.config.getIncrementLevelFromCommit,
-        currentVersion: argv.current
-      })
+    const version = versionist.calculateNextVersion(history, {
+      getIncrementLevelFromCommit: argv.config.getIncrementLevelFromCommit,
+      currentVersion: argv.current
     });
 
-    argv.config.addEntryToChangelog(argv.config.changelogFile, entry, callback);
+    argv.config.getChangelogDocumentedVersions(argv.config.changelogFile, (error, documentedVersions) => {
+      if (error) {
+        return callback(error);
+      }
+
+      if (_.includes(documentedVersions, version)) {
+        console.log(`Omitting: ${version}`);
+        return callback();
+      }
+
+      const entry = versionist.generateChangelog(history, {
+        template: argv.config.template,
+        includeCommitWhen: argv.config.includeCommitWhen,
+        version: version
+      });
+
+      argv.config.addEntryToChangelog(argv.config.changelogFile, entry, callback);
+    });
   }
 
 ], (error) => {

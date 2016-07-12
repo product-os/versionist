@@ -305,6 +305,10 @@ error.
 Notice that the `callback` should be **always** explicitly called, even if you
 declare a synchronous function.
 
+If the final version (either as specified in `--current` or calculated by
+`getIncrementLevelFromCommit`) is already returned by the hooks, then the entry
+is not added the the `CHANGELOG`.
+
 ### `includeMergeCommits (Boolean)`
 
 *Defaults to `false`.*
