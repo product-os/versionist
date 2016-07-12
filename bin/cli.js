@@ -102,7 +102,15 @@ const CONFIGURATION = {
 
 const parseConfiguration = (data) => {
   return _.mapValues(CONFIGURATION, (propertyDescription, propertyName) => {
-    const value = _.get(data, propertyName) || propertyDescription.default;
+    const value = _.attempt(() => {
+      const currentValue = _.get(data, propertyName);
+
+      if (_.isUndefined(currentValue) || _.isNull(currentValue)) {
+        return propertyDescription.default;
+      }
+
+      return currentValue;
+    });
 
     if (_.isString(value) && propertyDescription.allowsPresets) {
       const propertyPresets = _.get(presets, propertyName, {});
