@@ -305,11 +305,26 @@ error.
 Notice that the `callback` should be **always** explicitly called, even if you
 declare a synchronous function.
 
+If the final version (either as specified in `--current` or calculated by
+`getIncrementLevelFromCommit`) is already returned by the hooks, then the entry
+is not added the the `CHANGELOG`.
+
 ### `includeMergeCommits (Boolean)`
 
 *Defaults to `false`.*
 
 When this option is enabled, merge commits will be included in the `CHANGELOG`.
+
+### `getChangelogDocumentedVersions (Function)`
+
+*Defaults to `changelog-headers`.*
+
+You can declare this function to customise how Versionist determines which
+versions were already documented in the `CHANGELOG` file.
+
+The function takes the `CHANGELOG` file as set in `changelogFile` and callback
+as parameters. The latter should be called with an optional error and an array
+of semantic version strings.
 
 ### `getIncrementLevelFromCommit (Function)`
 
@@ -373,6 +388,13 @@ Versionist by default.k
 This preset parses the subject according to Angular's commit guidelines. It
 outputs an object containing the following properties: `type`, `scope` and
 `title`.
+
+### `getChangelogDocumentedVersions`
+
+- `changelog-headers`
+
+This preset parses the `CHANGELOG` file specified in `changelogFile`, and
+extracts any valid semantic versions from the headers.
 
 ### `includeCommitWhen`
 
