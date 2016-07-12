@@ -361,6 +361,15 @@ has been made), and should return either `major`, `minor` or `patch`.
 If the increment level returned from this function is not defined, the commit
 will not alter the final version.
 
+### `getGitReferenceFromVersion (Function)`
+
+*Defaults to the identity function.*
+
+Declare this function to resolve a git reference from a semantic version. If
+you add `x.y.z` annotated git tags you should not need to specify this hooks,
+however it can be handy if you have other conventions, like prefixing the
+version with `v`, etc.
+
 ### `path (String)`
 
 *Defaults to `$CWD`.*
@@ -411,6 +420,12 @@ This preset only includes commits whose `commit.subject.type` is either `feat`,
 This presets prepends the entry to the CHANGELOG file specified in
 `changelogFile`, taking care of not adding unnecessary blank lines between the
 current content and the new entry.
+
+### `getGitReferenceFromVersion`
+
+- `v-prefix`
+
+This presets simply prepends `v` to the version.
 
 Support
 -------

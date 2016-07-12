@@ -546,4 +546,22 @@ describe('Presets', function() {
 
   });
 
+  describe('.getGitReferenceFromVersion', function() {
+
+    describe('.`v-prefix`', function() {
+
+      it('should prepend a `v` to the version', function() {
+        const version = presets.getGitReferenceFromVersion['v-prefix']('1.0.0');
+        m.chai.expect(version).to.equal('v1.0.0');
+      });
+
+      it('should not prepend a `v` to the version if it already has one', function() {
+        const version = presets.getGitReferenceFromVersion['v-prefix']('v1.0.0');
+        m.chai.expect(version).to.equal('v1.0.0');
+      });
+
+    });
+
+  });
+
 });

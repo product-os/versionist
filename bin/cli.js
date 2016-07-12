@@ -84,6 +84,11 @@ const CONFIGURATION = {
     default: _.constant(null),
     allowsPresets: true
   },
+  getGitReferenceFromVersion: {
+    type: 'function',
+    default: _.identity,
+    allowsPresets: true
+  },
   addEntryToChangelog: {
     type: 'function',
     default: 'prepend',
