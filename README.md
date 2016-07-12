@@ -165,6 +165,16 @@ module.exports = {
 This option specifies the desired location of your `CHANGELOG` file, relative
 to the root of your project.
 
+### `editChangelog (Boolean)`
+
+*Defaults to `true`.*
+
+When this option is enabled, your project's `CHANGELOG` file, as specified in
+`changelogFile`, it automatically edited as configured in
+`addEntryToChangelog`.
+
+If this option is disabled, the generated entry is printed to `stdout`.
+
 ### `parseFooterTags (Boolean)`
 
 *Defaults to `true`.*

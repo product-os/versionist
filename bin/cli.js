@@ -56,6 +56,10 @@ const CONFIGURATION = {
     type: 'boolean',
     default: true
   },
+  editChangelog: {
+    type: 'boolean',
+    default: true
+  },
   subjectParser: {
     type: 'function',
     default: _.identity,
@@ -245,7 +249,11 @@ async.waterfall([
       version: version
     });
 
-    argv.config.addEntryToChangelog(argv.config.changelogFile, entry, callback);
+    if (argv.config.editChangelog) {
+      argv.config.addEntryToChangelog(argv.config.changelogFile, entry, callback);
+    } else {
+      console.log(entry);
+    }
   }
 
 ], (error) => {
