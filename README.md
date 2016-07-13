@@ -361,6 +361,19 @@ you add `x.y.z` annotated git tags you should not need to specify this hooks,
 however it can be handy if you have other conventions, like prefixing the
 version with `v`, etc.
 
+### `updateVersion (Function)`
+
+*Defaults to the `npm`.*
+
+Declare this function to specify how Versionist should update your project's
+version.
+
+The function takes three arguments:
+
+- `(String) cwd`: The current working directory.
+- `(String) version`: The new version.
+- `(Function) callback`: The callback.
+
 ### `path (String)`
 
 *Defaults to `$CWD`.*
@@ -417,6 +430,12 @@ current content and the new entry.
 - `v-prefix`
 
 This presets simply prepends `v` to the version.
+
+### `updateVersion`
+
+- `npm`
+
+This presets updates the `version` property of `$CWD/package.json`.
 
 Support
 -------

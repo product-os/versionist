@@ -99,6 +99,11 @@ const CONFIGURATION = {
     default: 'prepend',
     allowsPresets: true
   },
+  updateVersion: {
+    type: 'function',
+    default: 'npm',
+    allowsPresets: true
+  },
   template: {
     type: 'string',
     default: [
@@ -250,10 +255,17 @@ async.waterfall([
     });
 
     if (argv.config.editChangelog) {
-      argv.config.addEntryToChangelog(argv.config.changelogFile, entry, callback);
+      argv.config.addEntryToChangelog(argv.config.changelogFile, entry, (error) => {
+        return callback(error, version);
+      });
     } else {
       console.log(entry);
+      return callback(null, version);
     }
+  },
+
+  (version, callback) => {
+    argv.config.updateVersion(process.cwd(), version, callback);
   }
 
 ], (error) => {
