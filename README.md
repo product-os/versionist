@@ -36,6 +36,7 @@ $ npm install -g versionist
 ```
 $ git clone https://github.com/resin-io/versionist
 $ cd versionist
+$ git checkout example
 ```
 
 - Run Versionist
@@ -46,13 +47,8 @@ $ versionist
 
 ***
 
-```
-## 1.1.0 - 2016-07-08
-
-- Add a simple default template.
-- Fix `stdout maxBuffer exceeded` when parsing big logs.
-- Support commits with indented bodies.
-```
+The `CHANGELOG.md` will have a new `2.0.0` entry with the latest changes, and
+the `package.json` version will be updated to `2.0.0`.
 
 Installation
 ------------
