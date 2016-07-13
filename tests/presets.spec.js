@@ -30,7 +30,7 @@ describe('Presets', function() {
 
       it('should pass the whole commit as a title when parsing non-angular commits', function() {
         const subject = 'Do x, y and z';
-        const result = presets.subjectParser.angular(subject);
+        const result = presets.subjectParser.angular({}, subject);
 
         m.chai.expect(result).to.deep.equal({
           type: undefined,
@@ -41,7 +41,7 @@ describe('Presets', function() {
 
       it('should parse subjects without a scope', function() {
         const subject = 'feat: hello world';
-        const result = presets.subjectParser.angular(subject);
+        const result = presets.subjectParser.angular({}, subject);
 
         m.chai.expect(result).to.deep.equal({
           type: 'feat',
@@ -52,7 +52,7 @@ describe('Presets', function() {
 
       it('should parse subjects with scopes', function() {
         const subject = 'feat(foo): hello world';
-        const result = presets.subjectParser.angular(subject);
+        const result = presets.subjectParser.angular({}, subject);
 
         m.chai.expect(result).to.deep.equal({
           type: 'feat',
@@ -63,7 +63,7 @@ describe('Presets', function() {
 
       it('should preserve scope casing', function() {
         const subject = 'feat(fooBar): hello world';
-        const result = presets.subjectParser.angular(subject);
+        const result = presets.subjectParser.angular({}, subject);
 
         m.chai.expect(result).to.deep.equal({
           type: 'feat',
@@ -81,7 +81,7 @@ describe('Presets', function() {
     describe('.angular', function() {
 
       it('should return true if commit.subject.type equals feat', function() {
-        m.chai.expect(presets.includeCommitWhen.angular({
+        m.chai.expect(presets.includeCommitWhen.angular({}, {
           subject: {
             type: 'feat'
           }
@@ -89,7 +89,7 @@ describe('Presets', function() {
       });
 
       it('should return true if commit.subject.type equals fix', function() {
-        m.chai.expect(presets.includeCommitWhen.angular({
+        m.chai.expect(presets.includeCommitWhen.angular({}, {
           subject: {
             type: 'fix'
           }
@@ -97,7 +97,7 @@ describe('Presets', function() {
       });
 
       it('should return true if commit.subject.type equals perf', function() {
-        m.chai.expect(presets.includeCommitWhen.angular({
+        m.chai.expect(presets.includeCommitWhen.angular({}, {
           subject: {
             type: 'perf'
           }
@@ -105,7 +105,7 @@ describe('Presets', function() {
       });
 
       it('should return false if commit.subject.type is docs', function() {
-        m.chai.expect(presets.includeCommitWhen.angular({
+        m.chai.expect(presets.includeCommitWhen.angular({}, {
           subject: {
             type: 'docs'
           }
@@ -113,7 +113,7 @@ describe('Presets', function() {
       });
 
       it('should return false if commit.subject.type is style', function() {
-        m.chai.expect(presets.includeCommitWhen.angular({
+        m.chai.expect(presets.includeCommitWhen.angular({}, {
           subject: {
             type: 'style'
           }
@@ -121,7 +121,7 @@ describe('Presets', function() {
       });
 
       it('should return false if commit.subject.type is refactor', function() {
-        m.chai.expect(presets.includeCommitWhen.angular({
+        m.chai.expect(presets.includeCommitWhen.angular({}, {
           subject: {
             type: 'refactor'
           }
@@ -129,7 +129,7 @@ describe('Presets', function() {
       });
 
       it('should return false if commit.subject.type is test', function() {
-        m.chai.expect(presets.includeCommitWhen.angular({
+        m.chai.expect(presets.includeCommitWhen.angular({}, {
           subject: {
             type: 'test'
           }
@@ -137,7 +137,7 @@ describe('Presets', function() {
       });
 
       it('should return false if commit.subject.type is chore', function() {
-        m.chai.expect(presets.includeCommitWhen.angular({
+        m.chai.expect(presets.includeCommitWhen.angular({}, {
           subject: {
             type: 'chore'
           }
@@ -145,7 +145,7 @@ describe('Presets', function() {
       });
 
       it('should return false if commit.subject.type is an unknown type', function() {
-        m.chai.expect(presets.includeCommitWhen.angular({
+        m.chai.expect(presets.includeCommitWhen.angular({}, {
           subject: {
             type: 'foobar'
           }
@@ -153,61 +153,61 @@ describe('Presets', function() {
       });
 
       it('should return false if commit.subject.type is not defined', function() {
-        m.chai.expect(presets.includeCommitWhen.angular({
+        m.chai.expect(presets.includeCommitWhen.angular({}, {
           subject: {}
         })).to.be.false;
       });
 
       it('should return true if commit.subject starts with feat', function() {
-        m.chai.expect(presets.includeCommitWhen.angular({
+        m.chai.expect(presets.includeCommitWhen.angular({}, {
           subject: 'feat($ngRepeat): hello world'
         })).to.be.true;
       });
 
       it('should return true if commit.subject starts with fix', function() {
-        m.chai.expect(presets.includeCommitWhen.angular({
+        m.chai.expect(presets.includeCommitWhen.angular({}, {
           subject: 'fix($ngRepeat): hello world'
         })).to.be.true;
       });
 
       it('should return true if commit.subject starts with perf', function() {
-        m.chai.expect(presets.includeCommitWhen.angular({
+        m.chai.expect(presets.includeCommitWhen.angular({}, {
           subject: 'perf($ngRepeat): hello world'
         })).to.be.true;
       });
 
       it('should return false if commit.subject starts with docs', function() {
-        m.chai.expect(presets.includeCommitWhen.angular({
+        m.chai.expect(presets.includeCommitWhen.angular({}, {
           subject: 'docs($ngRepeat): hello world'
         })).to.be.false;
       });
 
       it('should return false if commit.subject starts with style', function() {
-        m.chai.expect(presets.includeCommitWhen.angular({
+        m.chai.expect(presets.includeCommitWhen.angular({}, {
           subject: 'style($ngRepeat): hello world'
         })).to.be.false;
       });
 
       it('should return false if commit.subject starts with refactor', function() {
-        m.chai.expect(presets.includeCommitWhen.angular({
+        m.chai.expect(presets.includeCommitWhen.angular({}, {
           subject: 'refactor($ngRepeat): hello world'
         })).to.be.false;
       });
 
       it('should return false if commit.subject starts with test', function() {
-        m.chai.expect(presets.includeCommitWhen.angular({
+        m.chai.expect(presets.includeCommitWhen.angular({}, {
           subject: 'test($ngRepeat): hello world'
         })).to.be.false;
       });
 
       it('should return false if commit.subject starts with chore', function() {
-        m.chai.expect(presets.includeCommitWhen.angular({
+        m.chai.expect(presets.includeCommitWhen.angular({}, {
           subject: 'chore($ngRepeat): hello world'
         })).to.be.false;
       });
 
       it('should return false if commit.subject starts with an unknown type', function() {
-        m.chai.expect(presets.includeCommitWhen.angular({
+        m.chai.expect(presets.includeCommitWhen.angular({}, {
           subject: 'foobar($ngRepeat): hello world'
         })).to.be.false;
       });
@@ -233,7 +233,7 @@ describe('Presets', function() {
 
         it('should yield back the error', function(done) {
           const fn = presets.getChangelogDocumentedVersions['changelog-headers'];
-          fn('CHANGELOG.md', (error, versions) => {
+          fn({}, 'CHANGELOG.md', (error, versions) => {
             m.chai.expect(error).to.be.an.instanceof(Error);
             m.chai.expect(error.message).to.equal('read error');
             m.chai.expect(versions).to.not.exist;
@@ -266,7 +266,7 @@ describe('Presets', function() {
 
         it('should yield the documented versions', function(done) {
           const fn = presets.getChangelogDocumentedVersions['changelog-headers'];
-          fn('CHANGELOG.md', (error, versions) => {
+          fn({}, 'CHANGELOG.md', (error, versions) => {
             m.chai.expect(error).to.not.exist;
             m.chai.expect(versions).to.deep.equal([
               '1.1.0',
@@ -302,7 +302,7 @@ describe('Presets', function() {
 
         it('should normalize the versions', function(done) {
           const fn = presets.getChangelogDocumentedVersions['changelog-headers'];
-          fn('CHANGELOG.md', (error, versions) => {
+          fn({}, 'CHANGELOG.md', (error, versions) => {
             m.chai.expect(error).to.not.exist;
             m.chai.expect(versions).to.deep.equal([
               '1.1.0',
@@ -338,7 +338,7 @@ describe('Presets', function() {
 
         it('should yield the documented versions', function(done) {
           const fn = presets.getChangelogDocumentedVersions['changelog-headers'];
-          fn('CHANGELOG.md', (error, versions) => {
+          fn({}, 'CHANGELOG.md', (error, versions) => {
             m.chai.expect(error).to.not.exist;
             m.chai.expect(versions).to.deep.equal([
               '1.1.0',
@@ -370,7 +370,7 @@ describe('Presets', function() {
         });
 
         it('should create the file', function(done) {
-          presets.addEntryToChangelog.prepend(this.tmp, [
+          presets.addEntryToChangelog.prepend({}, this.tmp, [
             'Lorem ipsum'
           ].join('\n'), (error) => {
             m.chai.expect(error).to.not.exist;
@@ -401,7 +401,7 @@ describe('Presets', function() {
         });
 
         it('should not add a white line if not necessary', function(done) {
-          presets.addEntryToChangelog.prepend(this.tmp.name, [
+          presets.addEntryToChangelog.prepend({}, this.tmp.name, [
             'Lorem ipsum',
             ''
           ].join('\n'), (error) => {
@@ -423,7 +423,7 @@ describe('Presets', function() {
         });
 
         it('should add a white line if necessary', function(done) {
-          presets.addEntryToChangelog.prepend(this.tmp.name, [
+          presets.addEntryToChangelog.prepend({}, this.tmp.name, [
             'Lorem ipsum'
           ].join('\n'), (error) => {
             m.chai.expect(error).to.not.exist;
@@ -444,7 +444,7 @@ describe('Presets', function() {
         });
 
         it('should remove extra white lines', function(done) {
-          presets.addEntryToChangelog.prepend(this.tmp.name, [
+          presets.addEntryToChangelog.prepend({}, this.tmp.name, [
             'Lorem ipsum',
             '',
             '',
@@ -481,7 +481,7 @@ describe('Presets', function() {
         });
 
         it('should normalize white lines', function(done) {
-          presets.addEntryToChangelog.prepend(this.tmp.name, [
+          presets.addEntryToChangelog.prepend({}, this.tmp.name, [
             'Lorem ipsum',
             '',
             '',
@@ -518,7 +518,7 @@ describe('Presets', function() {
         });
 
         it('should keep the trailing white lines intact', function(done) {
-          presets.addEntryToChangelog.prepend(this.tmp.name, [
+          presets.addEntryToChangelog.prepend({}, this.tmp.name, [
             'Lorem ipsum'
           ].join('\n'), (error) => {
             m.chai.expect(error).to.not.exist;
@@ -552,12 +552,12 @@ describe('Presets', function() {
     describe('.`v-prefix`', function() {
 
       it('should prepend a `v` to the version', function() {
-        const version = presets.getGitReferenceFromVersion['v-prefix']('1.0.0');
+        const version = presets.getGitReferenceFromVersion['v-prefix']({}, '1.0.0');
         m.chai.expect(version).to.equal('v1.0.0');
       });
 
       it('should not prepend a `v` to the version if it already has one', function() {
-        const version = presets.getGitReferenceFromVersion['v-prefix']('v1.0.0');
+        const version = presets.getGitReferenceFromVersion['v-prefix']({}, 'v1.0.0');
         m.chai.expect(version).to.equal('v1.0.0');
       });
 
@@ -580,7 +580,7 @@ describe('Presets', function() {
         });
 
         it('should yield an error', function(done) {
-          presets.updateVersion.npm(this.cwd.name, '1.0.0', (error) => {
+          presets.updateVersion.npm({}, this.cwd.name, '1.0.0', (error) => {
             m.chai.expect(error).to.be.an.instanceof(Error);
             m.chai.expect(error.code).to.equal('ENOENT');
             done();
@@ -607,7 +607,7 @@ describe('Presets', function() {
         });
 
         it('should be able to update the version', function(done) {
-          presets.updateVersion.npm(this.cwd.name, '1.1.0', (error) => {
+          presets.updateVersion.npm({}, this.cwd.name, '1.1.0', (error) => {
             m.chai.expect(error).to.not.exist;
 
             const packageJSON = JSON.parse(fs.readFileSync(this.packageJSON, {
@@ -624,7 +624,7 @@ describe('Presets', function() {
         });
 
         it('should preserve correct identation', function(done) {
-          presets.updateVersion.npm(this.cwd.name, '1.1.0', (error) => {
+          presets.updateVersion.npm({}, this.cwd.name, '1.1.0', (error) => {
             m.chai.expect(error).to.not.exist;
 
             const contents = fs.readFileSync(this.packageJSON, {
@@ -643,7 +643,7 @@ describe('Presets', function() {
         });
 
         it('should normalize the version', function(done) {
-          presets.updateVersion.npm(this.cwd.name, '  v1.1.0  ', (error) => {
+          presets.updateVersion.npm({}, this.cwd.name, '  v1.1.0  ', (error) => {
             m.chai.expect(error).to.not.exist;
 
             const packageJSON = JSON.parse(fs.readFileSync(this.packageJSON, {
@@ -660,7 +660,7 @@ describe('Presets', function() {
         });
 
         it('should reject an invalid version', function(done) {
-          presets.updateVersion.npm(this.cwd.name, 'foo', (error) => {
+          presets.updateVersion.npm({}, this.cwd.name, 'foo', (error) => {
             m.chai.expect(error).to.be.an.instanceof(Error);
             m.chai.expect(error.message).to.equal('Invalid version: foo');
             done();

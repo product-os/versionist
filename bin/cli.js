@@ -124,6 +124,27 @@ const CONFIGURATION = {
   }
 };
 
+const isPresetProperty = (value) => {
+  return _.some([
+    _.isString(value),
+    _.isPlainObject(value) && _.isString(value.preset)
+  ]);
+};
+
+const parsePresetDefinition = (value) => {
+  if (_.isString(value)) {
+    return {
+      name: value,
+      options: {}
+    };
+  }
+
+  return {
+    name: value.preset,
+    options: _.omit(value, 'preset')
+  };
+};
+
 const parseConfiguration = (data) => {
   return _.mapValues(CONFIGURATION, (propertyDescription, propertyName) => {
     const value = _.attempt(() => {
@@ -136,20 +157,16 @@ const parseConfiguration = (data) => {
       return currentValue;
     });
 
-    if (_.isString(value) && propertyDescription.allowsPresets) {
+    if (isPresetProperty(value) && propertyDescription.allowsPresets) {
       const propertyPresets = _.get(presets, propertyName, {});
-      const presetFunction = _.get(propertyPresets, value);
+      const presetDefinition = parsePresetDefinition(value);
+      const presetFunction = _.get(propertyPresets, presetDefinition.name);
 
       if (!presetFunction) {
-        throw new Error(`Invalid preset: ${propertyName} -> ${value}`);
+        throw new Error(`Invalid preset: ${propertyName} -> ${presetDefinition.name}`);
       }
 
-      // Set the context to the available presets for that property
-      // This is useful to that users can make use of a preset,
-      // but extend it depending on their needs, without needing
-      // to duplicate functionality from the original preset.
-      return _.bind(presetFunction, propertyPresets);
-
+      return _.partial(presetFunction, presetDefinition.options);
     }
 
     if (typeof value !== propertyDescription.type) {
