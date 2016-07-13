@@ -393,6 +393,36 @@ need to define this yourself.
 Presets
 -------
 
+You can specify a preset for a function hook in the following formats:
+
+- String value
+
+```
+module.exports = {
+  ...
+
+  addEntryToChangelog: 'prepend'
+
+  ...
+};
+```
+
+- Object value
+
+```
+module.exports = {
+  ...
+
+  addEntryToChangelog: {
+    preset: 'prepend',
+    optionSupportedByPrepend1: 'value',
+    optionSupportedByPrepend2: 'value'
+  }
+
+  ...
+};
+```
+
 The preset list is currently very small. Please let us know if you have ny
 ideas that could benefit your project and are generic enough to be included in
 Versionist by default.
