@@ -17,6 +17,7 @@
 'use strict';
 
 const m = require('mochainon');
+const path = require('path');
 const fs = require('fs');
 const tmp = require('tmp');
 const presets = require('../lib/presets');
@@ -558,6 +559,114 @@ describe('Presets', function() {
       it('should not prepend a `v` to the version if it already has one', function() {
         const version = presets.getGitReferenceFromVersion['v-prefix']('v1.0.0');
         m.chai.expect(version).to.equal('v1.0.0');
+      });
+
+    });
+
+  });
+
+  describe('.updateVersion', function() {
+
+    describe('.npm', function() {
+
+      describe('given package.json does not exist', function() {
+
+        beforeEach(function() {
+          this.cwd = tmp.dirSync();
+        });
+
+        afterEach(function() {
+          this.cwd.removeCallback();
+        });
+
+        it('should yield an error', function(done) {
+          presets.updateVersion.npm(this.cwd.name, '1.0.0', (error) => {
+            m.chai.expect(error).to.be.an.instanceof(Error);
+            m.chai.expect(error.code).to.equal('ENOENT');
+            done();
+          });
+        });
+
+      });
+
+      describe('given package.json exists', function() {
+
+        beforeEach(function() {
+          this.cwd = tmp.dirSync();
+          this.packageJSON = path.join(this.cwd.name, 'package.json');
+
+          fs.writeFileSync(this.packageJSON, JSON.stringify({
+            name: 'foo',
+            version: '1.0.0'
+          }, null, 2));
+        });
+
+        afterEach(function() {
+          fs.unlinkSync(this.packageJSON);
+          this.cwd.removeCallback();
+        });
+
+        it('should be able to update the version', function(done) {
+          presets.updateVersion.npm(this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            const packageJSON = JSON.parse(fs.readFileSync(this.packageJSON, {
+              encoding: 'utf8'
+            }));
+
+            m.chai.expect(packageJSON).to.deep.equal({
+              name: 'foo',
+              version: '1.1.0'
+            });
+
+            done();
+          });
+        });
+
+        it('should preserve correct identation', function(done) {
+          presets.updateVersion.npm(this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            const contents = fs.readFileSync(this.packageJSON, {
+              encoding: 'utf8'
+            });
+
+            m.chai.expect(contents).to.equal([
+              '{',
+              '  "name": "foo",',
+              '  "version": "1.1.0"',
+              '}'
+            ].join('\n'));
+
+            done();
+          });
+        });
+
+        it('should normalize the version', function(done) {
+          presets.updateVersion.npm(this.cwd.name, '  v1.1.0  ', (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            const packageJSON = JSON.parse(fs.readFileSync(this.packageJSON, {
+              encoding: 'utf8'
+            }));
+
+            m.chai.expect(packageJSON).to.deep.equal({
+              name: 'foo',
+              version: '1.1.0'
+            });
+
+            done();
+          });
+        });
+
+        it('should reject an invalid version', function(done) {
+          presets.updateVersion.npm(this.cwd.name, 'foo', (error) => {
+            m.chai.expect(error).to.be.an.instanceof(Error);
+            m.chai.expect(error.message).to.equal('Invalid version: foo');
+            done();
+          });
+        });
+
       });
 
     });

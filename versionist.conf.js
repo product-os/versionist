@@ -4,6 +4,8 @@ module.exports = {
 
   getGitReferenceFromVersion: 'v-prefix',
 
+  updateVersion: 'npm',
+
   includeCommitWhen: (commit) => {
     return commit.footer['Changelog-Entry'];
   },
