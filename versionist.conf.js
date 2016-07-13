@@ -4,6 +4,11 @@ module.exports = {
 
   getGitReferenceFromVersion: 'v-prefix',
 
+  addEntryToChangelog: {
+    preset: 'prepend',
+    fromLine: 5
+  },
+
   updateVersion: 'npm',
 
   includeCommitWhen: (commit) => {
