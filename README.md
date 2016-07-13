@@ -458,6 +458,10 @@ This presets prepends the entry to the CHANGELOG file specified in
 `changelogFile`, taking care of not adding unnecessary blank lines between the
 current content and the new entry.
 
+**Options**
+
+- `(Number) fromLine`: Prepend from a certain line.
+
 ### `getGitReferenceFromVersion`
 
 - `v-prefix`

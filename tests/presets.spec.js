@@ -380,7 +380,8 @@ describe('Presets', function() {
             });
 
             m.chai.expect(contents).to.equal([
-              'Lorem ipsum'
+              'Lorem ipsum',
+              ''
             ].join('\n'));
 
             done();
@@ -539,6 +540,49 @@ describe('Presets', function() {
             done();
           });
 
+        });
+
+      });
+
+      describe('given a temporary file with a header', function() {
+
+        beforeEach(function() {
+          this.tmp = tmp.fileSync();
+          fs.writeFileSync(this.tmp.fd, [
+            'This is my CHANGELOG',
+            '====================',
+            '',
+            'Entry 1'
+          ].join('\n'));
+        });
+
+        afterEach(function() {
+          this.tmp.removeCallback();
+        });
+
+        it('should support a `fromLine` option', function(done) {
+          presets.addEntryToChangelog.prepend({
+            fromLine: 3
+          }, this.tmp.name, [
+            'Entry 2'
+          ].join('\n'), (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            const contents = fs.readFileSync(this.tmp.name, {
+              encoding: 'utf8'
+            });
+
+            m.chai.expect(contents).to.equal([
+              'This is my CHANGELOG',
+              '====================',
+              '',
+              'Entry 2',
+              '',
+              'Entry 1'
+            ].join('\n'));
+
+            done();
+          });
         });
 
       });
