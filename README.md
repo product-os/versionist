@@ -175,6 +175,13 @@ When this option is enabled, your project's `CHANGELOG` file, as specified in
 
 If this option is disabled, the generated entry is printed to `stdout`.
 
+### `editVersion (Boolean)`
+
+*Defaults to `true`.*
+
+When this option is enabled, the project's version will be edited as specified
+in the `updateVersion` hook.
+
 ### `parseFooterTags (Boolean)`
 
 *Defaults to `true`.*

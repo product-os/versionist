@@ -60,6 +60,10 @@ const CONFIGURATION = {
     type: 'boolean',
     default: true
   },
+  editVersion: {
+    type: 'boolean',
+    default: true
+  },
   subjectParser: {
     type: 'function',
     default: _.identity,
@@ -265,7 +269,11 @@ async.waterfall([
   },
 
   (version, callback) => {
-    argv.config.updateVersion(process.cwd(), version, callback);
+    if (argv.config.editVersion) {
+      argv.config.updateVersion(process.cwd(), version, callback);
+    } else {
+      return callback();
+    }
   }
 
 ], (error) => {
