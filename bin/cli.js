@@ -35,7 +35,7 @@ const packageJSON = require('../package.json');
 const showErrorAndQuit = (error) => {
   console.error(chalk.red(error.message));
   console.error('Join our Gitter channel if you need any help!');
-  console.error('  https://gitter.im/resin-io/chat');
+  console.error('  https://gitter.im/resin-io/versionist');
   process.exit(1);
 };
 

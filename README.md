@@ -6,7 +6,7 @@ Versionist
 [![npm version](https://badge.fury.io/js/versionist.svg)](http://badge.fury.io/js/versionist)
 [![Build Status](https://travis-ci.org/resin-io/versionist.svg?branch=master)](https://travis-ci.org/resin-io/versionist)
 [![Build status](https://ci.appveyor.com/api/projects/status/xdtf4mx8hmurnmgo/branch/master?svg=true)](https://ci.appveyor.com/project/resin-io/versionist/branch/master)
-[![Gitter](https://badges.gitter.im/resin-io/etcher.svg)](https://gitter.im/resin-io/etcher?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Gitter](https://badges.gitter.im/resin-io/versionist.svg)](https://gitter.im/resin-io/versionist?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 Versionist is non-opitionated. It adapts to your commit practices and generates
 a `CHANGELOG` file that suits your taste.
@@ -488,6 +488,6 @@ Versionist is free software, and may be redistributed under the terms specified
 in the [license].
 
 [github-issue]: https://github.com/resin-io/versionist/issues/new
-[gitter]: https://gitter.im/resin-io/etcher
+[gitter]: https://gitter.im/resin-io/versionist
 [license]: https://github.com/resin-io/etcher/blob/master/LICENSE
 [handlebars]: http://handlebarsjs.com
