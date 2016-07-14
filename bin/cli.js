@@ -300,3 +300,5 @@ async.waterfall([
 
   console.log('Done');
 });
+
+process.on('uncaughtException', showErrorAndQuit);
