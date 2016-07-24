@@ -154,6 +154,10 @@ module.exports = {
 };
 ```
 
+If you need further manipulation to the data passed to the template that is not
+possible by using template helpers, consider declaring the
+`transformTemplateData` hook.
+
 ### `changelogFile (String)`
 
 *Defaults to `CHANGELOG.md`.*
@@ -281,6 +285,31 @@ module.exports = {
 
 The whole commit object, after any transformations applied by `subjectParser`
 and `bodyParser` is passed as an argument.
+
+### `transformTemplateData (Function)`
+
+*Defaults to the identity function.*
+
+You can declare this function to perform advanced transformations to the data
+that is passed to template in a more granular way.
+
+```js
+module.exports = {
+  ...
+
+  transformTemplateData (data) => {
+    data.commits = // edit commits;
+    data.version = // edit version;
+    data.date = // edit date;
+
+    data.mynewfield = 'foo';
+
+    return data;
+  }
+
+  ...
+};
+```
 
 ### `addEntryToChangelog (Function)`
 
