@@ -271,7 +271,7 @@ async.waterfall([
 
     if (_.includes(documentedVersions, version)) {
       console.log(`Omitting: ${version}`);
-      return callback();
+      return callback(null, null);
     }
 
     const entry = versionist.generateChangelog(history, {
