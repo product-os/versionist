@@ -364,6 +364,42 @@ describe('Versionist', function() {
       ].join('\n'));
     });
 
+    it('should support a transformTemplateData option', function() {
+      const result = versionist.generateChangelog([
+        {
+          subject: 'foo'
+        },
+        {
+          subject: 'bar'
+        },
+        {
+          subject: 'baz'
+        }
+      ], {
+        version: '1.0.0',
+        transformTemplateData: (data) => {
+          data.commits = _.map(data.commits, 'subject');
+          data.version = 'v' + data.version;
+          return data;
+        },
+        date: new Date(),
+        template: [
+          'Version: {{version}}',
+          '{{#each commits}}',
+          '{{this}}',
+          '{{/each}}'
+        ].join('\n')
+      });
+
+      m.chai.expect(result).to.equal([
+        'Version: v1.0.0',
+        'foo',
+        'bar',
+        'baz',
+        ''
+      ].join('\n'));
+    });
+
   });
 
 });

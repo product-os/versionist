@@ -79,6 +79,11 @@ const CONFIGURATION = {
     default: _.constant(true),
     allowsPresets: true
   },
+  transformTemplateData: {
+    type: 'function',
+    default: _.identity,
+    allowsPresets: true
+  },
   includeMergeCommits: {
     type: 'boolean',
     default: false
@@ -272,6 +277,7 @@ async.waterfall([
     const entry = versionist.generateChangelog(history, {
       template: argv.config.template,
       includeCommitWhen: argv.config.includeCommitWhen,
+      transformTemplateData: argv.config.transformTemplateData,
       version: version
     });
 
