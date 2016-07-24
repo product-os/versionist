@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.1.0 - 2016-07-24
+
+- Fix uncaught exception if current version is omitted.
+- Add `transformTemplateData` option hook.
+- Make sure every exception is nicely displayed.
+
 ## 2.0.0 - 2016-07-13
 
 - Implement `fromLine` option for `addEntryToChangelog`'s `prepend` preset.
