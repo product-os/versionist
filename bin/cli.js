@@ -98,6 +98,11 @@ const CONFIGURATION = {
     default: _.constant(null),
     allowsPresets: true
   },
+  incrementVersion: {
+    type: 'function',
+    default: 'semver',
+    allowsPresets: true
+  },
   getGitReferenceFromVersion: {
     type: 'function',
     default: _.identity,
@@ -266,7 +271,8 @@ async.waterfall([
   (documentedVersions, history, callback) => {
     const version = versionist.calculateNextVersion(history, {
       getIncrementLevelFromCommit: argv.config.getIncrementLevelFromCommit,
-      currentVersion: argv.current || semver.getGreaterVersion(documentedVersions)
+      currentVersion: argv.current || semver.getGreaterVersion(documentedVersions),
+      incrementVersion: argv.config.incrementVersion
     });
 
     if (_.includes(documentedVersions, version)) {

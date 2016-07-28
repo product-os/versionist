@@ -384,6 +384,15 @@ has been made), and should return either `major`, `minor` or `patch`.
 If the increment level returned from this function is not defined, the commit
 will not alter the final version.
 
+### `incrementVersion (Function)`
+
+*Defaults to `semver`.*
+
+Declare this function to customise how an increment level is used to increment
+the current version.
+
+This function takes the current version and the increment level as arguments.
+
 ### `getGitReferenceFromVersion (Function)`
 
 *Defaults to the identity function.*
@@ -502,6 +511,12 @@ This presets simply prepends `v` to the version.
 - `npm`
 
 This presets updates the `version` property of `$CWD/package.json`.
+
+### `incrementVersion`
+
+- `semver`
+
+This preset increments the version according to semver rules.
 
 Support
 -------
