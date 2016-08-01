@@ -168,7 +168,7 @@ describe('Versionist', function() {
       m.chai.expect(() => {
         versionist.calculateNextVersion(null, {
           currentVersion: '1.0.0',
-          incrementVersion: presets.incrementVersion.semver,
+          incrementVersion: _.partial(presets.incrementVersion.semver, {}),
           getIncrementLevelFromCommit: (commit) => {
             return _.first(_.split(commit.subject, ' '));
           }
@@ -183,7 +183,7 @@ describe('Versionist', function() {
             subject: 'major foo bar'
           }
         ], {
-          incrementVersion: presets.incrementVersion.semver,
+          incrementVersion: _.partial(presets.incrementVersion.semver, {}),
           getIncrementLevelFromCommit: (commit) => {
             return _.first(_.split(commit.subject, ' '));
           }
@@ -199,7 +199,7 @@ describe('Versionist', function() {
           }
         ], {
           currentVersion: 'hello',
-          incrementVersion: presets.incrementVersion.semver,
+          incrementVersion: _.partial(presets.incrementVersion.semver, {}),
           getIncrementLevelFromCommit: (commit) => {
             return _.first(_.split(commit.subject, ' '));
           }
@@ -214,7 +214,7 @@ describe('Versionist', function() {
             subject: 'major foo bar'
           }
         ], {
-          incrementVersion: presets.incrementVersion.semver,
+          incrementVersion: _.partial(presets.incrementVersion.semver, {}),
           currentVersion: '1.0.0'
         });
       }).to.throw('Missing the getIncrementLevelFromCommit option');
@@ -228,7 +228,7 @@ describe('Versionist', function() {
           }
         ], {
           currentVersion: '1.0.0',
-          incrementVersion: presets.incrementVersion.semver,
+          incrementVersion: _.partial(presets.incrementVersion.semver, {}),
           getIncrementLevelFromCommit: 'foo'
         });
       }).to.throw('Invalid getIncrementLevelFromCommit option: foo');
@@ -271,7 +271,7 @@ describe('Versionist', function() {
         }
       ], {
         currentVersion: '1.0.0',
-        incrementVersion: presets.incrementVersion.semver,
+        incrementVersion: _.partial(presets.incrementVersion.semver, {}),
         getIncrementLevelFromCommit: _.constant(null)
       });
 
@@ -282,7 +282,7 @@ describe('Versionist', function() {
       m.chai.expect(() => {
         versionist.calculateNextVersion([], {
           currentVersion: '1.0.0',
-          incrementVersion: presets.incrementVersion.semver,
+          incrementVersion: _.partial(presets.incrementVersion.semver, {}),
           getIncrementLevelFromCommit: _.constant(null)
         });
       }).to.throw('No commits to calculate the next increment level from');
@@ -295,7 +295,7 @@ describe('Versionist', function() {
         }
       ], {
         currentVersion: '1.0.0',
-        incrementVersion: presets.incrementVersion.semver,
+        incrementVersion: _.partial(presets.incrementVersion.semver, {}),
         getIncrementLevelFromCommit: (commit) => {
           return _.first(_.split(commit.subject, ' '));
         }
