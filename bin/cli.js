@@ -22,6 +22,7 @@
  * @module Versionist.CLI
  */
 
+const childProcess = require('child_process');
 const yargs = require('yargs');
 const _ = require('lodash');
 const async = require('async');
@@ -34,6 +35,7 @@ const packageJSON = require('../package.json');
 
 const showErrorAndQuit = (error) => {
   console.error(chalk.red(error.message));
+  console.error(chalk.red(error.stack));
   console.error('Join our Gitter channel if you need any help!');
   console.error('  https://gitter.im/resin-io/versionist');
   process.exit(1);
@@ -47,6 +49,10 @@ const CONFIGURATION = {
   changelogFile: {
     type: 'string',
     default: 'CHANGELOG.md'
+  },
+  defaultInitialVersion: {
+    type: 'string',
+    default: '0.0.1'
   },
   gitDirectory: {
     type: 'string',
@@ -191,6 +197,14 @@ const parseConfiguration = (data) => {
   });
 };
 
+const referenceExists = (reference, callback) => {
+  const child = childProcess.spawn('git', [ 'show-ref', '--quiet', reference ]);
+  child.on('error', callback);
+  child.on('close', (code) => {
+    return callback(null, code === 0);
+  });
+};
+
 const argv = yargs
   .usage('Usage: $0 [OPTIONS]')
   .help()
@@ -254,12 +268,34 @@ const argv = yargs
 async.waterfall([
 
   (callback) => {
-    argv.config.getChangelogDocumentedVersions(argv.config.changelogFile, callback);
+    argv.config.getChangelogDocumentedVersions(argv.config.changelogFile, (error, documentedVersions) => {
+      if (error) {
+        return callback(error);
+      }
+
+      if (_.isEmpty(documentedVersions)) {
+        return callback(null, [ argv.config.defaultInitialVersion ]);
+      }
+
+      return callback(null, documentedVersions);
+    });
   },
 
   (documentedVersions, callback) => {
+    const gitReference = argv.config.getGitReferenceFromVersion(semver.getGreaterVersion(documentedVersions));
+
+    referenceExists(gitReference, (error, exists) => {
+      if (exists) {
+        return callback(error, documentedVersions, gitReference);
+      }
+
+      return callback(error, documentedVersions, null);
+    });
+  },
+
+  (documentedVersions, startReference, callback) => {
     versionist.readCommitHistory(path.join(argv.config.path, argv.config.gitDirectory), {
-      startReference: argv.config.getGitReferenceFromVersion(semver.getGreaterVersion(documentedVersions)),
+      startReference: startReference,
       endReference: 'HEAD',
       subjectParser: argv.config.subjectParser,
       bodyParser: argv.config.bodyParser

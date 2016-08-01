@@ -165,6 +165,13 @@ possible by using template helpers, consider declaring the
 This option specifies the desired location of your `CHANGELOG` file, relative
 to the root of your project.
 
+### `defaultInitialVersion (String)`
+
+*Defaults to `0.0.1`.*
+
+This option specifies the desired default initial version, in case the
+`getChangelogDocumentedVersions` hook doesn't find any.
+
 ### `editChangelog (Boolean)`
 
 *Defaults to `true`.*
