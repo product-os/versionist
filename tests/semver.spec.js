@@ -256,42 +256,6 @@ describe('Semver', function() {
 
   });
 
-  describe('.incrementVersion()', function() {
-
-    it('should throw if the increment level is not valid', function() {
-      m.chai.expect(() => {
-        semver.incrementVersion('1.0.0', 'foo');
-      }).to.throw('Invalid increment level: foo');
-    });
-
-    it('should throw if the version is not valid', function() {
-      m.chai.expect(() => {
-        semver.incrementVersion('hello', 'major');
-      }).to.throw('Invalid version: hello');
-    });
-
-    it('should discard a `v` prefix in the original version', function() {
-      const version = semver.incrementVersion('v1.0.0', 'major');
-      m.chai.expect(version).to.equal('2.0.0');
-    });
-
-    it('should be able to increment a major level', function() {
-      const version = semver.incrementVersion('1.0.0', 'major');
-      m.chai.expect(version).to.equal('2.0.0');
-    });
-
-    it('should be able to increment a minor level', function() {
-      const version = semver.incrementVersion('1.0.0', 'minor');
-      m.chai.expect(version).to.equal('1.1.0');
-    });
-
-    it('should be able to increment a patch level', function() {
-      const version = semver.incrementVersion('1.0.0', 'patch');
-      m.chai.expect(version).to.equal('1.0.1');
-    });
-
-  });
-
   describe('.getGreaterVersion()', function() {
 
     it('should throw if there is an invalid version', function() {

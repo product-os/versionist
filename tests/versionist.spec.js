@@ -20,6 +20,7 @@ const m = require('mochainon');
 const _ = require('lodash');
 const childProcess = require('child_process');
 const versionist = require('../lib/versionist');
+const presets = require('../lib/presets');
 const utils = require('./utils');
 
 describe('Versionist', function() {
@@ -167,6 +168,7 @@ describe('Versionist', function() {
       m.chai.expect(() => {
         versionist.calculateNextVersion(null, {
           currentVersion: '1.0.0',
+          incrementVersion: presets.incrementVersion.semver,
           getIncrementLevelFromCommit: (commit) => {
             return _.first(_.split(commit.subject, ' '));
           }
@@ -181,6 +183,7 @@ describe('Versionist', function() {
             subject: 'major foo bar'
           }
         ], {
+          incrementVersion: presets.incrementVersion.semver,
           getIncrementLevelFromCommit: (commit) => {
             return _.first(_.split(commit.subject, ' '));
           }
@@ -196,6 +199,7 @@ describe('Versionist', function() {
           }
         ], {
           currentVersion: 'hello',
+          incrementVersion: presets.incrementVersion.semver,
           getIncrementLevelFromCommit: (commit) => {
             return _.first(_.split(commit.subject, ' '));
           }
@@ -210,6 +214,7 @@ describe('Versionist', function() {
             subject: 'major foo bar'
           }
         ], {
+          incrementVersion: presets.incrementVersion.semver,
           currentVersion: '1.0.0'
         });
       }).to.throw('Missing the getIncrementLevelFromCommit option');
@@ -223,9 +228,37 @@ describe('Versionist', function() {
           }
         ], {
           currentVersion: '1.0.0',
+          incrementVersion: presets.incrementVersion.semver,
           getIncrementLevelFromCommit: 'foo'
         });
       }).to.throw('Invalid getIncrementLevelFromCommit option: foo');
+    });
+
+    it('should throw if options.incrementVersion is missing', function() {
+      m.chai.expect(() => {
+        versionist.calculateNextVersion([
+          {
+            subject: 'major foo bar'
+          }
+        ], {
+          currentVersion: '1.0.0',
+          getIncrementLevelFromCommit: _.constant(null)
+        });
+      }).to.throw('Missing the incrementVersion option');
+    });
+
+    it('should throw if options.incrementVersion is not a function', function() {
+      m.chai.expect(() => {
+        versionist.calculateNextVersion([
+          {
+            subject: 'major foo bar'
+          }
+        ], {
+          currentVersion: '1.0.0',
+          incrementVersion: 'foo',
+          getIncrementLevelFromCommit: _.constant(null)
+        });
+      }).to.throw('Invalid incrementVersion option: foo');
     });
 
     it('should return options.currentVersion if no increment level was found', function() {
@@ -238,6 +271,7 @@ describe('Versionist', function() {
         }
       ], {
         currentVersion: '1.0.0',
+        incrementVersion: presets.incrementVersion.semver,
         getIncrementLevelFromCommit: _.constant(null)
       });
 
@@ -248,9 +282,26 @@ describe('Versionist', function() {
       m.chai.expect(() => {
         versionist.calculateNextVersion([], {
           currentVersion: '1.0.0',
+          incrementVersion: presets.incrementVersion.semver,
           getIncrementLevelFromCommit: _.constant(null)
         });
       }).to.throw('No commits to calculate the next increment level from');
+    });
+
+    it('should calculate the next version', function() {
+      const nextVersion = versionist.calculateNextVersion([
+        {
+          subject: 'major foo bar'
+        }
+      ], {
+        currentVersion: '1.0.0',
+        incrementVersion: presets.incrementVersion.semver,
+        getIncrementLevelFromCommit: (commit) => {
+          return _.first(_.split(commit.subject, ' '));
+        }
+      });
+
+      m.chai.expect(nextVersion).to.equal('2.0.0');
     });
 
   });
