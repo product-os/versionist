@@ -243,6 +243,30 @@ describe('Presets', function() {
 
       });
 
+      describe('given the file does not exist', function() {
+
+        beforeEach(function() {
+          this.fsReadFileStub = m.sinon.stub(fs, 'readFile');
+          const ENOENT = new Error('ENOENT');
+          ENOENT.code = 'ENOENT';
+          this.fsReadFileStub.yields(ENOENT);
+        });
+
+        afterEach(function() {
+          this.fsReadFileStub.restore();
+        });
+
+        it('should yield back an empty array', function(done) {
+          const fn = presets.getChangelogDocumentedVersions['changelog-headers'];
+          fn({}, 'CHANGELOG.md', (error, versions) => {
+            m.chai.expect(error).to.not.exist;
+            m.chai.expect(versions).to.deep.equal([]);
+            done();
+          });
+        });
+
+      });
+
       describe('given the file contained versions as headers', function() {
 
         beforeEach(function() {
