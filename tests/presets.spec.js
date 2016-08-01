@@ -747,33 +747,33 @@ describe('Presets', function() {
 
       it('should throw if the increment level is not valid', function() {
         m.chai.expect(() => {
-          presets.incrementVersion.semver('1.0.0', 'foo');
+          presets.incrementVersion.semver({}, '1.0.0', 'foo');
         }).to.throw('Invalid increment level: foo');
       });
 
       it('should throw if the version is not valid', function() {
         m.chai.expect(() => {
-          presets.incrementVersion.semver('hello', 'major');
+          presets.incrementVersion.semver({}, 'hello', 'major');
         }).to.throw('Invalid version: hello');
       });
 
       it('should discard a `v` prefix in the original version', function() {
-        const version = presets.incrementVersion.semver('v1.0.0', 'major');
+        const version = presets.incrementVersion.semver({}, 'v1.0.0', 'major');
         m.chai.expect(version).to.equal('2.0.0');
       });
 
       it('should be able to increment a major level', function() {
-        const version = presets.incrementVersion.semver('1.0.0', 'major');
+        const version = presets.incrementVersion.semver({}, '1.0.0', 'major');
         m.chai.expect(version).to.equal('2.0.0');
       });
 
       it('should be able to increment a minor level', function() {
-        const version = presets.incrementVersion.semver('1.0.0', 'minor');
+        const version = presets.incrementVersion.semver({}, '1.0.0', 'minor');
         m.chai.expect(version).to.equal('1.1.0');
       });
 
       it('should be able to increment a patch level', function() {
-        const version = presets.incrementVersion.semver('1.0.0', 'patch');
+        const version = presets.incrementVersion.semver({}, '1.0.0', 'patch');
         m.chai.expect(version).to.equal('1.0.1');
       });
 
