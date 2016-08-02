@@ -23,23 +23,13 @@
  */
 
 const childProcess = require('child_process');
-const yargs = require('yargs');
 const _ = require('lodash');
 const async = require('async');
 const path = require('path');
-const chalk = require('chalk');
 const versionist = require('../lib/versionist');
 const semver = require('../lib/semver');
-const configuration = require('../lib/cli/configuration');
-const packageJSON = require('../package.json');
-
-const showErrorAndQuit = (error) => {
-  console.error(chalk.red(error.message));
-  console.error(chalk.red(error.stack));
-  console.error('Join our Gitter channel if you need any help!');
-  console.error('  https://gitter.im/resin-io/versionist');
-  process.exit(1);
-};
+const utils = require('../lib/cli/utils');
+const argv = require('../lib/cli/argv');
 
 const referenceExists = (reference, callback) => {
   const child = childProcess.spawn('git', [ 'show-ref', '--quiet', reference ]);
@@ -48,53 +38,6 @@ const referenceExists = (reference, callback) => {
     return callback(null, code === 0);
   });
 };
-
-const argv = yargs
-  .usage('Usage: $0 [OPTIONS]')
-  .help()
-  .version(packageJSON.version)
-  .config('config', 'configuration file', (file) => {
-    try {
-      return {
-        config: configuration.parse(configuration.load(file))
-      };
-    } catch (error) {
-      showErrorAndQuit(error);
-    }
-  })
-  .options({
-    current: {
-      describe: 'current version',
-      string: true,
-      alias: 'u'
-    },
-    config: {
-      describe: 'configuration file',
-      alias: 'c',
-      global: true,
-      default: path.join('.', `${packageJSON.name}.conf.js`)
-    },
-    help: {
-      describe: 'show help',
-      boolean: true,
-      alias: 'h'
-    },
-    version: {
-      describe: 'show version number',
-      boolean: true,
-      alias: 'v'
-    }
-  })
-  .example('$0 --current 1.1.0')
-  .fail((message) => {
-
-    // Prints to `stderr` by default
-    yargs.showHelp();
-
-    console.error(message);
-    process.exit(1);
-  })
-  .argv;
 
 async.waterfall([
 
@@ -180,10 +123,10 @@ async.waterfall([
 
 ], (error) => {
   if (error) {
-    return showErrorAndQuit(error);
+    return utils.showErrorAndQuit(error);
   }
 
   console.log('Done');
 });
 
-process.on('uncaughtException', showErrorAndQuit);
+process.on('uncaughtException', utils.showErrorAndQuit);
