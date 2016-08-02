@@ -268,28 +268,33 @@ const argv = yargs
 async.waterfall([
 
   (callback) => {
-    argv.config.getChangelogDocumentedVersions(argv.config.changelogFile, (error, documentedVersions) => {
+    argv.config.getChangelogDocumentedVersions(argv.config.changelogFile, callback);
+  },
+
+  (documentedVersions, callback) => {
+    const versions = _.attempt(() => {
+      if (_.isEmpty(documentedVersions)) {
+        return [ argv.config.defaultInitialVersion ];
+      }
+
+      return documentedVersions;
+    });
+
+    const gitReference = argv.config.getGitReferenceFromVersion(semver.getGreaterVersion(versions));
+    return referenceExists(gitReference, (error, exists) => {
       if (error) {
         return callback(error);
       }
 
-      if (_.isEmpty(documentedVersions)) {
-        return callback(null, [ argv.config.defaultInitialVersion ]);
-      }
-
-      return callback(null, documentedVersions);
-    });
-  },
-
-  (documentedVersions, callback) => {
-    const gitReference = argv.config.getGitReferenceFromVersion(semver.getGreaterVersion(documentedVersions));
-
-    referenceExists(gitReference, (error, exists) => {
       if (exists) {
-        return callback(error, documentedVersions, gitReference);
+        return callback(null, versions, gitReference);
       }
 
-      return callback(error, documentedVersions, null);
+      if (_.isEmpty(documentedVersions)) {
+        return callback(null, versions, null);
+      }
+
+      return callback(new Error(`Omitting ${gitReference}. No valid git reference was found.`));
     });
   },
 
