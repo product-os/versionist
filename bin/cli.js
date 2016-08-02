@@ -298,7 +298,8 @@ async.waterfall([
       startReference: startReference,
       endReference: 'HEAD',
       subjectParser: argv.config.subjectParser,
-      bodyParser: argv.config.bodyParser
+      bodyParser: argv.config.bodyParser,
+      parseFooterTags: argv.config.parseFooterTags
     }, (error, history) => {
       return callback(error, documentedVersions, history);
     });
