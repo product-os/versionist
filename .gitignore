@@ -35,3 +35,6 @@ bower_components
 *.cer
 *.crt
 *.pem
+
+# Temporal CLI test data
+tests/cli/temporal
