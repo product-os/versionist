@@ -14,14 +14,6 @@ a `CHANGELOG` file that suits your taste.
 **Versionist is in a very early stage, and its stil being heavily worked on. Let
 us know what you think!**
 
-How it works
-------------
-
-Versionist parses the `git` commit history between two references of your
-choice. You can customise how the parser works to retrieve the data you like,
-and how you like. The resulting history is then interpolated in a Handlebars
-template to generate the `CHANGELOG` entry.
-
 Example
 -------
 
@@ -92,6 +84,51 @@ returned by the `getChangelogDocumentedVersions` hook.
 ### `--config`
 
 You can use this option to pass a custom location to `versionist.conf.js`.
+
+How it works
+------------
+
+Versionist parses the `git` commit history between two references of your
+choice. You can customise how the parser works to retrieve the data you like,
+and how you like. The resulting history is then interpolated in a Handlebars
+template to generate the `CHANGELOG` entry.
+
+Understanding how all the available options fit together can be hard at first.
+The following description aims to alleviate that and make it easier for the
+average user to get the bigger picture:
+
+- Versionist uses the `getChangelogDocumentedVersions` option to determine
+  which is the latest documented version. If no version is found, it defaults
+  to the version set in `defaultInitialVersion`.
+
+- The `getGitReferenceFromVersion` option is then used on the latest documented
+  version to transform the version string to a valid `git` reference.
+
+- The resulting `git` reference is used to fetch the commits from the range
+  `<version>..HEAD`. If no valid `git` reference was found in the previous
+  step, Versionist fetches the commit range from the beginning of the project
+  to `HEAD`.
+
+- The commits found in the previous step are parsed by `subjectParser`,
+  `bodyParser`, `parseFooterTags`, or any other commit-parsing option.
+
+- Once all commits have been parsed, the `getIncrementLevelFromCommit` option
+  is used to determine the semver increment level that should be applied to the
+  latest documented version. The latest documented version with the
+  corresponding increment level represents the final version that will be set
+  in the module. The increment level is applied to the version by using the
+  `incrementVersion` option.
+
+- The project's `template` is interpolated with the commit data, which could
+  have been modified by the `transformTemplateData` or `includeCommitWhen`
+  option.
+
+- The resulting changelog entry is added to the changelog file specified in
+  `changelogFile` using the `addEntryToChangelog` option, unless the
+  `editChangelog` option has been set to `false`.
+
+- The project's version is updated using the `updateVersion` option, unless the
+  `editVersion` option has been set to `false`.
 
 Configuration
 -------------
