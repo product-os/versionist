@@ -31,7 +31,7 @@ utils.createVersionistConfiguration([
   '  editVersion: false,',
   '  parseFooterTags: false,',
   '  addEntryToChangelog: \'prepend\',',
-  '  getIncrementLevelFromCommit: (commit) => {',
+  '  getIncrementLevelFromCommit: () => {',
   '    return \'major\';',
   '  },',
   '  template: [',
