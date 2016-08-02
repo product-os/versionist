@@ -31,7 +31,13 @@ exports.createCommit = (title, tags) => {
     return `${name}: ${value}`;
   }), '\n');
 
-  shelljs.exec(`git commit --allow-empty -m "${title}" -m "${footer}"`);
+  shelljs.echo([
+    title,
+    '',
+    footer
+  ].join('\n')).to('message.txt');
+
+  shelljs.exec('git commit --allow-empty -F message.txt');
 };
 
 exports.createVersionistConfiguration = (configuration) => {

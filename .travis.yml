@@ -1,6 +1,9 @@
 language: node_js
 before_install:
   - npm install -g npm@latest
+before_script:
+  - git config --global user.email "juan@resin.io"
+  - git config --global user.name "Juan Cruz Viotti"
 node_js:
   - "6"
 notifications:
