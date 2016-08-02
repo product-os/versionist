@@ -3,6 +3,8 @@
 
 init:
   - git config --global core.autocrlf input
+  - git config --global user.email "juan@resin.io"
+  - git config --global user.name "Juan Cruz Viotti"
 
 cache:
   - C:\Users\appveyor\.node-gyp

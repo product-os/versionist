@@ -22,5 +22,10 @@ const path = require('path');
 const shelljs = require('shelljs');
 
 _.each(fs.readdirSync(path.join(__dirname, 'cases')), (file) => {
-  shelljs.exec(`node ${path.join(__dirname, 'cases', file)}`);
+  const exitCode = shelljs.exec(`node ${path.join(__dirname, 'cases', file)}`).code;
+
+  if (exitCode !== 0) {
+    console.error(`${file} - Test failed with exit code: ${exitCode}`);
+    process.exit(1);
+  }
 });
