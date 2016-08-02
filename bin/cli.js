@@ -29,8 +29,8 @@ const async = require('async');
 const path = require('path');
 const chalk = require('chalk');
 const versionist = require('../lib/versionist');
-const presets = require('../lib/presets');
 const semver = require('../lib/semver');
+const configuration = require('../lib/cli/configuration');
 const packageJSON = require('../package.json');
 
 const showErrorAndQuit = (error) => {
@@ -39,162 +39,6 @@ const showErrorAndQuit = (error) => {
   console.error('Join our Gitter channel if you need any help!');
   console.error('  https://gitter.im/resin-io/versionist');
   process.exit(1);
-};
-
-const CONFIGURATION = {
-  path: {
-    type: 'string',
-    default: process.cwd()
-  },
-  changelogFile: {
-    type: 'string',
-    default: 'CHANGELOG.md'
-  },
-  defaultInitialVersion: {
-    type: 'string',
-    default: '0.0.1'
-  },
-  gitDirectory: {
-    type: 'string',
-    default: '.git'
-  },
-  parseFooterTags: {
-    type: 'boolean',
-    default: true
-  },
-  editChangelog: {
-    type: 'boolean',
-    default: true
-  },
-  editVersion: {
-    type: 'boolean',
-    default: true
-  },
-  subjectParser: {
-    type: 'function',
-    default: _.identity,
-    allowsPresets: true
-  },
-  bodyParser: {
-    type: 'function',
-    default: _.identity,
-    allowsPresets: true
-  },
-  includeCommitWhen: {
-    type: 'function',
-    default: _.constant(true),
-    allowsPresets: true
-  },
-  transformTemplateData: {
-    type: 'function',
-    default: _.identity,
-    allowsPresets: true
-  },
-  includeMergeCommits: {
-    type: 'boolean',
-    default: false
-  },
-  getChangelogDocumentedVersions: {
-    type: 'function',
-    default: 'changelog-headers',
-    allowsPresets: true
-  },
-  getIncrementLevelFromCommit: {
-    type: 'function',
-    default: _.constant(null),
-    allowsPresets: true
-  },
-  incrementVersion: {
-    type: 'function',
-    default: 'semver',
-    allowsPresets: true
-  },
-  getGitReferenceFromVersion: {
-    type: 'function',
-    default: _.identity,
-    allowsPresets: true
-  },
-  addEntryToChangelog: {
-    type: 'function',
-    default: 'prepend',
-    allowsPresets: true
-  },
-  updateVersion: {
-    type: 'function',
-    default: 'npm',
-    allowsPresets: true
-  },
-  template: {
-    type: 'string',
-    default: [
-      '## {{version}} - {{moment date "Y-MM-DD"}}',
-      '',
-      '{{#each commits}}',
-      '{{#if this.subject.title}}',
-      '- {{capitalize this.subject.title}}',
-      '{{else}}',
-      '- {{capitalize this.subject}}',
-      '{{/if}}',
-      '{{/each}}'
-    ].join('\n')
-  }
-};
-
-const isPresetProperty = (value) => {
-  return _.some([
-    _.isString(value),
-    _.isPlainObject(value) && _.isString(value.preset)
-  ]);
-};
-
-const parsePresetDefinition = (value) => {
-  if (_.isString(value)) {
-    return {
-      name: value,
-      options: {}
-    };
-  }
-
-  return {
-    name: value.preset,
-    options: _.omit(value, 'preset')
-  };
-};
-
-const parseConfiguration = (data) => {
-  return _.mapValues(CONFIGURATION, (propertyDescription, propertyName) => {
-    const value = _.attempt(() => {
-      const currentValue = _.get(data, propertyName);
-
-      if (_.isUndefined(currentValue) || _.isNull(currentValue)) {
-        return propertyDescription.default;
-      }
-
-      return currentValue;
-    });
-
-    if (isPresetProperty(value) && propertyDescription.allowsPresets) {
-      const propertyPresets = _.get(presets, propertyName, {});
-      const presetDefinition = parsePresetDefinition(value);
-      const presetFunction = _.get(propertyPresets, presetDefinition.name);
-
-      if (!presetFunction) {
-        throw new Error(`Invalid preset: ${propertyName} -> ${presetDefinition.name}`);
-      }
-
-      return _.partial(presetFunction, presetDefinition.options);
-    }
-
-    if (typeof value !== propertyDescription.type) {
-      throw new Error([
-        `Invalid option value: ${value}.`,
-        `The \`${propertyName}\` option expects a ${propertyDescription.type},`,
-        `but instead got a ${typeof value}.`
-      ].join(' '));
-    }
-
-    return value;
-  });
 };
 
 const referenceExists = (reference, callback) => {
@@ -212,20 +56,7 @@ const argv = yargs
   .config('config', 'configuration file', (file) => {
     try {
       return {
-        config: parseConfiguration(_.attempt(() => {
-          try {
-            return require(file);
-          } catch (error) {
-
-            if (error.code === 'MODULE_NOT_FOUND') {
-              throw new Error(`Can't find ${file}`);
-            } else if (error instanceof SyntaxError) {
-              throw new Error(`Syntax error in configuration file: ${file}`);
-            }
-
-            throw new Error(error.message);
-          }
-        }))
+        config: configuration.parse(configuration.load(file))
       };
     } catch (error) {
       showErrorAndQuit(error);
