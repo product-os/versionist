@@ -8,7 +8,7 @@ Versionist
 [![Build status](https://ci.appveyor.com/api/projects/status/xdtf4mx8hmurnmgo/branch/master?svg=true)](https://ci.appveyor.com/project/resin-io/versionist/branch/master)
 [![Gitter](https://badges.gitter.im/resin-io/versionist.svg)](https://gitter.im/resin-io/versionist?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-Versionist is non-opitionated. It adapts to your commit practices and generates
+Versionist is non-opinionated. It adapts to your commit practices and generates
 a `CHANGELOG` file that suits your taste.
 
 **Versionist is in a very early stage, and its stil being heavily worked on. Let
