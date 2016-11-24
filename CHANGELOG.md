@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.2.0 - 2016-11-24
+
+- Reject non-existent git references if there are documented versions.
+- Fix `parseFooterTags` not taking effect.
+- Add `defaultInitialVersion` option.
+- Don't throw ENOENT in `changelog-headers` preset if the changelog file doesn't exist.
+- Add `incrementVersion` option hook.
+
 ## 2.1.0 - 2016-07-24
 
 - Fix uncaught exception if current version is omitted.
