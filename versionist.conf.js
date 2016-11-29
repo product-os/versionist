@@ -22,7 +22,7 @@ module.exports = {
     fromLine: 5
   },
 
-  // Only include a commit when there is a footer of 'Change-Type'.
+  // Only include a commit when there is a footer of 'change-type'.
   // Ensures commits which do not up versions are not included.
   // Commit messages without a relevant footer will not be included in the CHANGELOG.
   includeCommitWhen: (commit) => {
@@ -30,7 +30,7 @@ module.exports = {
     return !!commit.footer['change-type'];
   },
 
-  // Determine the type from 'change-yype:' tag.
+  // Determine the type from 'change-type:' tag.
   // Should no explicit change type be made, then no changes are assumed.
   getIncrementLevelFromCommit: (commit) => {
     commit.footer = lowerKeys(commit.footer);
@@ -53,7 +53,7 @@ module.exports = {
   },
 
   template: [
-    '# v{{version}}',
+    '# v{{version}} - {{moment date "Y-MM-DD"}}',
     '',
     '{{#each commits}}',
     '* {{capitalize this.subject}}',
