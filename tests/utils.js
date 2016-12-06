@@ -26,19 +26,22 @@ const indentString = require('indent-string');
  * @public
  *
  * @param {Object} options - options
+ * @param {String} options.hash - commit hash
  * @param {String} options.subject - commit subject
  * @param {String} options.body - commit body
  * @returns {String} formatted commit
  *
  * @example
  * const formattedCommit = utils.formatCommit({
+ *   hash: b8ca72ee58bddc9d174b71615aaa0159849b2aca
  *   subject: 'Do x, y, and z',
  *   body: 'Foo\nbar'
  * });
  */
 exports.formatCommit = (options) => {
   return [
-    '- subject: >-',
+    `- hash: ${options.hash}`,
+    '  subject: >-',
     `    ${options.subject}`,
     '  body: |-',
     '    XXX',
