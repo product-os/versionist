@@ -12,11 +12,11 @@ module.exports = {
   updateVersion: 'npm',
 
   includeCommitWhen: (commit) => {
-    return commit.footer['Changelog-Entry'];
+    return commit.footer['changelog-entry'];
   },
 
   getIncrementLevelFromCommit: (commit) => {
-    return commit.footer['Change-Type'];
+    return commit.footer['change-type'];
   },
 
   template: [
@@ -24,7 +24,7 @@ module.exports = {
     '',
     '{{#each commits}}',
     '{{#with footer}}',
-    '- {{capitalize Changelog-Entry}}',
+    '- {{capitalize changelog-entry}}',
     '{{/with}}',
     '{{/each}}'
   ].join('\n')
