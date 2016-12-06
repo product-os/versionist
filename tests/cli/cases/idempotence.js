@@ -32,17 +32,17 @@ utils.createVersionistConfiguration([
   '  editVersion: false,',
   '  addEntryToChangelog: \'prepend\',',
   '  includeCommitWhen: (commit) => {',
-  '    return commit.footer[\'changelog-entry\'];',
+  '    return commit.footer[\'Changelog-Entry\'];',
   '  },',
   '  getIncrementLevelFromCommit: (commit) => {',
-  '    return commit.footer[\'change-type\'];',
+  '    return commit.footer[\'Change-Type\'];',
   '  },',
   '  template: [',
   '    \'## {{version}}\',',
   '    \'\',',
   '    \'{{#each commits}}\',',
   '    \'{{#with footer}}\',',
-  '    \'- {{capitalize changelog-entry}}\',',
+  '    \'- {{capitalize Changelog-Entry}}\',',
   '    \'{{/with}}\',',
   '    \'{{/each}}\'',
   '  ].join(\'\\n\')',
@@ -53,18 +53,18 @@ utils.createVersionistConfiguration([
 shelljs.exec('git init');
 
 utils.createCommit('feat: implement x', {
-  'changelog-entry': 'Implement x',
-  'change-type': 'minor'
+  'Changelog-Entry': 'Implement x',
+  'Change-Type': 'minor'
 });
 
 utils.createCommit('fix: fix y', {
-  'changelog-entry': 'Fix y',
-  'change-type': 'patch'
+  'Changelog-Entry': 'Fix y',
+  'Change-Type': 'patch'
 });
 
 utils.createCommit('fix: fix z', {
-  'changelog-entry': 'Fix z',
-  'change-type': 'patch'
+  'Changelog-Entry': 'Fix z',
+  'Change-Type': 'patch'
 });
 
 // Call Versionist many times

@@ -230,10 +230,10 @@ in the `updateVersion` hook.
 
 *Defaults to `true`.*
 
-When this option is enabled, Versionist will pre-emptively lowercase all footer
-tag keys that it finds in a commit (it will not lowercase their values). This allows `versionist.conf.js` files to look
-for only lowercase tags and allows 'fuzzy' matching which is useful for developers
-who wish to mix case or have forgotten the case for a tag.
+When this option is enabled, Versionist will pre-emptively add a lowercased footer
+tag key for every one it finds in a commit that is not naturally lowercase (it will
+not lowercase their values). This allows `versionist.conf.js` files to disregard
+case should it wish to (ie. checking only for lowercase version of tags).
 
 ie. The commit:
 
@@ -253,14 +253,15 @@ Will produce:
   "subject": "My random-case commit.",
   "body": "Lorem ipsum dolor sit amet.",
   "footer": {
+    "Closes": "#1",
     "closes": "#1",
     "foo": "bar"
   }
 }
 ```
 
-Should it be set to `false`, then case is preserved and tags are unchanged from
-their commit.
+Should strict casing be required, then either set the value of this option to `false`
+in the Versionist configuration file, or check only for strict case in its functions.
 
 ### `parseFooterTags (Boolean)`
 
