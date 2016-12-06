@@ -68,12 +68,23 @@ utils.createCommit('fix: fix z', {
   'Change-Type': 'patch'
 });
 
+utils.createCommit('fix: fix alpha', {
+  'changelog-entry': 'Fix alpha',
+  'change-type': 'major'
+});
+
+utils.createCommit('fix: fix beta', {
+  'Changelog-Entry': 'Fix beta',
+  'change-type': 'major'
+});
+
 // Call Versionist with the configuration file
 utils.callVersionist('versionist.conf.js');
 
 m.chai.expect(shelljs.cat('CHANGELOG.md').stdout).to.deep.equal([
   '## 0.1.0',
   '',
+  '- Fix beta',
   '- Fix z',
   '- Fix y',
   '- Implement x',
