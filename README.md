@@ -226,11 +226,47 @@ If this option is disabled, the generated entry is printed to `stdout`.
 When this option is enabled, the project's version will be edited as specified
 in the `updateVersion` hook.
 
+### `lowerCaseFooterTags (Boolean)`
+
+*Defaults to `true`.*
+
+When this option is enabled, Versionist will pre-emptively lowercase all footer
+tag keys that it finds in a commit (it will not lowercase their values). This allows `versionist.conf.js` files to look
+for only lowercase tags and allows 'fuzzy' matching which is useful for developers
+who wish to mix case or have forgotten the case for a tag.
+
+ie. The commit:
+
+```
+My random-case commit.
+
+Lorem ipsum dolor sit amet.
+
+Closes: #1
+foo: bar
+```
+
+Will produce:
+
+```json
+{
+  "subject": "My random-case commit.",
+  "body": "Lorem ipsum dolor sit amet.",
+  "footer": {
+    "closes": "#1",
+    "foo": "bar"
+  }
+}
+```
+
+Should it be set to `false`, then case is preserved and tags are unchanged from
+their commit.
+
 ### `parseFooterTags (Boolean)`
 
 *Defaults to `true`.*
 
-When this option is enabled, Versionsit will attempt to parse tags in the
+When this option is enabled, Versionist will attempt to parse tags in the
 commit body, and append a `footer` object property on the commit object.
 
 For example, consider the following commit:
@@ -251,8 +287,8 @@ Given `parseFooterTags: true`:
   "subject": "My first commit",
   "body": "Lorem ipsum dolor sit amet",
   "footer": {
-    "Closes": "#1",
-    "Foo": "bar"
+    "closes": "#1",
+    "foo": "bar"
   }
 }
 ```
