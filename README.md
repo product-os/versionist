@@ -287,6 +287,7 @@ Given `parseFooterTags: true`:
 {
   "subject": "My first commit",
   "body": "Lorem ipsum dolor sit amet",
+  "hash": "fd9f9cbb8bb27486339e15886159e1d145b17550",
   "footer": {
     "closes": "#1",
     "foo": "bar"
@@ -299,7 +300,8 @@ Given `parseFooterTags: false`:
 ```json
 {
   "subject": "My first commit",
-  "body": "Lorem ipsum dolor sit amet\n\nCloses: #1\nFoo: bar"
+  "body": "Lorem ipsum dolor sit amet\n\nCloses: #1\nFoo: bar",
+  "hash": "fd9f9cbb8bb27486339e15886159e1d145b17550"
 }
 ```
 

@@ -73,7 +73,8 @@ describe('Versionist', function() {
             body: [
               'Currently we had AppImage scripts and other resources in various',
               'different places in the code base.'
-            ].join('\n')
+            ].join('\n'),
+            hash: 'fd9f9cbb8bb27486339e15886159e1d145b17550'
           }));
 
           _.defer(() => {
@@ -96,7 +97,8 @@ describe('Versionist', function() {
                 'Currently we had AppImage scripts and other resources in various',
                 'different places in the code base.'
               ].join('\n'),
-              footer: {}
+              footer: {},
+              hash: 'fd9f9cbb8bb27486339e15886159e1d145b17550'
             }
           ]);
 
