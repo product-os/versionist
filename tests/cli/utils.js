@@ -44,7 +44,11 @@ exports.createVersionistConfiguration = (configuration) => {
   shelljs.echo(configuration).to('versionist.conf.js');
 };
 
-exports.callVersionist = () => {
+exports.callVersionist = (configFile) => {
   const cliPath = path.join(__dirname, '..', '..', 'bin', 'cli.js');
-  shelljs.exec(`node ${cliPath}`);
+  let configString = '';
+  if (configFile) {
+    configString += ` --config ${configFile}`;
+  }
+  shelljs.exec(`node ${cliPath}${configString}`);
 };

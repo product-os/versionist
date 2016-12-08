@@ -173,7 +173,8 @@ describe('GitLog', function() {
         body: [
           'Currently we had AppImage scripts and other resources in various',
           'different places in the code base.'
-        ].join('\n')
+        ].join('\n'),
+        hash: '17c514e223e882289eebd61909bfe97857eab3b9'
       }));
 
       m.chai.expect(result).to.deep.equal([
@@ -183,6 +184,7 @@ describe('GitLog', function() {
             'Currently we had AppImage scripts and other resources in various',
             'different places in the code base.'
           ].join('\n'),
+          hash: '17c514e223e882289eebd61909bfe97857eab3b9',
           footer: {}
         }
       ]);
@@ -213,7 +215,8 @@ describe('GitLog', function() {
         body: [
           'Currently we had AppImage scripts and other resources in various',
           'different places in the code base.'
-        ].join('\n')
+        ].join('\n'),
+        hash: 'd9370b808f5532c5d66297b5f3ae6c1430fc6d32'
       }), {
         subjectParser: (subject) => {
           return subject.toUpperCase();
@@ -227,6 +230,7 @@ describe('GitLog', function() {
             'Currently we had AppImage scripts and other resources in various',
             'different places in the code base.'
           ].join('\n'),
+          hash: 'd9370b808f5532c5d66297b5f3ae6c1430fc6d32',
           footer: {}
         }
       ]);
@@ -238,7 +242,8 @@ describe('GitLog', function() {
         body: [
           'Currently we had AppImage scripts and other resources in various',
           'different places in the code base.'
-        ].join('\n')
+        ].join('\n'),
+        hash: 'bc568b96be471a81512fb7df9b5fc53c4fd94b7d'
       }), {
         bodyParser: (subject) => {
           return subject.toUpperCase();
@@ -252,6 +257,7 @@ describe('GitLog', function() {
             'CURRENTLY WE HAD APPIMAGE SCRIPTS AND OTHER RESOURCES IN VARIOUS',
             'DIFFERENT PLACES IN THE CODE BASE.'
           ].join('\n'),
+          hash: 'bc568b96be471a81512fb7df9b5fc53c4fd94b7d',
           footer: {}
         }
       ]);
@@ -266,7 +272,8 @@ describe('GitLog', function() {
           '',
           'Foo: bar',
           'Bar: baz'
-        ].join('\n')
+        ].join('\n'),
+        hash: '63f26f2b43e98aa6b735e0b6eeaa6e538b7cb40c'
       }));
 
       m.chai.expect(result).to.deep.equal([
@@ -280,7 +287,8 @@ describe('GitLog', function() {
           footer: {
             Foo: 'bar',
             Bar: 'baz'
-          }
+          },
+          hash: '63f26f2b43e98aa6b735e0b6eeaa6e538b7cb40c'
         }
       ]);
     });
@@ -294,7 +302,8 @@ describe('GitLog', function() {
           '',
           'Foo: bar',
           'Bar: baz'
-        ].join('\n')
+        ].join('\n'),
+        hash: '177b0d5015c2b5c0ac0be9bf2052945c00411a2e'
       }), {
         parseFooterTags: false
       });
@@ -308,7 +317,8 @@ describe('GitLog', function() {
             '',
             'Foo: bar',
             'Bar: baz'
-          ].join('\n')
+          ].join('\n'),
+          hash: '177b0d5015c2b5c0ac0be9bf2052945c00411a2e'
         }
       ]);
     });
@@ -319,7 +329,8 @@ describe('GitLog', function() {
         body: [
           'Foo: bar',
           'Bar: baz'
-        ].join('\n')
+        ].join('\n'),
+        hash: '60ee30fb86a592cad90f82cc94bbaaa7a2929624'
       }));
 
       m.chai.expect(result).to.deep.equal([
@@ -329,7 +340,8 @@ describe('GitLog', function() {
           footer: {
             Foo: 'bar',
             Bar: 'baz'
-          }
+          },
+          hash: '60ee30fb86a592cad90f82cc94bbaaa7a2929624'
         }
       ]);
     });
@@ -341,7 +353,8 @@ describe('GitLog', function() {
           'Hello-World: bar',
           '-hey-: there',
           'Bar--Foo: baz'
-        ].join('\n')
+        ].join('\n'),
+        hash: '6d564d68e1d3aadf86e6b39304b1339aaee37192'
       }));
 
       m.chai.expect(result).to.deep.equal([
@@ -352,7 +365,8 @@ describe('GitLog', function() {
             'Hello-World': 'bar',
             '-hey-': 'there',
             'Bar--Foo': 'baz'
-          }
+          },
+          hash: '6d564d68e1d3aadf86e6b39304b1339aaee37192'
         }
       ]);
     });
@@ -368,7 +382,8 @@ describe('GitLog', function() {
           'Bar: baz',
           '',
           'Baz: qux'
-        ].join('\n')
+        ].join('\n'),
+        hash: '6bcb77a9aa58c102445269bc8f08bedd5ebfe434'
       }));
 
       m.chai.expect(result).to.deep.equal([
@@ -384,7 +399,8 @@ describe('GitLog', function() {
           ].join('\n'),
           footer: {
             Baz: 'qux'
-          }
+          },
+          hash: '6bcb77a9aa58c102445269bc8f08bedd5ebfe434'
         }
       ]);
     });
@@ -399,7 +415,8 @@ describe('GitLog', function() {
           'Foo: bar',
           'Hello World',
           'Baz: qux'
-        ].join('\n')
+        ].join('\n'),
+        hash: '1216b3c8ab58c2ea0d3dbae18aa694fa2b63fe70'
       }));
 
       m.chai.expect(result).to.deep.equal([
@@ -414,7 +431,8 @@ describe('GitLog', function() {
           ].join('\n'),
           footer: {
             Baz: 'qux'
-          }
+          },
+          hash: '1216b3c8ab58c2ea0d3dbae18aa694fa2b63fe70'
         }
       ]);
     });
@@ -427,7 +445,8 @@ describe('GitLog', function() {
           'Bar:baz',
           'Baz    :qux',
           'Hey:    there'
-        ].join('\n')
+        ].join('\n'),
+        hash: 'bfdcbe70142feec679ba001e03fb98d41b0db7be'
       }));
 
       m.chai.expect(result).to.deep.equal([
@@ -439,7 +458,8 @@ describe('GitLog', function() {
             Bar: 'baz',
             Baz: 'qux',
             Hey: 'there'
-          }
+          },
+          hash: 'bfdcbe70142feec679ba001e03fb98d41b0db7be'
         }
       ]);
     });
@@ -453,7 +473,8 @@ describe('GitLog', function() {
           '',
           'Foo: bar',
           'Bar: baz'
-        ].join('\n')
+        ].join('\n'),
+        hash: 'e638bb9737665e87f052e55bd3647a1c28a989d9'
       }));
 
       m.chai.expect(result).to.deep.equal([
@@ -467,7 +488,8 @@ describe('GitLog', function() {
           footer: {
             Foo: 'bar',
             Bar: 'baz'
-          }
+          },
+          hash: 'e638bb9737665e87f052e55bd3647a1c28a989d9'
         }
       ]);
     });
@@ -482,7 +504,8 @@ describe('GitLog', function() {
           '',
           'Foo: bar',
           'Bar: baz'
-        ].join('\n')
+        ].join('\n'),
+        hash: 'ad0882ee7e7f5787811f019165281f36b53b5efb'
       }));
 
       m.chai.expect(result).to.deep.equal([
@@ -496,7 +519,8 @@ describe('GitLog', function() {
           footer: {
             Foo: 'bar',
             Bar: 'baz'
-          }
+          },
+          hash: 'ad0882ee7e7f5787811f019165281f36b53b5efb'
         }
       ]);
     });
