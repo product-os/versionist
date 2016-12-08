@@ -212,6 +212,32 @@ describe('Tags', function() {
       });
     });
 
+    it('should not return lowered tags if not requested', function() {
+      const footer = tags.parseFooterTagLines([
+        'Foo: bar',
+        'bar: baz'
+      ]);
+
+      m.chai.expect(footer).to.deep.equal({
+        Foo: 'bar',
+        bar: 'baz'
+      });
+    });
+
+    it('should return two tags for each non-lowered tag, but a single tag for those already lowered', function() {
+      const footer = tags.parseFooterTagLines([
+        'Foo: bar',
+        'bar: baz'
+      ], {
+        lowerCaseFooterTags: true
+      });
+
+      m.chai.expect(footer).to.deep.equal({
+        Foo: 'bar',
+        foo: 'bar',
+        bar: 'baz'
+      });
+    });
   });
 
 });

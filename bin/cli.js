@@ -56,7 +56,7 @@ const argv = yargs
   .config('config', 'configuration file', (file) => {
     try {
       return {
-        config: configuration.parse(configuration.load(file))
+        configuration: configuration.parse(configuration.load(file))
       };
     } catch (error) {
       showErrorAndQuit(error);
@@ -99,19 +99,19 @@ const argv = yargs
 async.waterfall([
 
   (callback) => {
-    argv.config.getChangelogDocumentedVersions(argv.config.changelogFile, callback);
+    argv.configuration.getChangelogDocumentedVersions(argv.configuration.changelogFile, callback);
   },
 
   (documentedVersions, callback) => {
     const versions = _.attempt(() => {
       if (_.isEmpty(documentedVersions)) {
-        return [ argv.config.defaultInitialVersion ];
+        return [ argv.configuration.defaultInitialVersion ];
       }
 
       return documentedVersions;
     });
 
-    const gitReference = argv.config.getGitReferenceFromVersion(semver.getGreaterVersion(versions));
+    const gitReference = argv.configuration.getGitReferenceFromVersion(semver.getGreaterVersion(versions));
     return referenceExists(gitReference, (error, exists) => {
       if (error) {
         return callback(error);
@@ -130,12 +130,13 @@ async.waterfall([
   },
 
   (documentedVersions, startReference, callback) => {
-    versionist.readCommitHistory(path.join(argv.config.path, argv.config.gitDirectory), {
+    versionist.readCommitHistory(path.join(argv.configuration.path, argv.configuration.gitDirectory), {
       startReference: startReference,
       endReference: 'HEAD',
-      subjectParser: argv.config.subjectParser,
-      bodyParser: argv.config.bodyParser,
-      parseFooterTags: argv.config.parseFooterTags
+      subjectParser: argv.configuration.subjectParser,
+      bodyParser: argv.configuration.bodyParser,
+      parseFooterTags: argv.configuration.parseFooterTags,
+      lowerCaseFooterTags: argv.configuration.lowerCaseFooterTags
     }, (error, history) => {
       return callback(error, documentedVersions, history);
     });
@@ -143,9 +144,9 @@ async.waterfall([
 
   (documentedVersions, history, callback) => {
     const version = versionist.calculateNextVersion(history, {
-      getIncrementLevelFromCommit: argv.config.getIncrementLevelFromCommit,
+      getIncrementLevelFromCommit: argv.configuration.getIncrementLevelFromCommit,
       currentVersion: argv.current || semver.getGreaterVersion(documentedVersions),
-      incrementVersion: argv.config.incrementVersion
+      incrementVersion: argv.configuration.incrementVersion
     });
 
     if (_.includes(documentedVersions, version)) {
@@ -154,14 +155,14 @@ async.waterfall([
     }
 
     const entry = versionist.generateChangelog(history, {
-      template: argv.config.template,
-      includeCommitWhen: argv.config.includeCommitWhen,
-      transformTemplateData: argv.config.transformTemplateData,
+      template: argv.configuration.template,
+      includeCommitWhen: argv.configuration.includeCommitWhen,
+      transformTemplateData: argv.configuration.transformTemplateData,
       version: version
     });
 
-    if (argv.config.editChangelog) {
-      argv.config.addEntryToChangelog(argv.config.changelogFile, entry, (error) => {
+    if (argv.configuration.editChangelog) {
+      argv.configuration.addEntryToChangelog(argv.configuration.changelogFile, entry, (error) => {
         return callback(error, version);
       });
     } else {
@@ -171,8 +172,8 @@ async.waterfall([
   },
 
   (version, callback) => {
-    if (argv.config.editVersion) {
-      argv.config.updateVersion(process.cwd(), version, callback);
+    if (argv.configuration.editVersion) {
+      argv.configuration.updateVersion(process.cwd(), version, callback);
     } else {
       return callback();
     }
