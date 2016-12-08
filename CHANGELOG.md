@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.5.0 - 2016-12-08
+
+- Add passing of commit hash to the config file, as a part of the commit object.
+
 ## 2.4.0 - 2016-12-06
 
 - Add a `lowerCaseFooterTags` option (default is `true`) which lowercases all footer tags keys.
