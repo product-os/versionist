@@ -21,9 +21,9 @@ module.exports = {
     fromLine: 6
   },
 
-  // Only include a commit when there is a footer of 'change-type'.
+  // Only include a commit when there is a footer tag of 'change-type'
+  // or 'changelog-entry'.
   // Ensures commits which do not up versions are not included.
-  // Commit messages without a relevant footer will not be included in the CHANGELOG.
   includeCommitWhen: (commit) => {
     return !!commit.footer['change-type'] || !!commit.footer['changelog-entry'];
   },
@@ -46,7 +46,7 @@ module.exports = {
   },
 
   template: [
-    '# v{{version}} - {{moment date "Y-MM-DD"}}',
+    '## v{{version}} - {{moment date "Y-MM-DD"}}',
     '',
     '{{#each commits}}',
     '{{#if this.author}}',
