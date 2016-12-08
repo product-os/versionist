@@ -2,11 +2,7 @@ var _ = require('lodash');
 var execSync = require('child_process').execSync;
 
 var getAuthor = (commitHash) => {
-  var result = execSync(`git show ${commitHash}`, { encoding: 'utf8' });
-  var author;
-  if (result && (author = result.match(/^Author:\s+(.+)\s+<.+$/m))) {
-    return author[1];
-  }
+  return execSync(`git show --quiet --format="%an" ${commitHash}`, { encoding: 'utf8' }).replace('\n', '');
 }
 
 module.exports = {
