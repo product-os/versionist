@@ -1,32 +1,58 @@
+var _ = require('lodash');
+var execSync = require('child_process').execSync;
+
+var getAuthor = (commitHash) => {
+  return execSync(`git show --quiet --format="%an" ${commitHash}`, { encoding: 'utf8' }).replace('\n', '');
+}
+
 module.exports = {
-
-  subjectParser: 'angular',
-
+  // This setup allows the editing and parsing of footer tags to get version and type information,
+  // as well as ensuring tags of the type 'v<major>.<minor>.<patch>' are used.
+  // It increments in a semver compatible fashion and allows the updating of NPM package info.
+  editChangelog: true,
+  parseFooterTags: true,
   getGitReferenceFromVersion: 'v-prefix',
-
-  addEntryToChangelog: {
-    preset: 'prepend',
-    fromLine: 5
-  },
-
+  incrementVersion: 'semver',
   updateVersion: 'npm',
 
-  includeCommitWhen: (commit) => {
-    return commit.footer['changelog-entry'];
+  // Always add the entry to the top of the Changelog, below the header.
+  addEntryToChangelog: {
+    preset: 'prepend',
+    fromLine: 6
   },
 
+  // Only include a commit when there is a footer tag of 'change-type'.
+  // Ensures commits which do not up versions are not included.
+  includeCommitWhen: (commit) => {
+    return !!commit.footer['change-type'];
+  },
+
+  // Determine the type from 'change-type:' tag.
+  // Should no explicit change type be made, then no changes are assumed.
   getIncrementLevelFromCommit: (commit) => {
-    return commit.footer['change-type'];
+    return _.trim(_.get(commit.footer, 'change-type', '')) || undefined;
+  },
+
+  // If a 'changelog-entry' tag is found, use this as the subject rather than the
+  // first line of the commit.
+  transformTemplateData: (data) => {
+    data.commits.forEach((commit) => {
+      commit.subject = commit.footer['changelog-entry'] || commit.subject;
+      commit.author = getAuthor(commit.hash);
+    });
+
+    return data;
   },
 
   template: [
-    '## {{version}} - {{moment date "Y-MM-DD"}}',
+    '## v{{version}} - {{moment date "Y-MM-DD"}}',
     '',
     '{{#each commits}}',
-    '{{#with footer}}',
-    '- {{capitalize changelog-entry}}',
-    '{{/with}}',
+    '{{#if this.author}}',
+    '* {{capitalize this.subject}} [{{this.author}}]',
+    '{{else}}',
+    '* {{capitalize this.subject}}',
+    '{{/if}}',
     '{{/each}}'
   ].join('\n')
-
 };

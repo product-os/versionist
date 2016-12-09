@@ -289,7 +289,9 @@ Given `parseFooterTags: true`:
   "body": "Lorem ipsum dolor sit amet",
   "hash": "fd9f9cbb8bb27486339e15886159e1d145b17550",
   "footer": {
+    "Closes": "#1",
     "closes": "#1",
+    "Foo": "bar",
     "foo": "bar"
   }
 }
