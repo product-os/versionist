@@ -1,4 +1,4 @@
-var _ = require('lodash');
+var _ = require(`${__dirname}/node_modules/lodash`);
 var execSync = require('child_process').execSync;
 
 var getAuthor = (commitHash) => {
