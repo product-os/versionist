@@ -21,11 +21,10 @@ module.exports = {
     fromLine: 6
   },
 
-  // Only include a commit when there is a footer tag of 'change-type'
-  // or 'changelog-entry'.
+  // Only include a commit when there is a footer tag of 'change-type'.
   // Ensures commits which do not up versions are not included.
   includeCommitWhen: (commit) => {
-    return !!commit.footer['change-type'] || !!commit.footer['changelog-entry'];
+    return !!commit.footer['change-type'];
   },
 
   // Determine the type from 'change-type:' tag.
