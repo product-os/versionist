@@ -1,4 +1,3 @@
-var _ = require(`${__dirname}/node_modules/lodash`);
 var execSync = require('child_process').execSync;
 
 var getAuthor = (commitHash) => {
@@ -30,7 +29,9 @@ module.exports = {
   // Determine the type from 'change-type:' tag.
   // Should no explicit change type be made, then no changes are assumed.
   getIncrementLevelFromCommit: (commit) => {
-    return _.trim(_.get(commit.footer, 'change-type', '')) || undefined;
+    if (commit.footer['change-type']) {
+      return commit.footer['change-type'].trim();
+    }
   },
 
   // If a 'changelog-entry' tag is found, use this as the subject rather than the
