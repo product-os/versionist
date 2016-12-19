@@ -72,7 +72,9 @@ const argv = yargs
       describe: 'configuration file',
       alias: 'c',
       global: true,
-      default: path.join('.', `${packageJSON.name}.conf.js`)
+      default: configuration.firstExistingFile(
+        [ path.join('.', `${packageJSON.name}.conf.js`), path.join(__dirname, `../${packageJSON.name}.conf.js`) ]
+      )
     },
     help: {
       describe: 'show help',

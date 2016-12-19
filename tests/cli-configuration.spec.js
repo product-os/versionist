@@ -19,6 +19,10 @@
 const _ = require('lodash');
 const m = require('mochainon');
 const configuration = require('../lib/cli/configuration');
+const packageJSON = require('../package.json');
+const path = require('path');
+
+const internalConfPath = path.join(__dirname, `../${packageJSON.name}.conf.js`);
 
 describe('CLI Configuration', function() {
 
@@ -261,6 +265,32 @@ describe('CLI Configuration', function() {
       });
 
       m.chai.expect(preset()).to.equal('bar');
+    });
+
+  });
+
+  describe('.load()', function() {
+
+    it('should throw if file is not found', function() {
+      m.chai.expect(() => {
+        configuration.load('./FooBar.js');
+      }).to.throw('Can\'t find ./FooBar.js');
+    });
+
+    it('should load if file is found', function() {
+      m.chai.expect(
+        configuration.load(internalConfPath)
+      ).to.equal(require(internalConfPath));
+    });
+
+  });
+
+  describe('.firstExistingFile()', function() {
+
+    it('Should return path if one of fallback files exist', function() {
+      m.chai.expect(
+        configuration.firstExistingFile([ './FooBar.js', internalConfPath ])
+      ).to.equal(internalConfPath);
     });
 
   });
