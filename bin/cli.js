@@ -32,10 +32,11 @@ const versionist = require('../lib/versionist');
 const semver = require('../lib/semver');
 const configuration = require('../lib/cli/configuration');
 const packageJSON = require('../package.json');
+const debug = require('debug')(packageJSON.name);
 
 const showErrorAndQuit = (error) => {
   console.error(chalk.red(error.message));
-  console.error(chalk.red(error.stack));
+  debug(chalk.red(error.stack));
   console.error('Join our Gitter channel if you need any help!');
   console.error('  https://gitter.im/resin-io/versionist');
   process.exit(1);
