@@ -14,7 +14,8 @@
   },
   "scripts": {
     "test": "npm run lint && mocha tests -R spec && node tests/cli/run",
-    "lint": "eslint lib tests bin"
+    "lint": "eslint lib/ tests/ bin/",
+    "versionist": "./bin/cli.js"
   },
   "author": "Juan Cruz Viotti <juan@resin.io>",
   "license": "Apache-2.0",
