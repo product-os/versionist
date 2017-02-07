@@ -11,7 +11,7 @@ Versionist
 Versionist is non-opinionated. It adapts to your commit practices and generates
 a `CHANGELOG` file that suits your taste.
 
-**Versionist is in a very early stage, and its stil being heavily worked on. Let
+**Versionist is in a very early stage, and it's still being heavily worked on. Let
 us know what you think!**
 
 Example
