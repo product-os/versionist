@@ -153,8 +153,7 @@ async.waterfall([
     });
 
     if (_.includes(documentedVersions, version)) {
-      console.log(`Omitting: ${version}`);
-      return callback(null, null);
+      return callback(new Error(`No commits were annotated with a change type since version ${version}`), null);
     }
 
     const entry = versionist.generateChangelog(history, {

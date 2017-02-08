@@ -50,5 +50,5 @@ exports.callVersionist = (configFile) => {
   if (configFile) {
     configString += ` --config ${configFile}`;
   }
-  shelljs.exec(`node ${cliPath}${configString}`);
+  return shelljs.exec(`node ${cliPath}${configString}`);
 };
