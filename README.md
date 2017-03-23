@@ -487,12 +487,11 @@ you add `x.y.z` annotated git tags you should not need to specify this hooks,
 however it can be handy if you have other conventions, like prefixing the
 version with `v`, etc.
 
-### `updateVersion (Function)`
+### `updateVersion (Function | Function[])`
 
 *Defaults to the `npm`.*
 
-Declare this function to specify how Versionist should update your project's
-version.
+Declare this function or array of functions to specify how Versionist should update your project's version.
 
 The function takes three arguments:
 

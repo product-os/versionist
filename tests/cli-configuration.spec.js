@@ -224,6 +224,10 @@ describe('CLI Configuration', function() {
       m.chai.expect(configuration.isPropertyValueValid({
         type: 'function'
       }, _.noop)).to.be.true;
+
+      m.chai.expect(configuration.isPropertyValueValid({
+        type: [ 'function', 'object' ]
+      }, _.noop)).to.be.true;
     });
 
     it('should return false if the property value type is not valid', function() {
