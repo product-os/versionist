@@ -224,6 +224,18 @@ describe('CLI Configuration', function() {
       m.chai.expect(configuration.isPropertyValueValid({
         type: 'function'
       }, _.noop)).to.be.true;
+
+      m.chai.expect(configuration.isPropertyValueValid({
+        type: [ 'function' ]
+      }, _.noop)).to.be.true;
+
+      m.chai.expect(configuration.isPropertyValueValid({
+        type: [ 'function' ]
+      }, [ _.noop ])).to.be.true;
+
+      m.chai.expect(configuration.isPropertyValueValid({
+        type: [ 'function', 'string' ]
+      }, [ 'npm', _.noop ])).to.be.true;
     });
 
     it('should return false if the property value type is not valid', function() {
@@ -238,6 +250,10 @@ describe('CLI Configuration', function() {
       m.chai.expect(configuration.isPropertyValueValid({
         type: 'function'
       }, {})).to.be.false;
+
+      m.chai.expect(configuration.isPropertyValueValid({
+        type: [ 'function', 'string' ]
+      }, [ {} ])).to.be.false;
     });
 
   });
