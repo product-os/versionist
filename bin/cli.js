@@ -69,6 +69,11 @@ const argv = yargs
       string: true,
       alias: 'u'
     },
+    dry: {
+      describe: 'Dry run',
+      boolean: true,
+      alias: 'd'
+    },
     config: {
       describe: 'configuration file',
       alias: 'c',
@@ -163,18 +168,20 @@ async.waterfall([
       version: version
     });
 
-    if (argv.configuration.editChangelog) {
+    if (argv.dry) {
+      console.log(chalk.green(entry));
+      return callback(null, version);
+    } else if (argv.configuration.editChangelog) {
       argv.configuration.addEntryToChangelog(argv.configuration.changelogFile, entry, (error) => {
         return callback(error, version);
       });
     } else {
-      console.log(entry);
       return callback(null, version);
     }
   },
 
   (version, callback) => {
-    if (argv.configuration.editVersion) {
+    if (argv.configuration.editVersion && !argv.dry) {
       argv.configuration.updateVersion(process.cwd(), version, callback);
     } else {
       return callback();
