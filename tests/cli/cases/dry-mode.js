@@ -25,6 +25,8 @@ shelljs.rm('-rf', TEST_DIRECTORY);
 shelljs.mkdir('-p', TEST_DIRECTORY);
 shelljs.cd(TEST_DIRECTORY);
 
+const originalChangelog = shelljs.cat('CHANGELOG.md').stdout;
+
 utils.createVersionistConfiguration([
   '\'use strict\';',
   'module.exports = {',
@@ -67,16 +69,18 @@ utils.createCommit('fix: fix z', {
   'Change-Type': 'patch'
 });
 
-// Call Versionist with the configuration file
-utils.callVersionist({
-  config: 'versionist.conf.js'
-});
-
-m.chai.expect(shelljs.cat('CHANGELOG.md').stdout).to.deep.equal([
+m.chai.expect(utils.callVersionist({
+  config: 'versionist.conf.js',
+  dry: true
+}).stdout).to.deep.equal([
   '## 0.1.0',
   '',
   '- Fix z',
   '- Fix y',
   '- Implement x',
+  '',
+  'Done',
   ''
 ].join('\n'));
+
+m.chai.expect(shelljs.cat('CHANGELOG.md').stdout).to.deep.equal(originalChangelog);
