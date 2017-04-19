@@ -1,6 +1,8 @@
 Versionist
 ==========
 
+[![Join the chat at https://gitter.im/resin-io/versionist](https://badges.gitter.im/resin-io/versionist.svg)](https://gitter.im/resin-io/versionist?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 > Flexible CHANGELOG generation toolkit that adapts to your commit conventions.
 
 [![npm version](https://badge.fury.io/js/versionist.svg)](http://badge.fury.io/js/versionist)
