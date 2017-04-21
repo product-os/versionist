@@ -1,8 +1,16 @@
-var execSync = require('child_process').execSync;
+'use strict';
 
-var getAuthor = (commitHash) => {
-  return execSync(`git show --quiet --format="%an" ${commitHash}`, { encoding: 'utf8' }).replace('\n', '');
-}
+const execSync = require('child_process').execSync;
+
+const getAuthor = (commitHash) => {
+  return execSync(`git show --quiet --format="%an" ${commitHash}`, {
+    encoding: 'utf8'
+  }).replace('\n', '');
+};
+
+const isIncrementalCommit = (changeType) => {
+  return Boolean(changeType) && changeType.trim().toLowerCase() !== 'none';
+};
 
 module.exports = {
   // This setup allows the editing and parsing of footer tags to get version and type information,
@@ -23,14 +31,14 @@ module.exports = {
   // Only include a commit when there is a footer tag of 'change-type'.
   // Ensures commits which do not up versions are not included.
   includeCommitWhen: (commit) => {
-    return !!commit.footer['change-type'];
+    return isIncrementalCommit(commit.footer['change-type']);
   },
 
   // Determine the type from 'change-type:' tag.
   // Should no explicit change type be made, then no changes are assumed.
   getIncrementLevelFromCommit: (commit) => {
-    if (commit.footer['change-type']) {
-      return commit.footer['change-type'].trim();
+    if (isIncrementalCommit(commit.footer['change-type'])) {
+      return commit.footer['change-type'].trim().toLowerCase();
     }
   },
 
