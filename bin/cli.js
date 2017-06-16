@@ -182,7 +182,11 @@ async.waterfall([
 
   (version, callback) => {
     if (argv.configuration.editVersion && !argv.dry) {
-      argv.configuration.updateVersion(process.cwd(), version, callback);
+      if (_.isFunction(argv.configuration.updateVersion)) {
+        argv.configuration.updateVersion(process.cwd(), version, callback);
+      } else {
+        async.applyEachSeries(argv.configuration.updateVersion, process.cwd(), version, callback);
+      }
     } else {
       return callback();
     }
