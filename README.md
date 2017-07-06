@@ -65,6 +65,7 @@ Options:
   --version, -v  show version number
   --config, -c   configuration file
   --current, -u  current version
+  --dry, -d      Dry run
 
 Examples:
   versionist --current 1.1.0
@@ -84,6 +85,11 @@ returned by the `getChangelogDocumentedVersions` hook.
 ### `--config`
 
 You can use this option to pass a custom location to `versionist.conf.js`.
+
+### `--dry`
+
+You can use this option to perform a dry run to see what changes _would_ be
+made by versionist, without actually changing any files.
 
 How it works
 ------------
@@ -345,7 +351,7 @@ You can either define a function that takes the body string as a parameter
 and returns anything you like (like an object), or import a built-in preset by
 passing its name.
 
-### `includeCommitWhen (Function)`
+### `includeCommitWhen (Function|String)`
 
 *Defaults to a function that always returns `true`.*
 
@@ -369,7 +375,8 @@ module.exports = {
 ```
 
 The whole commit object, after any transformations applied by `subjectParser`
-and `bodyParser` is passed as an argument.
+and `bodyParser` is passed as an argument. You can also import a built-in
+preset by passing its name.
 
 ### `transformTemplateData (Function)`
 
@@ -396,7 +403,7 @@ module.exports = {
 };
 ```
 
-### `addEntryToChangelog (Function)`
+### `addEntryToChangelog (Function|String)`
 
 *Defaults to `prepend`.*
 
@@ -415,7 +422,8 @@ declare a synchronous function.
 
 If the final version (either as specified in `--current` or calculated by
 `getIncrementLevelFromCommit`) is already returned by the hooks, then the entry
-is not added the the `CHANGELOG`.
+is not added the the `CHANGELOG`. You can also import a built-in preset by
+passing its name.
 
 ### `includeMergeCommits (Boolean)`
 
@@ -423,7 +431,7 @@ is not added the the `CHANGELOG`.
 
 When this option is enabled, merge commits will be included in the `CHANGELOG`.
 
-### `getChangelogDocumentedVersions (Function)`
+### `getChangelogDocumentedVersions (Function|String)`
 
 *Defaults to `changelog-headers`.*
 
@@ -432,7 +440,8 @@ versions were already documented in the `CHANGELOG` file.
 
 The function takes the `CHANGELOG` file as set in `changelogFile` and callback
 as parameters. The latter should be called with an optional error and an array
-of semantic version strings.
+of semantic version strings. You can also import a built-in preset by passing
+its name.
 
 ### `getIncrementLevelFromCommit (Function)`
 
@@ -469,7 +478,7 @@ has been made), and should return either `major`, `minor` or `patch`.
 If the increment level returned from this function is not defined, the commit
 will not alter the final version.
 
-### `incrementVersion (Function)`
+### `incrementVersion (Function|String)`
 
 *Defaults to `semver`.*
 
@@ -477,19 +486,21 @@ Declare this function to customise how an increment level is used to increment
 the current version.
 
 This function takes the current version and the increment level as arguments.
-
-### `getGitReferenceFromVersion (Function)`
+You can also import a built-in preset by passing its name.
+ 
+### `getGitReferenceFromVersion (Function|String)`
 
 *Defaults to the identity function.*
 
 Declare this function to resolve a git reference from a semantic version. If
 you add `x.y.z` annotated git tags you should not need to specify this hooks,
 however it can be handy if you have other conventions, like prefixing the
-version with `v`, etc.
+version with `v`, etc. You can also import a built-in preset by passing its
+name.
 
-### `updateVersion (Function | Function[])`
+### `updateVersion (Function|Function[]|String)`
 
-*Defaults to the `npm`.*
+*Defaults to `npm`.*
 
 Declare this function or array of functions to specify how Versionist should update your project's version.
 
@@ -499,6 +510,8 @@ The function takes three arguments:
 - `(String) version`: The new version.
 - `(Function) callback`: The callback.
 
+You can also import a built-in preset by passing its name.
+ 
 ### `path (String)`
 
 *Defaults to `$CWD`.*
@@ -545,7 +558,7 @@ module.exports = {
 };
 ```
 
-The preset list is currently very small. Please let us know if you have ny
+The preset list is currently very small. Please let us know if you have any
 ideas that could benefit your project and are generic enough to be included in
 Versionist by default.
 
@@ -576,7 +589,7 @@ This preset only includes commits whose `commit.subject.type` is either `feat`,
 
 - `prepend`
 
-This presets prepends the entry to the CHANGELOG file specified in
+This preset prepends the entry to the CHANGELOG file specified in
 `changelogFile`, taking care of not adding unnecessary blank lines between the
 current content and the new entry.
 
@@ -588,13 +601,14 @@ current content and the new entry.
 
 - `v-prefix`
 
-This presets simply prepends `v` to the version.
+This preset simply prepends `v` to the version.
 
 ### `updateVersion`
 
 - `npm`
+- `cargo`
 
-This presets updates the `version` property of `$CWD/package.json`.
+This preset updates the `version` property of `$CWD/package.json`.
 
 ### `incrementVersion`
 
