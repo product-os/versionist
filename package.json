@@ -39,7 +39,7 @@
     "replace-in-file": "^2.5.0",
     "semver": "^5.2.0",
     "touch": "^1.0.0",
-    "update-json": "^1.0.0",
+    "update-json": "https://github.com/resin-io-modules/update-json",
     "yargs": "^4.7.1"
   }
 }
