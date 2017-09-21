@@ -1,6 +1,6 @@
 {
   "name": "versionist",
-  "version": "2.11.1",
+  "version": "2.11.2",
   "main": "bin/versionist.js",
   "description": "Flexible CHANGELOG generation toolkit that adapts to your commit conventions",
   "homepage": "https://github.com/resin-io/versionist",
@@ -39,7 +39,7 @@
     "replace-in-file": "^2.5.0",
     "semver": "^5.2.0",
     "touch": "^1.0.0",
-    "update-json": "^1.0.0",
+    "update-json": "https://github.com/resin-io-modules/update-json",
     "yargs": "^4.7.1"
   }
 }

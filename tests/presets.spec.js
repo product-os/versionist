@@ -19,6 +19,7 @@
 const m = require('mochainon');
 const path = require('path');
 const fs = require('fs');
+const os = require('os');
 const tmp = require('tmp');
 const presets = require('../lib/presets');
 
@@ -704,7 +705,7 @@ describe('Presets', function() {
               '  "name": "foo",',
               '  "version": "1.1.0"',
               '}'
-            ].join('\n'));
+            ].join('\n') + os.EOL);
 
             done();
           });
