@@ -37,8 +37,8 @@ const debug = require('debug')(packageJSON.name);
 const showErrorAndQuit = (error) => {
   console.error(chalk.red(error.message));
   debug(chalk.red(error.stack));
-  console.error('Join our Gitter channel if you need any help!');
-  console.error('  https://gitter.im/resin-io/versionist');
+  console.error('If you run into any issues, feel free to let us know on GitHub!');
+  console.error('  https://github.com/resin-io/versionist/issues');
   process.exit(1);
 };
 

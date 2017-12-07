@@ -6,7 +6,7 @@ Versionist
 [![npm version](https://badge.fury.io/js/versionist.svg)](http://badge.fury.io/js/versionist)
 [![Build Status](https://travis-ci.org/resin-io/versionist.svg?branch=master)](https://travis-ci.org/resin-io/versionist)
 [![Build status](https://ci.appveyor.com/api/projects/status/xdtf4mx8hmurnmgo/branch/master?svg=true)](https://ci.appveyor.com/project/resin-io/versionist/branch/master)
-[![Gitter](https://badges.gitter.im/resin-io/versionist.svg)](https://gitter.im/resin-io/versionist?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Gitter](https://badges.gitter.im/resin-io/chat.svg)](https://gitter.im/resin-io/chat?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 Versionist is non-opinionated. It adapts to your commit practices and generates
 a `CHANGELOG` file that suits your taste.
@@ -487,7 +487,7 @@ the current version.
 
 This function takes the current version and the increment level as arguments.
 You can also import a built-in preset by passing its name.
- 
+
 ### `getGitReferenceFromVersion (Function|String)`
 
 *Defaults to the identity function.*
@@ -511,7 +511,7 @@ The function takes three arguments:
 - `(Function) callback`: The callback.
 
 You can also import a built-in preset by passing its name.
- 
+
 ### `path (String)`
 
 *Defaults to `$CWD`.*
@@ -619,17 +619,16 @@ This preset increments the version according to semver rules.
 Support
 -------
 
-If you're having any problem, please [raise an issue][github-issue] on GitHub,
-or join our [Gitter channel][gitter] and the Resin.io team will be happy to
-help.
+If you're having any problems, please [raise an issue][github-issue] on GitHub and the resin.io team will be happy to help.
+
+You can also get in touch with us in the resin.io [forums](https://forums.resin.io/).
 
 License
 -------
 
 Versionist is free software, and may be redistributed under the terms specified
-in the [license].
+in the [license][license].
 
 [github-issue]: https://github.com/resin-io/versionist/issues/new
-[gitter]: https://gitter.im/resin-io/versionist
 [license]: https://github.com/resin-io/etcher/blob/master/LICENSE
 [handlebars]: http://handlebarsjs.com
