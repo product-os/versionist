@@ -620,7 +620,7 @@ Support
 -------
 
 If you're having any problem, please [raise an issue][github-issue] on GitHub,
-or join our [Gitter channel][gitter] and the Resin.io team will be happy to
+or find us on the [forums][https://forums.resin.io], and the resin.io team will be happy to
 help.
 
 License
