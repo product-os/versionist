@@ -607,6 +607,7 @@ This preset simply prepends `v` to the version.
 
 - `npm`
 - `cargo`
+- `initPy`
 
 This preset updates the `version` property of `$CWD/package.json`.
 
