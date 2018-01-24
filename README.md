@@ -606,10 +606,16 @@ This preset simply prepends `v` to the version.
 ### `updateVersion`
 
 - `npm`
-- `cargo`
-- `initPy`
 
 This preset updates the `version` property of `$CWD/package.json`.
+
+- `cargo`
+
+This preset updates the `version` property of `$CWD/Cargo.toml` and `$CWD/Cargo.lock`.
+
+- `initPy`
+
+This preset updates the `__version__` property of `targetFile` (which defaults to `$CWD/__init__.py`).
 
 ### `incrementVersion`
 
