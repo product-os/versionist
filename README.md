@@ -611,7 +611,7 @@ This preset updates the `version` property of `$CWD/package.json`.
 
 - `cargo`
 
-This preset updates the `version` property of `$CWD/Cargo.toml` and `$CWD/Cargo.lock`.
+This preset updates the `version` property of `$CWD/Cargo.toml` (and also `$CWD/Cargo.lock` if it exists).
 
 - `initPy`
 
