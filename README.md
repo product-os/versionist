@@ -617,6 +617,17 @@ This preset updates the `version` property of `$CWD/Cargo.toml` (and also `$CWD/
 
 This preset updates the `__version__` property of `targetFile` (which defaults to `$CWD/__init__.py`).
 
+- `quoted`
+
+This preset updates the (double-quoted or single-quoted) version string
+immediately following `regex` in the given `file`. For example a file
+containing `project.version = "1.4.2";` could be updated by using the
+`quoted` prefix with a `regex` of `/project\.version\s*=\s*/`. You can
+optionally provide `regexFlags` to modify the `regex`'s behaviour (if using
+the `^` start-of-line character in the `regex`, don't forget to add `m` to
+`regexFlags`). You can optionally provide a `baseDir` to modify where it looks
+for `file` (it will update `$CWD/$baseDir/$file`).
+
 ### `incrementVersion`
 
 - `semver`

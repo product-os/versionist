@@ -1248,6 +1248,891 @@ describe('Presets', function() {
 
     });
 
+    describe('.quoted', function() {
+
+      describe('file with a double-quoted version string', function() {
+
+        beforeEach(function() {
+          this.cwd = tmp.dirSync();
+          this.versionedFile = path.join(this.cwd.name, 'File.ver');
+
+          fs.writeFileSync(this.versionedFile, [
+            'blah blah',
+            'version = "1.0.0"',
+            'bloop bloop',
+            '',
+            'foo foo',
+            ''
+          ].join('\n'));
+        });
+
+        afterEach(function() {
+          fs.unlinkSync(this.versionedFile);
+          this.cwd.removeCallback();
+        });
+
+        it('should be able to update the version using a literal regex', function(done) {
+          presets.updateVersion.quoted({
+            file: 'File.ver',
+            regex: /version\s*=\s*/
+          }, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            m.chai.expect(fs.readFileSync(this.versionedFile, 'utf8')).to.equal([
+              'blah blah',
+              'version = "1.1.0"',
+              'bloop bloop',
+              '',
+              'foo foo',
+              ''
+            ].join('\n'));
+
+            done();
+          });
+        });
+
+        it('should be able to update the version using an anchored literal regex', function(done) {
+          presets.updateVersion.quoted({
+            file: 'File.ver',
+            regex: /^version\s*=\s*/,
+            regexFlags: 'm'
+          }, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            m.chai.expect(fs.readFileSync(this.versionedFile, 'utf8')).to.equal([
+              'blah blah',
+              'version = "1.1.0"',
+              'bloop bloop',
+              '',
+              'foo foo',
+              ''
+            ].join('\n'));
+
+            done();
+          });
+        });
+
+        it('should be able to update the version using a simple string pattern', function(done) {
+          presets.updateVersion.quoted({
+            file: 'File.ver',
+            regex: 'version = '
+          }, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            m.chai.expect(fs.readFileSync(this.versionedFile, 'utf8')).to.equal([
+              'blah blah',
+              'version = "1.1.0"',
+              'bloop bloop',
+              '',
+              'foo foo',
+              ''
+            ].join('\n'));
+
+            done();
+          });
+        });
+
+        it('should be able to update the version using a string regex', function(done) {
+          presets.updateVersion.quoted({
+            file: 'File.ver',
+            regex: 'version\\s*=\\s*'
+          }, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            m.chai.expect(fs.readFileSync(this.versionedFile, 'utf8')).to.equal([
+              'blah blah',
+              'version = "1.1.0"',
+              'bloop bloop',
+              '',
+              'foo foo',
+              ''
+            ].join('\n'));
+
+            done();
+          });
+        });
+
+        it('should be able to update the version using an anchored string regex', function(done) {
+          presets.updateVersion.quoted({
+            file: 'File.ver',
+            regex: '^version\\s*=\\s*',
+            regexFlags: 'm'
+          }, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            m.chai.expect(fs.readFileSync(this.versionedFile, 'utf8')).to.equal([
+              'blah blah',
+              'version = "1.1.0"',
+              'bloop bloop',
+              '',
+              'foo foo',
+              ''
+            ].join('\n'));
+
+            done();
+          });
+        });
+
+        it('should be able to update the version using a RegExp object', function(done) {
+          presets.updateVersion.quoted({
+            file: 'File.ver',
+            regex: RegExp('version\\s*=\\s*')
+          }, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            m.chai.expect(fs.readFileSync(this.versionedFile, 'utf8')).to.equal([
+              'blah blah',
+              'version = "1.1.0"',
+              'bloop bloop',
+              '',
+              'foo foo',
+              ''
+            ].join('\n'));
+
+            done();
+          });
+        });
+
+        it('should yield an error when using the wrong case in the regex', function(done) {
+          presets.updateVersion.quoted({
+            file: 'File.ver',
+            regex: 'VERSION\\s*=\\s*'
+          }, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.be.an.instanceof(Error);
+            m.chai.expect(error.message).to.equal(`Pattern does not match ${this.versionedFile}`);
+            done();
+          });
+        });
+
+        it('should be able to update the version using a case-insensitive regex', function(done) {
+          presets.updateVersion.quoted({
+            file: 'File.ver',
+            regex: 'VERSION\\s*=\\s*',
+            regexFlags: 'i'
+          }, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            m.chai.expect(fs.readFileSync(this.versionedFile, 'utf8')).to.equal([
+              'blah blah',
+              'version = "1.1.0"',
+              'bloop bloop',
+              '',
+              'foo foo',
+              ''
+            ].join('\n'));
+
+            done();
+          });
+        });
+
+        it('should be able to update the version using the flags from regex', function(done) {
+          presets.updateVersion.quoted({
+            file: 'File.ver',
+            regex: RegExp('VERSION\\s*=\\s*', 'i')
+          }, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            m.chai.expect(fs.readFileSync(this.versionedFile, 'utf8')).to.equal([
+              'blah blah',
+              'version = "1.1.0"',
+              'bloop bloop',
+              '',
+              'foo foo',
+              ''
+            ].join('\n'));
+
+            done();
+          });
+        });
+
+        it('should be able update the version using multiple regex flags', function(done) {
+          presets.updateVersion.quoted({
+            file: 'File.ver',
+            regex: '^VERSION\\s*=\\s*',
+            regexFlags: 'mi'
+          }, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            m.chai.expect(fs.readFileSync(this.versionedFile, 'utf8')).to.equal([
+              'blah blah',
+              'version = "1.1.0"',
+              'bloop bloop',
+              '',
+              'foo foo',
+              ''
+            ].join('\n'));
+
+            done();
+          });
+        });
+
+        it('should be able update the version combining multiple regex flags', function(done) {
+          presets.updateVersion.quoted({
+            file: 'File.ver',
+            regex: RegExp('^VERSION\\s*=\\s*', 'i'),
+            regexFlags: 'm'
+          }, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            m.chai.expect(fs.readFileSync(this.versionedFile, 'utf8')).to.equal([
+              'blah blah',
+              'version = "1.1.0"',
+              'bloop bloop',
+              '',
+              'foo foo',
+              ''
+            ].join('\n'));
+
+            done();
+          });
+        });
+
+        it('should be able update the version combining duplicate regex flags', function(done) {
+          presets.updateVersion.quoted({
+            file: 'File.ver',
+            regex: RegExp('VERSION\\s*=\\s*', 'i'),
+            regexFlags: 'i'
+          }, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            m.chai.expect(fs.readFileSync(this.versionedFile, 'utf8')).to.equal([
+              'blah blah',
+              'version = "1.1.0"',
+              'bloop bloop',
+              '',
+              'foo foo',
+              ''
+            ].join('\n'));
+
+            done();
+          });
+        });
+
+        it('should be able to preserve the version', function(done) {
+          presets.updateVersion.quoted({
+            file: 'File.ver',
+            regex: /version\s*=\s*/
+          }, this.cwd.name, '1.0.0', (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            m.chai.expect(fs.readFileSync(this.versionedFile, 'utf8')).to.equal([
+              'blah blah',
+              'version = "1.0.0"',
+              'bloop bloop',
+              '',
+              'foo foo',
+              ''
+            ].join('\n'));
+
+            done();
+          });
+        });
+
+        it('should be able to set a pre-release version', function(done) {
+          presets.updateVersion.quoted({
+            file: 'File.ver',
+            regex: /version\s*=\s*/
+          }, this.cwd.name, '1.2.4-beta.1', (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            m.chai.expect(fs.readFileSync(this.versionedFile, 'utf8')).to.equal([
+              'blah blah',
+              'version = "1.2.4-beta.1"',
+              'bloop bloop',
+              '',
+              'foo foo',
+              ''
+            ].join('\n'));
+
+            done();
+          });
+        });
+
+        it('should yield an error when trying to update with a non-semver version', function(done) {
+          presets.updateVersion.quoted({
+            file: 'File.ver',
+            regex: /version\s*=\s*/
+          }, this.cwd.name, 'not-a-semver', (error) => {
+            m.chai.expect(error).to.be.an.instanceof(Error);
+            m.chai.expect(error.message).to.equal('Invalid version: not-a-semver');
+            done();
+          });
+        });
+
+        it('should yield an error if the file option is missing', function(done) {
+          presets.updateVersion.quoted({
+            regex: /version\s*=\s*/
+          }, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.be.an.instanceof(Error);
+            m.chai.expect(error.message).to.equal('Missing file option');
+            done();
+          });
+        });
+
+        it('should yield an error if the regex option is missing', function(done) {
+          presets.updateVersion.quoted({
+            file: 'File.ver'
+          }, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.be.an.instanceof(Error);
+            m.chai.expect(error.message).to.equal('Missing regex option');
+            done();
+          });
+        });
+
+        it('should yield an error if the file option is an absolute path', function(done) {
+          presets.updateVersion.quoted({
+            file: this.versionedFile,
+            regex: /version\s*=\s*/
+          }, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.be.an.instanceof(Error);
+            m.chai.expect(error.message).to.equal('file option can\'t be an absolute path');
+            done();
+          });
+        });
+
+        it('should yield an error if the baseDir option is an absolute path', function(done) {
+          presets.updateVersion.quoted({
+            baseDir: path.dirname(this.versionedFile),
+            file: 'File.ver',
+            regex: /version\s*=\s*/
+          }, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.be.an.instanceof(Error);
+            m.chai.expect(error.message).to.equal('baseDir option can\'t be an absolute path');
+            done();
+          });
+        });
+
+        it('should yield an error if the file doesn\'t exist', function(done) {
+          presets.updateVersion.quoted({
+            file: 'bad.file',
+            regex: /version\s*=\s*/
+          }, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.be.an.instanceof(Error);
+            m.chai.expect(error.code).to.equal('ENOENT');
+            done();
+          });
+        });
+
+      });
+
+      describe('file with a single-quoted version string', function() {
+
+        beforeEach(function() {
+          this.cwd = tmp.dirSync();
+          this.versionedFile = path.join(this.cwd.name, 'File.ver');
+
+          fs.writeFileSync(this.versionedFile, [
+            'blah blah',
+            'version = \'1.0.0\'',
+            'bloop bloop',
+            '',
+            'foo foo',
+            ''
+          ].join('\n'));
+        });
+
+        afterEach(function() {
+          fs.unlinkSync(this.versionedFile);
+          this.cwd.removeCallback();
+        });
+
+        it('should update the version (and preserve the single quotes)', function(done) {
+          presets.updateVersion.quoted({
+            file: 'File.ver',
+            regex: /version\s*=\s*/
+          }, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            m.chai.expect(fs.readFileSync(this.versionedFile, 'utf8')).to.equal([
+              'blah blah',
+              'version = \'1.1.0\'',
+              'bloop bloop',
+              '',
+              'foo foo',
+              ''
+            ].join('\n'));
+
+            done();
+          });
+        });
+
+      });
+
+      describe('file with a badly quoted version string', function() {
+
+        beforeEach(function() {
+          this.cwd = tmp.dirSync();
+          this.versionedFile = path.join(this.cwd.name, 'File.ver');
+
+          fs.writeFileSync(this.versionedFile, [
+            'blah blah',
+            'version = \'1.0.0"',
+            'bloop bloop',
+            '',
+            'foo foo',
+            ''
+          ].join('\n'));
+        });
+
+        afterEach(function() {
+          fs.unlinkSync(this.versionedFile);
+          this.cwd.removeCallback();
+        });
+
+        it('should yield an error', function(done) {
+          presets.updateVersion.quoted({
+            file: 'File.ver',
+            regex: /version\s*=\s*/
+          }, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.be.an.instanceof(Error);
+            m.chai.expect(error.message).to.equal(`Pattern does not match ${this.versionedFile}`);
+            done();
+          });
+        });
+
+      });
+
+      describe('file with a non-quoted version string', function() {
+
+        beforeEach(function() {
+          this.cwd = tmp.dirSync();
+          this.versionedFile = path.join(this.cwd.name, 'File.ver');
+
+          fs.writeFileSync(this.versionedFile, [
+            'blah blah',
+            'version = 1.0.0',
+            'bloop bloop',
+            '',
+            'foo foo',
+            ''
+          ].join('\n'));
+        });
+
+        afterEach(function() {
+          fs.unlinkSync(this.versionedFile);
+          this.cwd.removeCallback();
+        });
+
+        it('should yield an error', function(done) {
+          presets.updateVersion.quoted({
+            file: 'File.ver',
+            regex: /version\s*=\s*/
+          }, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.be.an.instanceof(Error);
+            m.chai.expect(error.message).to.equal(`Pattern does not match ${this.versionedFile}`);
+            done();
+          });
+        });
+
+      });
+
+      describe('file with no version string', function() {
+
+        beforeEach(function() {
+          this.cwd = tmp.dirSync();
+          this.versionedFile = path.join(this.cwd.name, 'File.ver');
+
+          fs.writeFileSync(this.versionedFile, [
+            'blah blah',
+            'bloop bloop',
+            '',
+            'foo foo',
+            ''
+          ].join('\n'));
+        });
+
+        afterEach(function() {
+          fs.unlinkSync(this.versionedFile);
+          this.cwd.removeCallback();
+        });
+
+        it('should yield an error', function(done) {
+          presets.updateVersion.quoted({
+            file: 'File.ver',
+            regex: /version\s*=\s*/
+          }, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.be.an.instanceof(Error);
+            m.chai.expect(error.message).to.equal(`Pattern does not match ${this.versionedFile}`);
+            done();
+          });
+        });
+
+      });
+
+      describe('file with extra content before and after the version string', function() {
+
+        beforeEach(function() {
+          this.cwd = tmp.dirSync();
+          this.versionedFile = path.join(this.cwd.name, 'File.ver');
+
+          fs.writeFileSync(this.versionedFile, [
+            'blah blah',
+            ' before-text version("1.0.0") after-text',
+            'bloop bloop',
+            '',
+            'foo foo',
+            ''
+          ].join('\n'));
+        });
+
+        afterEach(function() {
+          fs.unlinkSync(this.versionedFile);
+          this.cwd.removeCallback();
+        });
+
+        it('should be able to update the version', function(done) {
+          presets.updateVersion.quoted({
+            file: 'File.ver',
+            regex: /version\(/
+          }, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            m.chai.expect(fs.readFileSync(this.versionedFile, 'utf8')).to.equal([
+              'blah blah',
+              ' before-text version("1.1.0") after-text',
+              'bloop bloop',
+              '',
+              'foo foo',
+              ''
+            ].join('\n'));
+
+            done();
+          });
+        });
+
+        it('should yield an error when using an anchored regex', function(done) {
+          presets.updateVersion.quoted({
+            file: 'File.ver',
+            regex: /^version\(/
+          }, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.be.an.instanceof(Error);
+            m.chai.expect(error.message).to.equal(`Pattern does not match ${this.versionedFile}`);
+            done();
+          });
+        });
+
+      });
+
+      describe('file with multiple version strings', function() {
+
+        beforeEach(function() {
+          this.cwd = tmp.dirSync();
+          this.versionedFile = path.join(this.cwd.name, 'File.ver');
+
+          fs.writeFileSync(this.versionedFile, [
+            'other_version = "1.0.0"',
+            'blah blah',
+            'version = "1.0.0"',
+            'bloop bloop',
+            '',
+            'foo foo',
+            ''
+          ].join('\n'));
+        });
+
+        afterEach(function() {
+          fs.unlinkSync(this.versionedFile);
+          this.cwd.removeCallback();
+        });
+
+        it('should update the first version by default', function(done) {
+          presets.updateVersion.quoted({
+            file: 'File.ver',
+            regex: /version\s*=\s*/
+          }, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            m.chai.expect(fs.readFileSync(this.versionedFile, 'utf8')).to.equal([
+              'other_version = "1.1.0"',
+              'blah blah',
+              'version = "1.0.0"',
+              'bloop bloop',
+              '',
+              'foo foo',
+              ''
+            ].join('\n'));
+
+            done();
+          });
+        });
+
+        it('should update only the second version with an anchored regex', function(done) {
+          presets.updateVersion.quoted({
+            file: 'File.ver',
+            regex: /^version\s*=\s*/,
+            regexFlags: 'm'
+          }, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            m.chai.expect(fs.readFileSync(this.versionedFile, 'utf8')).to.equal([
+              'other_version = "1.0.0"',
+              'blah blah',
+              'version = "1.1.0"',
+              'bloop bloop',
+              '',
+              'foo foo',
+              ''
+            ].join('\n'));
+
+            done();
+          });
+        });
+
+        it('should update only the second version with a more accurate regex', function(done) {
+          presets.updateVersion.quoted({
+            file: 'File.ver',
+            regex: /blah blah\nversion\s*=\s*/
+          }, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            m.chai.expect(fs.readFileSync(this.versionedFile, 'utf8')).to.equal([
+              'other_version = "1.0.0"',
+              'blah blah',
+              'version = "1.1.0"',
+              'bloop bloop',
+              '',
+              'foo foo',
+              ''
+            ].join('\n'));
+
+            done();
+          });
+        });
+
+        it('should update both versions using a global flag', function(done) {
+          presets.updateVersion.quoted({
+            file: 'File.ver',
+            regex: /version\s*=\s*/,
+            regexFlags: 'g'
+          }, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            m.chai.expect(fs.readFileSync(this.versionedFile, 'utf8')).to.equal([
+              'other_version = "1.1.0"',
+              'blah blah',
+              'version = "1.1.0"',
+              'bloop bloop',
+              '',
+              'foo foo',
+              ''
+            ].join('\n'));
+
+            done();
+          });
+        });
+
+      });
+
+      describe('file with multiple spaces', function() {
+
+        beforeEach(function() {
+          this.cwd = tmp.dirSync();
+          this.versionedFile = path.join(this.cwd.name, 'File.ver');
+
+          fs.writeFileSync(this.versionedFile, [
+            'blah blah',
+            'version   =  "1.0.0"',
+            'bloop bloop',
+            '',
+            'foo foo',
+            ''
+          ].join('\n'));
+        });
+
+        afterEach(function() {
+          fs.unlinkSync(this.versionedFile);
+          this.cwd.removeCallback();
+        });
+
+        it('should be able to update the version (and preserve the spaces)', function(done) {
+          presets.updateVersion.quoted({
+            file: 'File.ver',
+            regex: /version\s*=\s*/
+          }, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            m.chai.expect(fs.readFileSync(this.versionedFile, 'utf8')).to.equal([
+              'blah blah',
+              'version   =  "1.1.0"',
+              'bloop bloop',
+              '',
+              'foo foo',
+              ''
+            ].join('\n'));
+
+            done();
+          });
+        });
+
+      });
+
+      describe('file with mixed-case', function() {
+
+        beforeEach(function() {
+          this.cwd = tmp.dirSync();
+          this.versionedFile = path.join(this.cwd.name, 'File.ver');
+
+          fs.writeFileSync(this.versionedFile, [
+            'blah blah',
+            'VeRsIoN = "1.0.0"',
+            'bloop bloop',
+            '',
+            'foo foo',
+            ''
+          ].join('\n'));
+        });
+
+        afterEach(function() {
+          fs.unlinkSync(this.versionedFile);
+          this.cwd.removeCallback();
+        });
+
+        it('should be able to update the version (and preserve the original case)', function(done) {
+          presets.updateVersion.quoted({
+            file: 'File.ver',
+            regex: /vErSiOn\s*=\s*/,
+            regexFlags: 'i'
+          }, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            m.chai.expect(fs.readFileSync(this.versionedFile, 'utf8')).to.equal([
+              'blah blah',
+              'VeRsIoN = "1.1.0"',
+              'bloop bloop',
+              '',
+              'foo foo',
+              ''
+            ].join('\n'));
+
+            done();
+          });
+        });
+
+      });
+
+      describe('file with a non-semver version', function() {
+
+        beforeEach(function() {
+          this.cwd = tmp.dirSync();
+          this.versionedFile = path.join(this.cwd.name, 'File.ver');
+
+          fs.writeFileSync(this.versionedFile, [
+            'blah blah',
+            'version = "not-a-semver"',
+            'bloop bloop',
+            '',
+            'foo foo',
+            ''
+          ].join('\n'));
+        });
+
+        afterEach(function() {
+          fs.unlinkSync(this.versionedFile);
+          this.cwd.removeCallback();
+        });
+
+        it('should be able to update the version', function(done) {
+          presets.updateVersion.quoted({
+            file: 'File.ver',
+            regex: /version\s*=\s*/
+          }, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            m.chai.expect(fs.readFileSync(this.versionedFile, 'utf8')).to.equal([
+              'blah blah',
+              'version = "1.1.0"',
+              'bloop bloop',
+              '',
+              'foo foo',
+              ''
+            ].join('\n'));
+
+            done();
+          });
+        });
+
+      });
+
+      describe('file in a subdirectory', function() {
+
+        beforeEach(function() {
+          this.cwd = tmp.dirSync();
+          this.subDir = path.join(this.cwd.name, 'subdirectory');
+          this.versionedFile = path.join(this.subDir, 'File.ver');
+
+          fs.mkdirSync(this.subDir);
+          fs.writeFileSync(this.versionedFile, [
+            'blah blah',
+            'version = "1.0.0"',
+            'bloop bloop',
+            '',
+            'foo foo',
+            ''
+          ].join('\n'));
+        });
+
+        afterEach(function() {
+          fs.unlinkSync(this.versionedFile);
+          fs.rmdirSync(this.subDir);
+          this.cwd.removeCallback();
+        });
+
+        it('should be able to update the version when specifying the subdirectory', function(done) {
+          presets.updateVersion.quoted({
+            file: 'File.ver',
+            baseDir: 'subdirectory',
+            regex: /version\s*=\s*/
+          }, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            m.chai.expect(fs.readFileSync(this.versionedFile, 'utf8')).to.equal([
+              'blah blah',
+              'version = "1.1.0"',
+              'bloop bloop',
+              '',
+              'foo foo',
+              ''
+            ].join('\n'));
+
+            done();
+          });
+        });
+
+        it('should be able to update the version when adding the subdirectory to the filename', function(done) {
+          presets.updateVersion.quoted({
+            file: 'subdirectory/File.ver',
+            regex: /version\s*=\s*/
+          }, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            m.chai.expect(fs.readFileSync(this.versionedFile, 'utf8')).to.equal([
+              'blah blah',
+              'version = "1.1.0"',
+              'bloop bloop',
+              '',
+              'foo foo',
+              ''
+            ].join('\n'));
+
+            done();
+          });
+        });
+
+        it('should yield an error when not specifying the subdirectory', function(done) {
+          presets.updateVersion.quoted({
+            file: 'File.ver',
+            regex: /^version\s*=\s*/
+          }, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.be.an.instanceof(Error);
+            m.chai.expect(error.code).to.equal('ENOENT');
+            done();
+          });
+        });
+
+      });
+
+    });
+
   });
 
   describe('.incrementVersion', function() {
