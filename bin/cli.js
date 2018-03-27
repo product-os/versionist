@@ -64,6 +64,21 @@ const argv = yargs
     }
   })
   .options({
+    patch: {
+      describe: 'increment semver patch version',
+      boolean: true,
+      alias: 'p'
+    },
+    minor: {
+      describe: 'increment semver minor version',
+      boolean: true,
+      alias: 'm'
+    },
+    major: {
+      describe: 'increment semver major version',
+      boolean: true,
+      alias: 'M'
+    },
     current: {
       describe: 'current version',
       string: true,
@@ -78,9 +93,10 @@ const argv = yargs
       describe: 'configuration file',
       alias: 'c',
       global: true,
-      default: configuration.firstExistingFile(
-        [ path.join('.', `${packageJSON.name}.conf.js`), path.join(__dirname, `../${packageJSON.name}.conf.js`) ]
-      )
+      default: configuration.firstExistingFile([
+        path.join('.', `${packageJSON.name}.conf.js`),
+        path.join(__dirname, `../${packageJSON.name}.conf.js`)
+      ])
     },
     help: {
       describe: 'show help',
@@ -95,109 +111,123 @@ const argv = yargs
   })
   .example('$0 --current 1.1.0')
   .fail((message) => {
-
     // Prints to `stderr` by default
     yargs.showHelp();
 
     console.error(message);
     process.exit(1);
-  })
-  .argv;
+  }).argv;
 
-async.waterfall([
+async.waterfall(
+  [
+    (callback) => {
+      argv.configuration.getChangelogDocumentedVersions(argv.configuration.changelogFile, callback);
+    },
 
-  (callback) => {
-    argv.configuration.getChangelogDocumentedVersions(argv.configuration.changelogFile, callback);
-  },
+    (documentedVersions, callback) => {
+      const versions = _.attempt(() => {
+        if (_.isEmpty(documentedVersions)) {
+          return [ argv.configuration.defaultInitialVersion ];
+        }
 
-  (documentedVersions, callback) => {
-    const versions = _.attempt(() => {
-      if (_.isEmpty(documentedVersions)) {
-        return [ argv.configuration.defaultInitialVersion ];
-      }
-
-      return documentedVersions;
-    });
-
-    const gitReference = argv.configuration.getGitReferenceFromVersion(semver.getGreaterVersion(versions));
-    return referenceExists(gitReference, (error, exists) => {
-      if (error) {
-        return callback(error);
-      }
-
-      if (exists) {
-        return callback(null, versions, gitReference);
-      }
-
-      if (_.isEmpty(documentedVersions)) {
-        return callback(null, versions, null);
-      }
-
-      return callback(new Error(`Omitting ${gitReference}. No valid git reference was found.`));
-    });
-  },
-
-  (documentedVersions, startReference, callback) => {
-    versionist.readCommitHistory(path.join(argv.configuration.path, argv.configuration.gitDirectory), {
-      startReference: startReference,
-      endReference: 'HEAD',
-      subjectParser: argv.configuration.subjectParser,
-      bodyParser: argv.configuration.bodyParser,
-      parseFooterTags: argv.configuration.parseFooterTags,
-      lowerCaseFooterTags: argv.configuration.lowerCaseFooterTags
-    }, (error, history) => {
-      return callback(error, documentedVersions, history);
-    });
-  },
-
-  (documentedVersions, history, callback) => {
-    const version = versionist.calculateNextVersion(history, {
-      getIncrementLevelFromCommit: argv.configuration.getIncrementLevelFromCommit,
-      currentVersion: argv.current || semver.getGreaterVersion(documentedVersions),
-      incrementVersion: argv.configuration.incrementVersion
-    });
-
-    if (_.includes(documentedVersions, version)) {
-      return callback(new Error(`No commits were annotated with a change type since version ${version}`), null);
-    }
-
-    const entry = versionist.generateChangelog(history, {
-      template: argv.configuration.template,
-      includeCommitWhen: argv.configuration.includeCommitWhen,
-      transformTemplateData: argv.configuration.transformTemplateData,
-      version: version
-    });
-
-    if (argv.dry) {
-      console.log(chalk.green(entry));
-      return callback(null, version);
-    } else if (argv.configuration.editChangelog) {
-      argv.configuration.addEntryToChangelog(argv.configuration.changelogFile, entry, (error) => {
-        return callback(error, version);
+        return documentedVersions;
       });
-    } else {
-      return callback(null, version);
-    }
-  },
 
-  (version, callback) => {
-    if (argv.configuration.editVersion && !argv.dry) {
-      if (_.isFunction(argv.configuration.updateVersion)) {
-        argv.configuration.updateVersion(process.cwd(), version, callback);
-      } else {
-        async.applyEachSeries(argv.configuration.updateVersion, process.cwd(), version, callback);
+      const gitReference = argv.configuration.getGitReferenceFromVersion(semver.getGreaterVersion(versions));
+      return referenceExists(gitReference, (error, exists) => {
+        if (error) {
+          return callback(error);
+        }
+
+        if (exists) {
+          return callback(null, versions, gitReference);
+        }
+
+        if (_.isEmpty(documentedVersions)) {
+          return callback(null, versions, null);
+        }
+
+        return callback(new Error(`Omitting ${gitReference}. No valid git reference was found.`));
+      });
+    },
+
+    (documentedVersions, startReference, callback) => {
+      versionist.readCommitHistory(
+        path.join(argv.configuration.path, argv.configuration.gitDirectory),
+        {
+          startReference: startReference,
+          endReference: 'HEAD',
+          subjectParser: argv.configuration.subjectParser,
+          bodyParser: argv.configuration.bodyParser,
+          parseFooterTags: argv.configuration.parseFooterTags,
+          lowerCaseFooterTags: argv.configuration.lowerCaseFooterTags
+        },
+        (error, history) => {
+          return callback(error, documentedVersions, history);
+        }
+      );
+    },
+
+    (documentedVersions, history, callback) => {
+      if (argv.patch || argv.minor || argv.major) {
+        argv.configuration.getIncrementLevelFromCommit = () => {
+          if (argv.major) {
+            return 'major';
+          } else if (argv.minor) {
+            return 'minor';
+          } else if (argv.patch) {
+            return 'patch';
+          }
+        };
       }
-    } else {
-      return callback();
+      const version = versionist.calculateNextVersion(history, {
+        getIncrementLevelFromCommit: argv.configuration.getIncrementLevelFromCommit,
+        currentVersion: argv.current || semver.getGreaterVersion(documentedVersions),
+        incrementVersion: argv.configuration.incrementVersion
+      });
+
+      if (_.includes(documentedVersions, version)) {
+        return callback(new Error(`No commits were annotated with a change type since version ${version}`), null);
+      }
+
+      const entry = versionist.generateChangelog(history, {
+        template: argv.configuration.template,
+        includeCommitWhen: argv.configuration.includeCommitWhen,
+        transformTemplateData: argv.configuration.transformTemplateData,
+        version: version
+      });
+
+      if (argv.dry) {
+        console.log(chalk.green(entry));
+        return callback(null, version);
+      } else if (argv.configuration.editChangelog) {
+        argv.configuration.addEntryToChangelog(argv.configuration.changelogFile, entry, (error) => {
+          return callback(error, version);
+        });
+      } else {
+        return callback(null, version);
+      }
+    },
+
+    (version, callback) => {
+      if (argv.configuration.editVersion && !argv.dry) {
+        if (_.isFunction(argv.configuration.updateVersion)) {
+          argv.configuration.updateVersion(process.cwd(), version, callback);
+        } else {
+          async.applyEachSeries(argv.configuration.updateVersion, process.cwd(), version, callback);
+        }
+      } else {
+        return callback();
+      }
     }
-  }
+  ],
+  (error) => {
+    if (error) {
+      return showErrorAndQuit(error);
+    }
 
-], (error) => {
-  if (error) {
-    return showErrorAndQuit(error);
+    console.log('Done');
   }
-
-  console.log('Done');
-});
+);
 
 process.on('uncaughtException', showErrorAndQuit);
