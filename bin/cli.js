@@ -34,6 +34,8 @@ const configuration = require('../lib/cli/configuration');
 const packageJSON = require('../package.json');
 const debug = require('debug')(packageJSON.name);
 
+const stopError = 'E_STOP';
+
 const showErrorAndQuit = (error) => {
   console.error(chalk.red(error.message));
   debug(chalk.red(error.stack));
@@ -65,7 +67,7 @@ const argv = yargs
   })
   .options({
     current: {
-      describe: 'current version',
+      describe: 'set current version',
       string: true,
       alias: 'u'
     },
@@ -93,6 +95,14 @@ const argv = yargs
       alias: 'v'
     }
   })
+  .command('get <target>', 'get latest documented version or reference', (yargsGet) => {
+    yargsGet.positional('target', {
+      choices: [ 'version', 'reference' ],
+      describe: 'get current version or reference',
+      type: 'string'
+    })
+    .example('$0 get version');
+  })
   .example('$0 --current 1.1.0')
   .fail((message) => {
 
@@ -118,8 +128,17 @@ async.waterfall([
 
       return documentedVersions;
     });
+    const latest = semver.getGreaterVersion(versions);
+    if (argv.target === 'version') {
+      console.log(latest);
+      return callback(new Error(stopError));
+    }
 
-    const gitReference = argv.configuration.getGitReferenceFromVersion(semver.getGreaterVersion(versions));
+    const gitReference = argv.configuration.getGitReferenceFromVersion(latest);
+    if (argv.target === 'reference') {
+      console.log(gitReference);
+      return callback(new Error(stopError));
+    }
     return referenceExists(gitReference, (error, exists) => {
       if (error) {
         return callback(error);
@@ -194,10 +213,12 @@ async.waterfall([
 
 ], (error) => {
   if (error) {
-    return showErrorAndQuit(error);
+    if (!(error.message === stopError)) {
+      return showErrorAndQuit(error);
+    }
+  } else {
+    console.log('Done');
   }
-
-  console.log('Done');
 });
 
 process.on('uncaughtException', showErrorAndQuit);

@@ -58,7 +58,10 @@ Usage
 -----
 
 ```
-Usage: versionist [OPTIONS]
+Usage: versionist [COMMAND] [OPTIONS]
+
+Commands:
+  versionist get <target> get latest documented version or reference
 
 Options:
   --help, -h     show help
@@ -69,6 +72,7 @@ Options:
 
 Examples:
   versionist --current 1.1.0
+  versionist get version
 ```
 
 ### `--current`
@@ -90,6 +94,15 @@ You can use this option to pass a custom location to `versionist.conf.js`.
 
 You can use this option to perform a dry run to see what changes _would_ be
 made by versionist, without actually changing any files.
+
+### `get <target>`
+
+You can use this command to return the latest documented version (according to `getChangelogDocumentedVersions`) or a git reference, which is produced by
+applying `getGitReferenceFromVersion` to the latest documented version.
+The only valid values for target are `version` and `reference`. This command
+will only accept the `--config` and `--help` options, any other option will be
+ignored; running this command will not cause any changes.
+
 
 How it works
 ------------

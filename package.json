@@ -40,6 +40,6 @@
     "semver": "^5.2.0",
     "touch": "^1.0.0",
     "update-json": "https://github.com/resin-io-modules/update-json",
-    "yargs": "^4.7.1"
+    "yargs": "^11.1.0"
   }
 }
