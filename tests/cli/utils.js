@@ -48,7 +48,11 @@ exports.callVersionist = (opts) => {
   const cliPath = path.join(__dirname, '..', '..', 'bin', 'cli.js');
 
   const configString = _.reduce(opts, function(result, value, key) {
-    result += ` --${key}=${value}`;
+    if (key === 'cmd' || key === 'command') {
+      result = ` ${value} ${result}`;
+    } else {
+      result += ` --${key}=${value}`;
+    }
     return result;
   }, '');
 
