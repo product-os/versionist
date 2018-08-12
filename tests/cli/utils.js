@@ -19,6 +19,7 @@
 const _ = require('lodash');
 const shelljs = require('shelljs');
 const path = require('path');
+const versionist = require('../../lib/versionist');
 
 exports.getTestTemporalPathFromFilename = (filename) => {
   const extension = path.extname(filename);
@@ -46,15 +47,10 @@ exports.createVersionistConfiguration = (configuration) => {
 
 exports.callVersionist = (opts) => {
   const cliPath = path.join(__dirname, '..', '..', 'bin', 'cli.js');
-
-  const configString = _.reduce(opts, function(result, value, key) {
-    if (key === 'cmd' || key === 'command') {
-      result = ` ${value} ${result}`;
-    } else {
-      result += ` --${key}=${value}`;
-    }
-    return result;
-  }, '');
-
-  return shelljs.exec(`node ${cliPath}${configString}`);
+  let cmd = `node ${cliPath}`;
+  if (opts) {
+    const args = versionist.argvFromOpts(opts);
+    cmd = `${cmd} ${args.join(' ')}`;
+  }
+  return shelljs.exec(cmd);
 };
