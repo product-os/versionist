@@ -17,6 +17,8 @@ us know what you think!**
 Example
 -------
 
+## a. Command-line use
+
 - Install Versionist
 
 ```
@@ -41,6 +43,39 @@ $ versionist
 
 The `CHANGELOG.md` will have a new `2.0.0` entry with the latest changes, and
 the `package.json` version will be updated to `2.0.0`.
+
+## b. Programmatic use
+
+It's also possible to run the tool from Node.
+
+To call the `runWithOpts()` function, pass an opts object which has either `cmd` 
+or `command` specifying the command to run (see `versionist -h`), along with any
+number of optional key-value pairs which will be passed as `--key=${value}`.
+
+The `runWithOpts()` returns a Promise which will either resolve to an output
+object containing output returned by the tool, or reject with an error object.
+
+```
+const versionist = require('versionist');
+
+versionist.runWithOpts({cmd: 'get version'})
+  .then((output) => {
+    console.log(output);
+  });
+  catch((error) => {
+    console.error(error);
+  });
+
+// or
+
+versionist.runWithOpts({dry: true})
+  .then((output) => {
+    console.log(output);
+  });
+  catch((error) => {
+    console.error(error);
+  });
+```
 
 Installation
 ------------
