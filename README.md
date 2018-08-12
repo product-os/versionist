@@ -48,17 +48,17 @@ the `package.json` version will be updated to `2.0.0`.
 
 It's also possible to run the tool from Node.
 
-To call the `runFromOpts()` function, pass an opts object which has either `cmd` 
+To call the `runWithOpts()` function, pass an opts object which has either `cmd` 
 or `command` specifying the command to run (see `versionist -h`), along with any
 number of optional key-value pairs which will be passed as `--key=${value}`.
 
-The `runFromOpts()` returns a Promise which will either resolve to an output
+The `runWithOpts()` returns a Promise which will either resolve to an output
 object containing output returned by the tool, or reject with an error object.
 
 ```
 const versionist = require('versionist');
 
-versionist.runFromOpts({cmd: 'get version'})
+versionist.runWithOpts({cmd: 'get version'})
   .then((output) => {
     console.log(output);
   });
@@ -68,7 +68,7 @@ versionist.runFromOpts({cmd: 'get version'})
 
 // or
 
-versionist.runFromOpts({dry: true})
+versionist.runWithOpts({dry: true})
   .then((output) => {
     console.log(output);
   });
