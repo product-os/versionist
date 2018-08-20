@@ -83,8 +83,9 @@ of your project.
 If you are making use of `getIncrementLevelFromCommit`, you'll want to pass the
 version number *before* the release, so it gets incremented automatically.
 
-If omitted, `--current` will equal the greater version from the versions
-returned by the `getChangelogDocumentedVersions` hook.
+If omitted, `--current` will be produced by `getCurrentBaseVersion`, this defaults
+to the greater version from the versions returned by the `getChangelogDocumentedVersions`
+hook, but can be configured for advanced behaviour.
 
 ### `--config`
 
@@ -131,9 +132,14 @@ average user to get the bigger picture:
 - The commits found in the previous step are parsed by `subjectParser`,
   `bodyParser`, `parseFooterTags`, or any other commit-parsing option.
 
+- `getCurrentBaseVersion` can be used to set the base version for the increment.
+  It defaults to the latest documented version. You only need to overwrite this
+  if you need to skip certain versions or modify it in a way that is independent
+  of the increment level.
+
 - Once all commits have been parsed, the `getIncrementLevelFromCommit` option
   is used to determine the semver increment level that should be applied to the
-  latest documented version. The latest documented version with the
+  current version. The current version with the
   corresponding increment level represents the final version that will be set
   in the module. The increment level is applied to the version by using the
   `incrementVersion` option.
@@ -456,6 +462,19 @@ as parameters. The latter should be called with an optional error and an array
 of semantic version strings. You can also import a built-in preset by passing
 its name.
 
+### `getCurrentBaseVersion (Function|String)`
+
+*Defaults to `latest-documented`*
+
+You can declare this function to overwrite what the base version, before the
+increment will be. By default this is the latest documented version, the
+greater version appearing in the array returned by `getChangelogDocumentedVersions`.
+
+The function takes the array returned by `getChangelogDocumentedVersions`, the
+history of commits from the latest git reference, and a callback as parameters.
+The latter should be called with an optional error and a string representing the
+current base version.
+
 ### `getIncrementLevelFromCommit (Function)`
 
 *Defaults to a function that always returns `null`.*
@@ -590,6 +609,13 @@ outputs an object containing the following properties: `type`, `scope` and
 This preset parses the `CHANGELOG` file specified in `changelogFile`, and
 extracts any valid semantic versions from the headers.
 
+**Options**
+
+- `(Boolean|RegExp) clean`: Defaults to true.
+If true `semver.clean` will be used to sanitise the versions, if a regular expression is supplied,
+every match will be replaced by the empty string.
+If false no sanitisation is applied to the versions.
+
 ### `includeCommitWhen`
 
 - `angular`
@@ -622,13 +648,34 @@ This preset simply prepends `v` to the version.
 
 This preset updates the `version` property of `$CWD/package.json`.
 
+**Options**
+
+- `(Boolean|RegExp) clean`: Defaults to true.
+If true `semver.clean` will be used to sanitise the version, if a regular expression is supplied
+every match will be replaced by the empty string.
+If false no sanitisation is applied to the version.
+
 - `cargo`
 
 This preset updates the `version` property of `$CWD/Cargo.toml` (and also `$CWD/Cargo.lock` if it exists).
 
+**Options**
+
+- `(Boolean|RegExp) clean`: Defaults to true.
+If true `semver.clean` will be used to sanitise the version, if a regular expression is supplied
+every match will be replaced by the empty string.
+If false no sanitisation is applied to the version.
+
 - `initPy`
 
 This preset updates the `__version__` property of `targetFile` (which defaults to `$CWD/__init__.py`).
+
+**Options**
+
+- `(Boolean|RegExp) clean`: Defaults to true.
+If true `semver.clean` will be used to sanitise the version, if a regular expression is supplied
+every match will be replaced by the empty string.
+If false no sanitisation is applied to the version.
 
 - `quoted`
 
@@ -641,6 +688,15 @@ the `^` start-of-line character in the `regex`, don't forget to add `m` to
 `regexFlags`). You can optionally provide a `baseDir` to modify where it looks
 for `file` (it will update `$CWD/$baseDir/$file`).
 
+**Options**
+- `(String) file`: File to modify
+- `(String) baseDir` Relative directory to append to cwd
+- `(String) regex`: Regular expression to match the versioning scheme
+- `(String) regexFlags`: Additional flags provided to `regex`
+- `(Boolean|RegExp) clean`: Defaults to true.
+If true `semver.clean` will be used to sanitise the versions, if a regular expression is supplied
+every match will be replaced by the empty string.
+If false no sanitisation is applied to the versions.
 ### `incrementVersion`
 
 - `semver`
