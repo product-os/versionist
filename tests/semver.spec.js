@@ -238,19 +238,29 @@ describe('Semver', function() {
 
   });
 
-  describe('.normalize()', function() {
+  describe('.checkValid()', function() {
 
-    it('should do nothing given a normalised version', function() {
-      m.chai.expect(semver.normalize('1.0.0')).to.equal('1.0.0');
+    it('should not throw given a valid string', function() {
+      m.chai.expect(() => {
+        semver.checkValid('1.0.0');
+      }).to.not.throw();
     });
 
-    it('should remove a leading `v` from the version', function() {
-      m.chai.expect(semver.normalize('v1.0.0')).to.equal('1.0.0');
+    it('should not throw given a version with leading `v`', function() {
+      m.chai.expect(() => {
+        semver.checkValid('v1.0.0');
+      }).to.not.throw();
+    });
+
+    it('should not throw given a version containing a release suffix', function() {
+      m.chai.expect(() => {
+        semver.checkValid('v1.0.0+rev1');
+      }).to.not.throw();
     });
 
     it('should throw given an invalid version', function() {
       m.chai.expect(() => {
-        semver.normalize('foo');
+        semver.checkValid('foo');
       }).to.throw('Invalid version: foo');
     });
 

@@ -170,9 +170,18 @@ async.waterfall([
   },
 
   (documentedVersions, history, callback) => {
+    if (argv.current) {
+      return callback(null, argv.current, documentedVersions, history);
+    }
+    return argv.configuration.getCurrentBaseVersion(documentedVersions, history, (error, current) => {
+      return callback(error, current, documentedVersions, history);
+    });
+  },
+
+  (currentVersion, documentedVersions, history, callback) => {
     const version = versionist.calculateNextVersion(history, {
       getIncrementLevelFromCommit: argv.configuration.getIncrementLevelFromCommit,
-      currentVersion: argv.current || semver.getGreaterVersion(documentedVersions),
+      currentVersion: currentVersion,
       incrementVersion: argv.configuration.incrementVersion
     });
 
