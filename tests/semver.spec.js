@@ -303,6 +303,35 @@ describe('Semver', function() {
       m.chai.expect(greater).to.equal('2.1.1');
     });
 
+    it('should return the greater version', function() {
+      const greater = semver.getGreaterVersion([
+        '2.14.3+rev3',
+        '2.14.3+rev2',
+        '2.14.3+rev1'
+      ]);
+
+      m.chai.expect(greater).to.equal('2.14.3+rev3');
+    });
+
+    it('should return the greater version', function() {
+      const greater = semver.getGreaterVersion([
+        '2.14.3+rev1',
+        '2.14.3+rev3',
+        '2.14.3+rev2'
+      ]);
+
+      m.chai.expect(greater).to.equal('2.14.3+rev3');
+    });
+
+    it('should return the greater version', function() {
+      const greater = semver.getGreaterVersion([
+        '2.14.3+rev2',
+        '2.14.3',
+        '2.14.3+rev3'
+      ]);
+
+      m.chai.expect(greater).to.equal('2.14.3+rev3');
+    });
   });
 
 });
