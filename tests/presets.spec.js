@@ -311,11 +311,11 @@ describe('Presets', function() {
           this.fsReadFileStub.yields(null, [
             '# My markdown document',
             '',
-            '## v1.1.0',
+            '## v1.1.0+rev0',
             '',
             '- foo',
             '',
-            '## v1.0.0',
+            '## v1.0.0+rev1',
             '',
             '- foo'
           ].join('\n'));
@@ -325,13 +325,43 @@ describe('Presets', function() {
           this.fsReadFileStub.restore();
         });
 
-        it('should normalize the versions', function(done) {
+        it('should normalize the versions by default', function(done) {
           const fn = presets.getChangelogDocumentedVersions['changelog-headers'];
           fn({}, 'CHANGELOG.md', (error, versions) => {
             m.chai.expect(error).to.not.exist;
             m.chai.expect(versions).to.deep.equal([
               '1.1.0',
               '1.0.0'
+            ]);
+            done();
+          });
+
+        });
+
+        it('should normalize the versions with the correct regexp', function(done) {
+          const fn = presets.getChangelogDocumentedVersions['changelog-headers'];
+          fn({
+            clean: /v/
+          }, 'CHANGELOG.md', (error, versions) => {
+            m.chai.expect(error).to.not.exist;
+            m.chai.expect(versions).to.deep.equal([
+              '1.1.0+rev0',
+              '1.0.0+rev1'
+            ]);
+            done();
+          });
+
+        });
+
+        it('should not normalize the versions if clean is false', function(done) {
+          const fn = presets.getChangelogDocumentedVersions['changelog-headers'];
+          fn({
+            clean: false
+          }, 'CHANGELOG.md', (error, versions) => {
+            m.chai.expect(error).to.not.exist;
+            m.chai.expect(versions).to.deep.equal([
+              'v1.1.0+rev0',
+              'v1.0.0+rev1'
             ]);
             done();
           });
@@ -374,6 +404,40 @@ describe('Presets', function() {
 
         });
 
+      });
+
+    });
+
+  });
+
+  describe('.getCurrentBaseVersion', function() {
+
+    describe('.`latest-documented`', function() {
+
+      it('should yield the greatest documented version in the supplied array', function(done) {
+        const fn = presets.getCurrentBaseVersion['latest-documented'];
+        fn({}, [
+          '1.1.0',
+          '1.0.0',
+          '0.1.3+rev0'
+        ], [], (error, latest) => {
+          m.chai.expect(error).to.not.exist;
+          m.chai.expect(latest).to.equal('1.1.0');
+          done();
+        });
+      });
+
+      it('should yield the greatest documented version in the supplied array', function(done) {
+        const fn = presets.getCurrentBaseVersion['latest-documented'];
+        fn({}, [
+          '1.0.0',
+          '0.1.3+rev0',
+          '1.1.0'
+        ], [], (error, latest) => {
+          m.chai.expect(error).to.not.exist;
+          m.chai.expect(latest).to.equal('1.1.0');
+          done();
+        });
       });
 
     });

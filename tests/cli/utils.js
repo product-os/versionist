@@ -38,7 +38,7 @@ exports.createCommit = (title, tags) => {
     footer
   ].join('\n')).to('message.txt');
 
-  shelljs.exec('git commit --allow-empty -F message.txt');
+  shelljs.exec('git -c "user.name=Versionist" -c "user.email=versionist@resin.io" commit --allow-empty -F message.txt');
 };
 
 exports.createVersionistConfiguration = (configuration) => {
