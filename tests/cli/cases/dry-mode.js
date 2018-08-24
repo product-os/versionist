@@ -27,8 +27,6 @@ shelljs.cd(TEST_DIRECTORY);
 
 const originalChangelog = shelljs.cat('CHANGELOG.md').stdout;
 
-console.log(`originalChangelog: ${originalChangelog}`);
-
 utils.createVersionistConfiguration([
   '\'use strict\';',
   'module.exports = {',

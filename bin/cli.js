@@ -35,22 +35,21 @@ const parsedArgs = argsParser.parse(process.argv.slice(2));
 process.on('uncaughtException', errorHandling.showErrorAndQuit);
 
 // run the rool
-versionist.runWithParsedArgs(parsedArgs)
-  .then((output) => {
-
+versionist.runWithParsedArgs(parsedArgs, (err, output) => {
+  if (err) {
+    errorHandling.showErrorAndQuit(err);
+  } else if (output) {
     // display output depending on output object
-    if (output) {
-      const {
-        latest, gitReference, entry
-      } = output;
-      if (latest) {
-        console.log(latest);
-      } else if (gitReference) {
-        console.log(gitReference);
-      } else if (entry) {
-        console.log(chalk.green(entry));
-        console.log('Done');
-      }
+    const {
+      latest, gitReference, entry
+    } = output;
+    if (latest) {
+      console.log(latest);
+    } else if (gitReference) {
+      console.log(gitReference);
+    } else if (entry) {
+      console.log(chalk.green(entry));
+      console.log('Done');
     }
-  })
-  .catch(errorHandling.showErrorAndQuit);
+  }
+});
