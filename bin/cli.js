@@ -189,13 +189,21 @@ async.waterfall([
       return callback(new Error(`No commits were annotated with a change type since version ${version}`), null);
     }
 
-    const entry = versionist.generateChangelog(history, {
+    return versionist.generateChangelog(history, {
       template: argv.configuration.template,
       includeCommitWhen: argv.configuration.includeCommitWhen,
       transformTemplateData: argv.configuration.transformTemplateData,
+      transformTemplateDataAsync: argv.configuration.transformTemplateDataAsync,
       version: version
+    }, (error, entry) => {
+      if (error) {
+        return callback(error);
+      }
+      return callback(null, version, entry);
     });
+  },
 
+  (version, entry, callback) => {
     if (argv.dry) {
       console.log(chalk.green(entry));
       return callback(null, version);
