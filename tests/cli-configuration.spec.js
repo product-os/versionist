@@ -22,7 +22,7 @@ const configuration = require('../lib/cli/configuration');
 const packageJSON = require('../package.json');
 const path = require('path');
 
-const internalConfPath = path.join(__dirname, `../${packageJSON.name}.conf.js`);
+const internalConfPath = path.join(__dirname, `../${packageJSON.name}.empty.js`);
 
 describe('CLI Configuration', function() {
 
@@ -290,7 +290,7 @@ describe('CLI Configuration', function() {
     it('should throw if file is not found', function() {
       m.chai.expect(() => {
         configuration.load('./FooBar.js');
-      }).to.throw('Can\'t find ./FooBar.js');
+      }).to.throw('Cannot find module \'./FooBar.js\'');
     });
 
     it('should load if file is found', function() {
