@@ -389,7 +389,7 @@ describe('Versionist', function() {
     });
 
     it('should render all commits if no includeCommitWhen', function() {
-      const result = versionist.generateChangelog([
+      versionist.generateChangelog([
         {
           subject: 'foo'
         },
@@ -407,18 +407,18 @@ describe('Versionist', function() {
           '{{this.subject}}',
           '{{/each}}'
         ].join('\n')
+      }, (error, changelog) => {
+        m.chai.expect(changelog).to.equal([
+          'foo',
+          'bar',
+          'baz',
+          ''
+        ].join('\n'));
       });
-
-      m.chai.expect(result).to.equal([
-        'foo',
-        'bar',
-        'baz',
-        ''
-      ].join('\n'));
     });
 
     it('should support a transformTemplateData option', function() {
-      const result = versionist.generateChangelog([
+      versionist.generateChangelog([
         {
           subject: 'foo'
         },
@@ -442,15 +442,16 @@ describe('Versionist', function() {
           '{{this}}',
           '{{/each}}'
         ].join('\n')
+      }, (error, changelog) => {
+		m.chai.expect(changelog).to.equal([
+		  'Version: v1.0.0',
+		  'foo',
+		  'bar',
+		  'baz',
+		  ''
+		].join('\n')); 
       });
 
-      m.chai.expect(result).to.equal([
-        'Version: v1.0.0',
-        'foo',
-        'bar',
-        'baz',
-        ''
-      ].join('\n'));
     });
 
   });
