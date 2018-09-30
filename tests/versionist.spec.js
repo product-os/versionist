@@ -443,13 +443,13 @@ describe('Versionist', function() {
           '{{/each}}'
         ].join('\n')
       }, (error, changelog) => {
-		m.chai.expect(changelog).to.equal([
-		  'Version: v1.0.0',
-		  'foo',
-		  'bar',
-		  'baz',
-		  ''
-		].join('\n')); 
+        m.chai.expect(changelog).to.equal([
+          'Version: v1.0.0',
+          'foo',
+          'bar',
+          'baz',
+          ''
+        ].join('\n'));
       });
 
     });
