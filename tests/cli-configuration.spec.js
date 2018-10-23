@@ -24,24 +24,34 @@ describe('CLI Configuration', function() {
 
   describe('.isPresetProperty()', function() {
 
+    const presets = {};
+    const propertyName = 'test';
+    presets[propertyName] = {
+      foo: 1
+    };
+
     it('should return true if property is a string', function() {
       const property = 'foo';
-      m.chai.expect(configuration.isPresetProperty(property)).to.be.true;
+      m.chai.expect(configuration.isPresetProperty(presets, propertyName, property))
+        .to.be.true;
     });
 
     it('should return false if property is a number', function() {
       const property = 1;
-      m.chai.expect(configuration.isPresetProperty(property)).to.be.false;
+      m.chai.expect(configuration.isPresetProperty(presets, propertyName, property))
+        .to.be.false;
     });
 
     it('should return false if property is a function', function() {
       const property = _.noop;
-      m.chai.expect(configuration.isPresetProperty(property)).to.be.false;
+      m.chai.expect(configuration.isPresetProperty(presets, propertyName, property))
+        .to.be.false;
     });
 
     it('should return false if property is an empty object', function() {
       const property = {};
-      m.chai.expect(configuration.isPresetProperty(property)).to.be.false;
+      m.chai.expect(configuration.isPresetProperty(presets, propertyName, property))
+        .to.be.false;
     });
 
     it('should return true if property is an object containing a preset string value', function() {
@@ -49,7 +59,8 @@ describe('CLI Configuration', function() {
         preset: 'foo'
       };
 
-      m.chai.expect(configuration.isPresetProperty(property)).to.be.true;
+      m.chai.expect(configuration.isPresetProperty(presets, propertyName, property))
+        .to.be.true;
     });
 
     it('should return true if property is an object containing a preset string value and other keys', function() {
@@ -59,7 +70,8 @@ describe('CLI Configuration', function() {
         foo: 123
       };
 
-      m.chai.expect(configuration.isPresetProperty(property)).to.be.true;
+      m.chai.expect(configuration.isPresetProperty(presets, propertyName, property))
+        .to.be.true;
     });
 
     it('should return false if property is an object containing a preset number value', function() {
@@ -67,7 +79,8 @@ describe('CLI Configuration', function() {
         preset: 1
       };
 
-      m.chai.expect(configuration.isPresetProperty(property)).to.be.false;
+      m.chai.expect(configuration.isPresetProperty(presets, propertyName, property))
+        .to.be.false;
     });
 
     it('should return false if property is an object containing a preset function value', function() {
@@ -75,7 +88,8 @@ describe('CLI Configuration', function() {
         preset: _.noop
       };
 
-      m.chai.expect(configuration.isPresetProperty(property)).to.be.false;
+      m.chai.expect(configuration.isPresetProperty(presets, propertyName, property))
+        .to.be.false;
     });
 
   });
@@ -256,16 +270,20 @@ describe('CLI Configuration', function() {
 
   describe('.parsePreset()', function() {
 
+    const presetDefinition = {
+      type: 'function'
+    };
+
     it('should throw if the preset was not found', function() {
       m.chai.expect(() => {
-        configuration.parsePreset({
+        configuration.parsePreset(presetDefinition, {
           foo: {}
         }, 'foo', 'hello');
       }).to.throw('Invalid preset: foo -> hello');
     });
 
     it('should partially apply the options to the preset', function() {
-      const preset = configuration.parsePreset({
+      const preset = configuration.parsePreset(presetDefinition, {
         foo: {
           hello: (options) => {
             return options.foo;

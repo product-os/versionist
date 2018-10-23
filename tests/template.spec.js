@@ -73,7 +73,7 @@ describe('Template', function() {
     it('should be able to render a nested template', function() {
       const result = template.render([
         '{{#*inline "commits"}}',
-        '{{nesting}} Version:',
+        '{{nesting}} {{version}}:',
         '{{nesting}}# Date:',
         '{{#each commits}}',
           '* {{this.subject}}',
@@ -106,36 +106,39 @@ describe('Template', function() {
                   {
                     subject: 'bar'
                   }
-                ]
+                ],
+                version: '0.1'
               },
               {
                 commits: [
                   {
                     subject: 'baz'
                   }
-                ]
+                ],
+                version: '0.2'
               }
             ]
           },
           {
             subject: 'qux'
           }
-        ]
+        ],
+      version: '1'
       });
 
       m.chai.expect(result).to.equal([
-        '# Version:',
+        '# 1:',
         '## Date:',
         '* foo',
         '',
         '<details>',
         '<summary> View details </summary>',
         '',
-        '## Version:',
+        '## 0.1:',
         '### Date:',
         '* bar',
         '',
-        '## Version:',
+        '## 0.2:',
         '### Date:',
         '* baz',
         '</details>',

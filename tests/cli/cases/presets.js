@@ -20,6 +20,7 @@ const m = require('mochainon');
 const shelljs = require('shelljs');
 const utils = require('../utils');
 const TEST_DIRECTORY = utils.getTestTemporalPathFromFilename(__filename);
+const presets = require('../../../lib/presets');
 
 shelljs.rm('-rf', TEST_DIRECTORY);
 shelljs.mkdir('-p', TEST_DIRECTORY);
@@ -71,7 +72,7 @@ utils.createCommit('fix: fix z', {
 utils.callVersionist();
 
 m.chai.expect(shelljs.cat('CHANGELOG.md').stdout).to.deep.equal([
-  '## 0.1.0',
+  `${presets.INITIAL_CHANGELOG}## 0.1.0`,
   '',
   '- Fix z',
   '- Fix y',
