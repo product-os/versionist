@@ -20,6 +20,7 @@ const m = require('mochainon');
 const shelljs = require('shelljs');
 const utils = require('../utils');
 const TEST_DIRECTORY = utils.getTestTemporalPathFromFilename(__filename);
+const presets = require('../../../lib/presets');
 
 shelljs.rm('-rf', TEST_DIRECTORY);
 shelljs.mkdir('-p', TEST_DIRECTORY);
@@ -31,11 +32,8 @@ utils.createVersionistConfiguration([
   '  subjectParser: \'angular\',',
   '  editVersion: false,',
   '  addEntryToChangelog: \'prepend\',',
-  '  includeCommitWhen: (commit) => {',
-  '    return commit.footer[\'Changelog-Entry\'];',
-  '  },',
   '  getIncrementLevelFromCommit: (commit) => {',
-  '    return commit.footer[\'Change-Type\'];',
+  '    return commit.footer[\'Custom\'];',
   '  },',
   '  template: [',
   '    \'## {{version}}\',',
@@ -51,11 +49,10 @@ utils.createVersionistConfiguration([
 ].join('\n'));
 
 shelljs.exec('git init');
-shelljs.exec('touch CHANGELOG.md');
 
 utils.createCommit('feat: implement x', {
   'Changelog-Entry': 'Implement x',
-  'Change-Type': 'minor'
+  'Change-Type': 'patch'
 });
 
 utils.createCommit('fix: fix y', {
@@ -63,18 +60,19 @@ utils.createCommit('fix: fix y', {
   'Change-Type': 'patch'
 });
 
+utils.createCommit('fix: fix y\'', {
+  Custom: 'minor'
+});
+
 utils.createCommit('fix: fix z', {
   'Changelog-Entry': 'Fix z',
   'Change-Type': 'patch'
 });
 
-// Call Versionist with the configuration file
-utils.callVersionist({
-  config: 'versionist.conf.js'
-});
+utils.callVersionist();
 
 m.chai.expect(shelljs.cat('CHANGELOG.md').stdout).to.deep.equal([
-  '## 0.1.0',
+  `${presets.INITIAL_CHANGELOG}## 0.1.0`,
   '',
   '- Fix z',
   '- Fix y',

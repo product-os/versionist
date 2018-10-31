@@ -51,6 +51,7 @@ utils.createVersionistConfiguration([
 ].join('\n'));
 
 shelljs.exec('git init');
+shelljs.exec('touch CHANGELOG.md');
 
 utils.createCommit('feat: implement x', {
   'Changelog-Entry': 'Implement x',

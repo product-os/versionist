@@ -34,6 +34,9 @@ utils.createVersionistConfiguration([
   '  getIncrementLevelFromCommit: () => {',
   '    return \'major\';',
   '  },',
+  '  includeCommitWhen: () => {',
+  '    return true;',
+  '  },',
   '  template: [',
   '    \'## {{version}}\',',
   '    \'\',',
@@ -48,6 +51,7 @@ utils.createVersionistConfiguration([
 ].join('\n'));
 
 shelljs.exec('git init');
+shelljs.exec('touch CHANGELOG.md');
 
 utils.createCommit('Implement x', {
   'My-Tag': 'Foo'

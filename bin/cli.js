@@ -57,9 +57,17 @@ const argv = yargs
   .help()
   .version(packageJSON.version)
   .config('config', 'configuration file', (file) => {
+    // config.default returns `process.cwd()/__NO_CONFIG` if no
+    // versionist.conf.js exists in the root of the repo
+    let configFile = file;
+    if (file.endsWith('__NO_CONFIG')) {
+      configFile = {};
+    } else {
+      configFile = configuration.load(file);
+    }
     try {
       return {
-        configuration: configuration.parse(configuration.load(file))
+        configuration: configuration.parse(configFile)
       };
     } catch (error) {
       showErrorAndQuit(error);
@@ -80,9 +88,7 @@ const argv = yargs
       describe: 'configuration file',
       alias: 'c',
       global: true,
-      default: configuration.firstExistingFile(
-        [ path.join('.', `${packageJSON.name}.conf.js`), path.join(__dirname, `../${packageJSON.name}.conf.js`) ]
-      )
+      default: configuration.hasDefaultConfigFile(`${packageJSON.name}.conf.js`)
     },
     help: {
       describe: 'show help',

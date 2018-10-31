@@ -468,10 +468,7 @@ describe('Presets', function() {
               encoding: 'utf8'
             });
 
-            m.chai.expect(contents).to.equal([
-              'Lorem ipsum',
-              ''
-            ].join('\n'));
+            m.chai.expect(contents).to.equal(`${presets.INITIAL_CHANGELOG}Lorem ipsum\n`);
 
             done();
           });
@@ -491,7 +488,9 @@ describe('Presets', function() {
         });
 
         it('should not add a white line if not necessary', function(done) {
-          presets.addEntryToChangelog.prepend({}, this.tmp.name, [
+          presets.addEntryToChangelog.prepend({
+            fromLine: 0
+          }, this.tmp.name, [
             'Lorem ipsum',
             ''
           ].join('\n'), (error) => {
@@ -513,7 +512,9 @@ describe('Presets', function() {
         });
 
         it('should add a white line if necessary', function(done) {
-          presets.addEntryToChangelog.prepend({}, this.tmp.name, [
+          presets.addEntryToChangelog.prepend({
+            fromLine: 0
+          }, this.tmp.name, [
             'Lorem ipsum'
           ].join('\n'), (error) => {
             m.chai.expect(error).to.not.exist;
@@ -534,7 +535,9 @@ describe('Presets', function() {
         });
 
         it('should remove extra white lines', function(done) {
-          presets.addEntryToChangelog.prepend({}, this.tmp.name, [
+          presets.addEntryToChangelog.prepend({
+            fromLine: 0
+          }, this.tmp.name, [
             'Lorem ipsum',
             '',
             '',
@@ -571,7 +574,9 @@ describe('Presets', function() {
         });
 
         it('should normalize white lines', function(done) {
-          presets.addEntryToChangelog.prepend({}, this.tmp.name, [
+          presets.addEntryToChangelog.prepend({
+            fromLine: 0
+          }, this.tmp.name, [
             'Lorem ipsum',
             '',
             '',
@@ -608,7 +613,9 @@ describe('Presets', function() {
         });
 
         it('should keep the trailing white lines intact', function(done) {
-          presets.addEntryToChangelog.prepend({}, this.tmp.name, [
+          presets.addEntryToChangelog.prepend({
+            fromLine: 0
+          }, this.tmp.name, [
             'Lorem ipsum'
           ].join('\n'), (error) => {
             m.chai.expect(error).to.not.exist;

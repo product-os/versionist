@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+/* eslint indent: 0 */
 'use strict';
 
 const m = require('mochainon');
@@ -69,6 +70,175 @@ describe('Template', function() {
       ].join('\n'));
     });
 
-  });
+    it('should be able to render a nested template', function() {
+      const result = template.render([
+        '{{#*inline "commits"}}',
+        '{{nesting}} {{version}}:',
+        '{{nesting}}# Date:',
+        '{{#each commits}}',
+          '* {{this.subject}}',
+          '{{> nested nesting=../nesting}}',
+        '{{/each}}',
+        '{{/inline}}',
 
+        '{{#*inline "nested"}}',
+          '{{#if this.nested}}',
+            '',
+            '<details>',
+              '<summary> View details </summary>',
+              '{{#each this.nested}}',
+                '',
+                '{{> commits nesting=(append ../nesting "#")}}',
+              '{{/each}}',
+            '</details>',
+            '',
+          '{{/if}}',
+        '{{/inline}}',
+
+        '{{> commits nesting="#"}}'
+      ].join('\n'), {
+        commits: [
+          {
+            subject: 'foo',
+            nested: [
+              {
+                commits: [
+                  {
+                    subject: 'bar'
+                  }
+                ],
+                version: '0.1'
+              },
+              {
+                commits: [
+                  {
+                    subject: 'baz'
+                  }
+                ],
+                version: '0.2'
+              }
+            ]
+          },
+          {
+            subject: 'qux'
+          }
+        ],
+      version: '1'
+      });
+
+      m.chai.expect(result).to.equal([
+        '# 1:',
+        '## Date:',
+        '* foo',
+        '',
+        '<details>',
+        '<summary> View details </summary>',
+        '',
+        '## 0.1:',
+        '### Date:',
+        '* bar',
+        '',
+        '## 0.2:',
+        '### Date:',
+        '* baz',
+        '</details>',
+        '',
+        '* qux',
+        ''
+      ].join('\n'));
+    });
+
+    it('should be able to render a deeply nested template', function() {
+      const result = template.render([
+        '{{#*inline "commits"}}',
+        '{{nesting}} Version:',
+        '{{nesting}}# Date:',
+        '{{#each commits}}',
+          '* {{this.subject}}',
+          '{{> nested nesting=../nesting}}',
+        '{{/each}}',
+        '{{/inline}}',
+
+        '{{#*inline "nested"}}',
+          '{{#if this.nested}}',
+            '',
+            '<details>',
+              '<summary> View details </summary>',
+              '{{#each this.nested}}',
+                '',
+                '{{> commits nesting=(append ../nesting "#")}}',
+              '{{/each}}',
+            '</details>',
+            '',
+          '{{/if}}',
+        '{{/inline}}',
+
+        '{{> commits nesting="#"}}'
+      ].join('\n'), {
+        commits: [
+          {
+            subject: 'foo',
+            nested: [
+              {
+                commits: [
+                  {
+                    subject: 'bar'
+                  }
+                ]
+              },
+              {
+                commits: [
+                  {
+                    subject: 'baz',
+                    nested: [
+                      {
+                        commits: [
+                          {
+                            subject: 'arm'
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            subject: 'qux'
+          }
+        ]
+      });
+
+      m.chai.expect(result).to.equal([
+        '# Version:',
+        '## Date:',
+        '* foo',
+        '',
+        '<details>',
+        '<summary> View details </summary>',
+        '',
+        '## Version:',
+        '### Date:',
+        '* bar',
+        '',
+        '## Version:',
+        '### Date:',
+        '* baz',
+        '',
+        '<details>',
+        '<summary> View details </summary>',
+        '',
+        '### Version:',
+        '#### Date:',
+        '* arm',
+        '</details>',
+        '',
+        '</details>',
+        '',
+        '* qux',
+        ''
+      ].join('\n'));
+    });
+  });
 });
