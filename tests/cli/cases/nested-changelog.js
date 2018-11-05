@@ -62,7 +62,7 @@ utils.createCommit('feat: implement x', {
 utils.callVersionist();
 
 m.chai.expect(shelljs.cat('CHANGELOG.md').stdout).to.deep.equal([
-  '# v0.0.2:',
+  '# v0.0.2',
   '## (2018-09-23)',
   '',
   '* feat: implement x',
@@ -70,7 +70,7 @@ m.chai.expect(shelljs.cat('CHANGELOG.md').stdout).to.deep.equal([
   '<details>',
   '<summary> View details </summary>',
   '',
-  '## 0.1.1:',
+  '## 0.1.1',
   '### (2018-09-23)',
   '',
   '* foo [Bar]',
