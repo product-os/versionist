@@ -70,7 +70,7 @@ m.chai.expect(shelljs.cat('CHANGELOG.md').stdout).to.deep.equal([
   '<details>',
   '<summary> View details </summary>',
   '',
-  '## v0.1.1:',
+  '## 0.1.1:',
   '### (2018-09-23)',
   '',
   '* foo [Bar]',
