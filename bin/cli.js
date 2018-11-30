@@ -52,6 +52,32 @@ const referenceExists = (reference, callback) => {
   });
 };
 
+const createTagFromCommit = (reference, commitSHA, callback) => {
+  const child = childProcess.spawn('git', [ 'tag', reference, commitSHA ]);
+  child.on('error', callback);
+  child.on('close', (code) => {
+    if (code !== 0) {
+      return callback(null, null);
+    }
+    return callback(null, reference);
+  });
+};
+
+const tryReferenceFromCommit = (reference, callback) => {
+  let commitSHA = '';
+  const child = childProcess.spawn('git', [ 'log', `--grep=^${reference}$`, '--format=%H' ]);
+  child.on('error', callback);
+  child.stdout.on('data', (data) => {
+    commitSHA += data;
+  });
+  child.on('close', (code) => {
+    if (commitSHA === '' || code !== 0) {
+      return callback(null, null);
+    }
+    return createTagFromCommit(reference, _.trim(commitSHA), callback);
+  });
+};
+
 const argv = yargs
   .usage('Usage: $0 [OPTIONS]')
   .help()
@@ -158,7 +184,18 @@ async.waterfall([
         return callback(null, versions, null);
       }
 
-      return callback(new Error(`Omitting ${gitReference}. No valid git reference was found.`));
+      // If no matching reference was found we look for a commit matching the reference
+      // If we find one we create a reference to that commit and use it as our startReference
+      return tryReferenceFromCommit(gitReference, (err, newReference) => {
+        if (err) {
+          return callback(err);
+        }
+        if (newReference) {
+          return callback(null, versions, newReference);
+        }
+
+        return callback(new Error(`Omitting ${gitReference}. No valid git reference was found.`));
+      });
     });
   },
 
