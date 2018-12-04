@@ -53,7 +53,7 @@ utils.createVersionistConfiguration([
 ].join('\n'));
 
 shelljs.exec('git init');
-shelljs.exec('touch CHANGELOG.md');
+shelljs.exec('nodetouch CHANGELOG.md');
 
 utils.createCommit('feat: implement x', {
   'Change-Type': 'patch'

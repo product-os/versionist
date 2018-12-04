@@ -51,7 +51,7 @@ utils.createVersionistConfiguration([
 ].join('\n'));
 
 shelljs.exec('git init');
-shelljs.exec('touch CHANGELOG.md');
+shelljs.exec('nodetouch CHANGELOG.md');
 
 utils.createCommit('Implement x', {
   'My-Tag': 'Foo'
