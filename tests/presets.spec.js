@@ -925,6 +925,7 @@ describe('Presets', function() {
 
         it('should be able to update the version in both files', function(done) {
           presets.updateVersion.cargo({}, this.cwd.name, '1.0.1', (error) => {
+
             m.chai.expect(error).to.not.exist;
 
             m.chai.expect(fs.readFileSync(this.cargoToml, 'utf8')).to.equal([
