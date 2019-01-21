@@ -40,7 +40,7 @@
     "markdown": "^0.5.0",
     "replace-in-file": "^2.5.0",
     "semver": "^5.2.0",
-    "update-json": "https://github.com/resin-io-modules/update-json",
+    "update-json": "git://github.com/fczbkk/update-json",
     "yargs": "^11.1.0"
   }
 }
