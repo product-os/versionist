@@ -809,6 +809,230 @@ describe('Presets', function() {
 
       });
 
+      describe('given package-lock.json does not exist', function() {
+
+        beforeEach(function() {
+          this.cwd = tmp.dirSync();
+          this.packageJSON = path.join(this.cwd.name, 'package.json');
+
+          fs.writeFileSync(this.packageJSON, JSON.stringify({
+            name: 'foo',
+            version: '1.0.0'
+          }, null, 2));
+        });
+
+        afterEach(function() {
+          fs.unlinkSync(this.packageJSON);
+          this.cwd.removeCallback();
+        });
+
+        it('should not yield an error', function(done) {
+          presets.updateVersion.npm({}, this.cwd.name, '1.0.0', (error) => {
+            m.chai.expect(error).to.be.null;
+            done();
+          });
+        });
+
+      });
+
+      describe('given package-lock.json exists', function() {
+
+        beforeEach(function() {
+          this.cwd = tmp.dirSync();
+          this.packageJSON = path.join(this.cwd.name, 'package.json');
+          this.packageLockJSON = path.join(this.cwd.name, 'package-lock.json');
+
+          fs.writeFileSync(this.packageJSON, JSON.stringify({
+            name: 'foo',
+            version: '1.0.0'
+          }, null, 2));
+          fs.writeFileSync(this.packageLockJSON, JSON.stringify({
+            name: 'foo',
+            version: '1.0.0'
+          }, null, 2));
+        });
+
+        afterEach(function() {
+          fs.unlinkSync(this.packageJSON);
+          fs.unlinkSync(this.packageLockJSON);
+          this.cwd.removeCallback();
+        });
+
+        it('should be able to update the version', function(done) {
+          presets.updateVersion.npm({}, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            const packageLockJSON = JSON.parse(fs.readFileSync(this.packageLockJSON, {
+              encoding: 'utf8'
+            }));
+
+            m.chai.expect(packageLockJSON).to.deep.equal({
+              name: 'foo',
+              version: '1.1.0'
+            });
+
+            done();
+          });
+        });
+
+        it('should preserve correct identation', function(done) {
+          presets.updateVersion.npm({}, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            const contents = fs.readFileSync(this.packageLockJSON, {
+              encoding: 'utf8'
+            });
+
+            m.chai.expect(contents).to.equal([
+              '{',
+              '  "name": "foo",',
+              '  "version": "1.1.0"',
+              '}'
+            ].join('\n') + os.EOL);
+
+            done();
+          });
+        });
+
+        it('should normalize the version', function(done) {
+          presets.updateVersion.npm({}, this.cwd.name, '  v1.1.0  ', (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            const packageLockJSON = JSON.parse(fs.readFileSync(this.packageLockJSON, {
+              encoding: 'utf8'
+            }));
+
+            m.chai.expect(packageLockJSON).to.deep.equal({
+              name: 'foo',
+              version: '1.1.0'
+            });
+
+            done();
+          });
+        });
+
+        it('should reject an invalid version', function(done) {
+          presets.updateVersion.npm({}, this.cwd.name, 'foo', (error) => {
+            m.chai.expect(error).to.be.an.instanceof(Error);
+            m.chai.expect(error.message).to.equal('Invalid version: foo');
+            done();
+          });
+        });
+
+      });
+
+      describe('given npm-shrinkwrap.json does not exist', function() {
+
+        beforeEach(function() {
+          this.cwd = tmp.dirSync();
+          this.packageJSON = path.join(this.cwd.name, 'package.json');
+
+          fs.writeFileSync(this.packageJSON, JSON.stringify({
+            name: 'foo',
+            version: '1.0.0'
+          }, null, 2));
+        });
+
+        afterEach(function() {
+          fs.unlinkSync(this.packageJSON);
+          this.cwd.removeCallback();
+        });
+
+        it('should not yield an error', function(done) {
+          presets.updateVersion.npm({}, this.cwd.name, '1.0.0', (error) => {
+            m.chai.expect(error).to.be.null;
+            done();
+          });
+        });
+
+      });
+
+      describe('given npm-shrinkwrap.json exists', function() {
+
+        beforeEach(function() {
+          this.cwd = tmp.dirSync();
+          this.packageJSON = path.join(this.cwd.name, 'package.json');
+          this.npmShrinkwrapJSON = path.join(this.cwd.name, 'npm-shrinkwrap.json');
+
+          fs.writeFileSync(this.packageJSON, JSON.stringify({
+            name: 'foo',
+            version: '1.0.0'
+          }, null, 2));
+          fs.writeFileSync(this.npmShrinkwrapJSON, JSON.stringify({
+            name: 'foo',
+            version: '1.0.0'
+          }, null, 2));
+        });
+
+        afterEach(function() {
+          fs.unlinkSync(this.packageJSON);
+          fs.unlinkSync(this.npmShrinkwrapJSON);
+          this.cwd.removeCallback();
+        });
+
+        it('should be able to update the version', function(done) {
+          presets.updateVersion.npm({}, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            const npmShrinkwrapJSON = JSON.parse(fs.readFileSync(this.npmShrinkwrapJSON, {
+              encoding: 'utf8'
+            }));
+
+            m.chai.expect(npmShrinkwrapJSON).to.deep.equal({
+              name: 'foo',
+              version: '1.1.0'
+            });
+
+            done();
+          });
+        });
+
+        it('should preserve correct identation', function(done) {
+          presets.updateVersion.npm({}, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            const contents = fs.readFileSync(this.npmShrinkwrapJSON, {
+              encoding: 'utf8'
+            });
+
+            m.chai.expect(contents).to.equal([
+              '{',
+              '  "name": "foo",',
+              '  "version": "1.1.0"',
+              '}'
+            ].join('\n') + os.EOL);
+
+            done();
+          });
+        });
+
+        it('should normalize the version', function(done) {
+          presets.updateVersion.npm({}, this.cwd.name, '  v1.1.0  ', (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            const npmShrinkwrapJSON = JSON.parse(fs.readFileSync(this.npmShrinkwrapJSON, {
+              encoding: 'utf8'
+            }));
+
+            m.chai.expect(npmShrinkwrapJSON).to.deep.equal({
+              name: 'foo',
+              version: '1.1.0'
+            });
+
+            done();
+          });
+        });
+
+        it('should reject an invalid version', function(done) {
+          presets.updateVersion.npm({}, this.cwd.name, 'foo', (error) => {
+            m.chai.expect(error).to.be.an.instanceof(Error);
+            m.chai.expect(error.message).to.equal('Invalid version: foo');
+            done();
+          });
+        });
+
+      });
+
     });
 
     describe('.cargo', function() {
