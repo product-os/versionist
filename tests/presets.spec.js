@@ -2469,4 +2469,65 @@ describe('Presets', function() {
     });
 
   });
+
+  describe('.transformTemplateData', () => {
+
+    describe('.changelog-entry', () => {
+
+      it('should set subject to changelog entry', function() {
+        const data = {
+          commits: [
+            {
+              subject: 'Commit subject',
+              footer: {
+                'changelog-entry': 'User facing message'
+              }
+            }
+          ]
+        };
+        const result = presets.transformTemplateData['changelog-entry']({}, data);
+        m.chai.expect(result.commits).to.deep.equal([
+          {
+            author: 'Unknown author',
+            subject: 'User facing message',
+            footer: {
+              'changelog-entry': 'User facing message'
+            }
+          }
+        ]);
+      });
+
+      it('should not modify the commit if changelog entry is not set', function() {
+        const data = {
+          commits: [
+            {
+              subject: 'Commit subject',
+              footer: {
+                'a-footer': 'footer'
+              }
+            }
+          ]
+        };
+        const result = presets.transformTemplateData['changelog-entry']({}, data);
+        m.chai.expect(result.commits).to.deep.equal([
+          {
+            author: 'Unknown author',
+            subject: 'Commit subject',
+            footer: {
+              'a-footer': 'footer'
+            }
+          }
+        ]);
+      });
+
+      it('should throw if no commits are present', function() {
+        const data = {
+          commits: []
+        };
+        m.chai.expect(() => {
+          presets.transformTemplateData['changelog-entry']({}, data);
+        }).to.throw('All commits were filtered out for this version');
+      });
+    });
+  });
 });
