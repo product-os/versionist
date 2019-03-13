@@ -4,7 +4,7 @@ Versionist
 > Flexible CHANGELOG generation toolkit that adapts to your commit conventions.
 
 [![npm version](https://badge.fury.io/js/versionist.svg)](http://badge.fury.io/js/versionist)
-[![Build Status](https://travis-ci.org/resin-io/versionist.svg?branch=master)](https://travis-ci.org/resin-io/versionist)
+[![Build Status](https://travis-ci.org/balena-io/versionist.svg?branch=master)](https://travis-ci.org/balena-io/versionist)
 [![Build status](https://ci.appveyor.com/api/projects/status/xdtf4mx8hmurnmgo/branch/master?svg=true)](https://ci.appveyor.com/project/resin-io/versionist/branch/master)
 [![Gitter](https://badges.gitter.im/resin-io/chat.svg)](https://gitter.im/resin-io/chat?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
@@ -26,7 +26,7 @@ $ npm install -g versionist
 - Clone the Versionist repository, as an example
 
 ```
-$ git clone https://github.com/resin-io/versionist
+$ git clone https://github.com/balena-io/versionist
 $ cd versionist
 $ git checkout example
 ```
@@ -706,9 +706,9 @@ This preset increments the version according to semver rules.
 Support
 -------
 
-If you're having any problems, please [raise an issue][github-issue] on GitHub and the resin.io team will be happy to help.
+If you're having any problems, please [raise an issue][github-issue] on GitHub and the balena team will be happy to help.
 
-You can also get in touch with us in the resin.io [forums](https://forums.resin.io/).
+You can also get in touch with us in the balena [forums](https://forums.balena.io/).
 
 License
 -------
@@ -716,6 +716,6 @@ License
 Versionist is free software, and may be redistributed under the terms specified
 in the [license][license].
 
-[github-issue]: https://github.com/resin-io/versionist/issues/new
-[license]: https://github.com/resin-io/etcher/blob/master/LICENSE
+[github-issue]: https://github.com/balena-io/versionist/issues/new
+[license]: https://github.com/balena-io/etcher/blob/master/LICENSE
 [handlebars]: http://handlebarsjs.com
