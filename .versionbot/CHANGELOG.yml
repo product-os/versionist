@@ -1,0 +1,1089 @@
+- version: 5.0.0
+  date: '2019-05-24T00:00:00Z'
+  commits:
+    - author: Giovanni Garufi
+      subject: Use resin-semver instead of semver
+      body: ''
+      footers:
+        change-type: patch
+    - author: Giovanni Garufi
+      subject: Fix cargo tests
+      body: ''
+      footers:
+        change-type: major
+- version: 4.2.4
+  date: '2019-05-13T00:00:00Z'
+  commits:
+    - author: Pagan Gazzard
+      subject: Convert src/versionist to typescript
+      body: ''
+      footers:
+        change-type: patch
+- version: 4.2.3
+  date: '2019-05-13T00:00:00Z'
+  commits:
+    - author: Giovanni Garufi
+      subject: Add mixed preset for updateVersion
+      body: ''
+      footers:
+        change-type: patch
+- version: 4.2.2
+  date: '2019-05-02T00:00:00Z'
+  commits:
+    - author: Pagan Gazzard
+      subject: Convert git-log to typescript
+      body: ''
+      footers:
+        change-type: patch
+    - author: Pagan Gazzard
+      subject: Convert markdown to typescript
+      body: ''
+      footers:
+        change-type: patch
+    - author: Pagan Gazzard
+      subject: Convert template to typescript
+      body: ''
+      footers:
+        change-type: patch
+    - author: Pagan Gazzard
+      subject: Convert semver to typescript
+      body: ''
+      footers:
+        change-type: patch
+- version: 4.2.1
+  date: '2019-05-01T00:00:00Z'
+  commits:
+    - author: Pagan Gazzard
+      subject: Set up project for typescript and convert tags module to typescript
+      body: ''
+      footers:
+        change-type: patch
+- version: 4.2.0
+  date: '2019-04-17T00:00:00Z'
+  commits:
+    - author: Giovanni Garufi
+      subject: Add support for multiple upstream updates in a single commit
+      body: ''
+      footers:
+        change-type: patch
+- commits:
+    - author: Will Boyce
+      body: ''
+      footers:
+        change-type: patch
+        signed-off-by: Will Boyce <will@balena.io>
+      hash: 39bfcdb801e6ff4abe4c2c2d7adb2dfbe61000e9
+      subject: do not require "Update" to be title-case in commit body
+  date: '2019-04-17T14:49:51Z'
+  version: 4.1.2
+- commits:
+    - author: Matthew McGinn
+      body: ''
+      footers:
+        change-type: patch
+        signed-off-by: Matthew McGinn <mamcgi@gmail.com>
+      hash: 924a9b21253ad7b737dc05067f4e97a062e16505
+      subject: Update README.md resin references to balena
+  date: '2019-03-13T11:35:01Z'
+  version: 4.1.1
+- commits:
+    - author: Giovanni Garufi
+      body: ''
+      footers:
+        change-type: minor
+        signed-off-by: Giovanni Garufi <giovanni@balena.io>
+      hash: 756d4778b6198733157031dc868eacae12b0f11b
+      subject: Throw if all commits have been filtered out in changelog-entry preset
+  date: '2019-03-12T15:02:20Z'
+  version: 4.1.0
+- commits:
+    - author: Lorenzo Alberto Maria Ambrosi
+      body: ''
+      footers:
+        change-type: patch
+        signed-off-by: Lorenzo Alberto Maria Ambrosi <lorenzothunder.ambrosi@gmail.com>
+      hash: 56c9e0996c324793fdd9f4742af1c109fa0487cc
+      subject: Check package-lock.json and npm-shrinkwrap.json
+  date: '2019-02-27T11:19:31Z'
+  version: 4.0.2
+- commits:
+    - author: Alexis Svinartchouk
+      body: ''
+      footers:
+        change-type: patch
+      hash: 88fe1a72b11828ded765858bf0d035118ccdce29
+      subject: Fix package-lock.json
+    - author: Alexis Svinartchouk
+      body: ''
+      footers:
+        change-type: patch
+      hash: 311669005da4f1f9abd1a28a4c08b540bd80572a
+      subject: 'Fix tests/cli/run.js, run only .js files'
+    - author: Alexis Svinartchouk
+      body: |-
+        In 1.0.0 it was called touch and was shadowing the regular touch
+        command, breaking functionality of programs relying on it.
+      footers:
+        change-type: patch
+      hash: 1d48213a1cf537a040cde7f190cc26af706a34b1
+      subject: Move nodetouch to devDependencies and update to ^3.1.0
+  date: '2018-12-04T21:56:45Z'
+  version: 4.0.1
+- commits:
+    - author: Giovanni Garufi
+      body: ''
+      footers:
+        change-type: patch
+        signed-off-by: Giovanni Garufi <giovanni@balena.io>
+      hash: c9da376f222755d56a1637fc14b66de8f31455ff
+      subject: Fix nested-changelog range
+    - author: Giovanni Garufi
+      body: |-
+        If no reference is found matching the required version we fallback to
+        looking at the commit history for a commit that matches that reference.
+        If we find one we create a reference for that commit
+      footers:
+        change-type: major
+        signed-off-by: Giovanni Garufi <giovanni@balena.io>
+      hash: 0d51bb427b493fdd4051f6c9ec449b7c0006a0c6
+      subject: Fallback when no reference is found
+  date: '2018-11-30T15:14:21Z'
+  version: 4.0.0
+- commits:
+    - author: nazrhom
+      body: ''
+      footers:
+        change-type: patch
+        signed-off-by: Giovanni Garufi <giovanni@resin.io>
+      hash: ec0bd84f2cc501354068302a4a06b5201d1e7024
+      subject: 'presets: Remove extra semicolon from version'
+  date: '2018-11-05T14:33:47Z'
+  version: 3.0.2
+- commits:
+    - author: nazrhom
+      body: Remove extra "v" appearing before version in nested changelogs
+      footers:
+        change-type: patch
+        signed-off-by: Giovanni Garufi <giovanni@resin.io>
+      hash: 898b56ef6546d6da276782c465e489372c00434d
+      subject: 'lib/presets: fix nested changelog'
+  date: '2018-11-05T11:33:50Z'
+  version: 3.0.1
+- commits:
+    - author: Giovanni Garufi
+      body: ''
+      footers:
+        change-type: major
+        signed-off-by: Giovanni Garufi <giovanni@resin.io>
+      hash: 9f39c55267cd6932690eef5a61dacbc1096c6834
+      subject: 'presets: Change presets to match default config'
+    - author: Giovanni Garufi
+      body: ''
+      footers:
+        change-type: patch
+        signed-off-by: Giovanni Garufi <giovanni@resin.io>
+      hash: 5749eae0da8f9a96a2557af8fb9ae06178e03008
+      subject: Refactored loading and determining default configuration
+    - author: Giovanni Garufi
+      body: ''
+      footers:
+        change-type: minor
+        signed-off-by: Giovanni Garufi <giovanni@resin.io>
+      hash: 404e652ff8c4b5e7135dafed9e4a5fc77afe57a9
+      subject: Add more template presets and default empty changelog
+  date: '2018-10-31T15:27:15Z'
+  version: 3.0.0
+- commits:
+    - author: Giovanni Garufi
+      body: ''
+      footers:
+        change-type: minor
+        signed-off-by: Giovanni Garufi <giovanni@resin.io>
+      hash: 92202b8cc2895e0d0615fac14b924afa710652ba
+      subject: 'lib/presets: Accept multiple upstreams in nested-changelogs'
+  date: '2018-10-16T10:36:05Z'
+  version: 2.18.0
+- commits:
+    - author: Giovanni Garufi
+      body: ''
+      footers:
+        change-type: minor
+        signed-off-by: Giovanni Garufi <giovanni@resin.io>
+      hash: b6eb14233e730dff00adeeb53148e6089608bab0
+      subject: 'nested-changelogs: Add support for nested changelogs'
+  date: '2018-09-07T12:04:17Z'
+  version: 2.17.0
+- commits:
+    - author: Giovanni Garufi
+      body: Extend getGreaterVersion to work for extended-semver strings.
+      footers:
+        change-type: minor
+        signed-off-by: Giovanni Garufi <giovanni@resin.io>
+      hash: 37e9616dc5c341bbdaad994eb811ad87fa010b56
+      subject: 'lib/semver: Modify getGreaterVersion'
+  date: '2018-08-24T10:25:33Z'
+  version: 2.16.0
+- commits:
+    - author: Giovanni Garufi
+      body: |-
+        Added a hook to use a custom base version for the increment.
+        Defaults to the latest documented version returned from
+        `getChangelogDocumentedVersions`. This is overwritten by the --current
+        option.
+        Added a `clean` option to various preset functions that controls which
+        kind of sanitisation is performed on the versions.
+      footers:
+        change-type: minor
+        signed-off-by: Giovanni Garufi <giovanni@resin.io>
+      hash: 92ca33a7dd4aadec3711c70224808dc5660c3f96
+      subject: 'cli: Add getCurrentBaseVersion'
+    - author: Giovanni Garufi
+      body: ''
+      footers:
+        change-type: patch
+        signed-off-by: Giovanni Garufi <giovanni@resin.io>
+      hash: 115191a9a28d098f9527df27a10a2fd88280408f
+      subject: 'tests: Set tmp git identity in tests'
+  date: '2018-08-22T14:58:20Z'
+  version: 2.15.0
+- commits:
+    - author: Giovanni Garufi
+      body: |-
+        Usage:
+        versionist get version:     returns the latest documented version
+        versionist get reference:   returns the git reference corresponding to
+        the lastest documented version
+      footers:
+        change-type: minor
+        signed-off-by: nazrhom <giovanni@resin.io>
+      hash: 9fc36c33491a49bb1bcd68a9c760b89c9319c5fe
+      subject: 'cli: Add get command'
+  date: '2018-07-06T13:24:57Z'
+  version: 2.14.0
+- commits:
+    - author: Andrew Scheller
+      body: the version in arbitrary (text) file-types
+      footers:
+        change-type: minor
+      hash: ae9e189e013002ce0cac791b14184e662c61f3e0
+      subject: 'Add a `quoted` updateVersion preset, which uses a regex to update'
+  date: '2018-02-09T16:35:15Z'
+  version: 2.13.0
+- commits:
+    - author: majorz
+      body: >-
+        We are doing more heavy regex processing now.
+
+        First the package name is extracted from Cargo.toml. It is located in
+        the  `[package]` section of Cargo.toml. The package name is used for
+        detecting the proper `version = "..."` definition in Cargo.lock.
+        Cargo.lock is generated automatically, so `version` always follows
+        `name`, and the code takes advantage of that fact for simplification
+        purposes.
+
+        The proper `version = "..."` definition in Cargo.toml is inside the
+        `[package]` section, so the regex looks for first occurrence after
+        `[package]`.
+      footers:
+        change-type: patch
+        connects-to: '#101'
+      hash: 641aaecc36b86e4e39db6f0073dcd5fbd54869cf
+      subject: Update the proper version definition of Rust Cargo manifests
+  date: '2018-01-31T13:56:05Z'
+  version: 2.12.1
+- commits:
+    - author: Andrew Scheller
+      body: ''
+      footers:
+        change-type: patch
+      hash: 3820b307261376e702a51e00283aa04c1ad72b0e
+      subject: Clarify the `updateVersion` presets documentation
+    - author: Trong Nghia Nguyen
+      body: ''
+      footers:
+        change-type: minor
+        connects-to: '#99'
+      hash: 900db381dfcdbd69024ab67aed41766553a7f843
+      subject: Python __init__ file support
+  date: '2018-01-24T16:20:14Z'
+  version: 2.12.0
+- commits:
+    - author: Gergely Imreh
+      body: ''
+      footers:
+        change-type: patch
+      hash: 8e436e9c2e3f29e189751b6b4ae014518dfefa8d
+      subject: update support links and info
+  date: '2017-12-12T15:49:28Z'
+  version: 2.11.4
+- commits:
+    - author: majorz
+      body: ''
+      footers:
+        change-type: patch
+        connects-to: '#96'
+      hash: b4dc80cc46650f702d5089ed42c68836dde112ba
+      subject: Update Cargo.lock if exists side by side with Cargo.toml
+  date: '2017-11-01T17:19:48Z'
+  version: 2.11.3
+- commits:
+    - author: Heds Simons
+      body: >-
+        This uses a fork of the NPM module, but a PR for the original module has
+        been introduced.
+
+        When accepted, this change should revert.
+
+        Connects-to: #87
+      footers:
+        change-type: patch
+      hash: cf874c5ff328823881499e4b9c3d0869c0ea69e0
+      subject: >-
+        Use modified version of 'update-json' to preserve newline at end of JSON
+        files (ie. `package.json`).
+  date: '2017-09-21T15:30:57Z'
+  version: 2.11.2
+- commits:
+    - author: Andrew Scheller
+      body: |-
+        Document 'Dry run' flag (added in #79 )
+        Mention the Rust Cargo `updateVersion` preset (added in #86 )
+        Clarify which functions accept preset strings
+        Small typos
+      footers:
+        change-type: patch
+      hash: c1ba68ef1d461c3b464e0a84535f715274a34c7d
+      subject: README updates
+  date: '2017-07-07T11:26:18Z'
+  version: 2.11.1
+- commits:
+    - author: craig-mulligan
+      body: |-
+        Connects to #69
+        updateVersionHook now accepts Object of async
+        functions, and executes each with async's applyEachSeries.
+      footers:
+        change-type: minor
+      hash: f4b1865730560ffe85ca6f3e6bdeee4ba5cac738
+      subject: Mixed types parameters for updateVersionHook
+  date: '2017-06-16T10:12:17Z'
+  version: 2.11.0
+- commits:
+    - author: majorz
+      body: ''
+      footers:
+        change-type: minor
+      hash: d8d74022fe5ea72ad2bf2b09de480aff99b6ffc6
+      subject: First class Rust Cargo support
+  date: '2017-06-01T09:18:44Z'
+  version: 2.10.0
+- commits:
+    - author: craig-mulligan
+      body: 'Connects to #80 and #76'
+      footers:
+        change-type: patch
+      hash: 9874f609dd91008ffdf421444089f2889a4ef00c
+      subject: Make change-type insensitive & add change-type none
+    - author: craig-mulligan
+      body: 'Connects to #62'
+      footers:
+        change-type: minor
+      hash: 622b01dbe6a680541b8c6185db5fc46b2ece45af
+      subject: Add dry mode
+    - author: craig-mulligan
+      body: ''
+      hash: c62de5fbb592fd877227ebe4962618f08a2b5e0d
+      subject: add tests
+  date: '2017-04-21T12:22:45Z'
+  version: 2.9.0
+- commits:
+    - author: Kostas Lekkas
+      body: ''
+      footers:
+        change-type: patch
+      hash: 648ed6bb47ec0ac0bedcb82af2a1ce3d3195464d
+      subject: >-
+        Show nice error message instead of crashing if version incrementing
+        commits are missing
+    - author: Ștefan Daniel Mihăilă
+      body: ''
+      hash: e75b7c04f6055dc260ef0a7c16d1f4673d7f7400
+      subject: 'style: fix typo in README.md'
+  date: '2017-02-11T18:35:46Z'
+  version: 2.8.1
+- commits:
+    - author: Andrew Scheller
+      body: |-
+        So that versionist can be run on itself, without needing to be installed
+        globally.
+        Fixes #64
+      footers:
+        change-type: minor
+      hash: 5a2a83e3528b11e6ba37bade2b0b3c62e918285d
+      subject: Add a `versionist` script to `package.json`
+    - author: gaudi
+      body: >-
+        Connects to #42.
+
+        Added debug module so stack trace will only be output when running with
+        DEBUG=* or DEBUG=versionist.
+      footers:
+        change-type: patch
+      hash: 56ed543a1c6824d408692f6b1efa0d3f9beb4aab
+      subject: 'Only output stack trace in debug mode. (#63)'
+  date: '2017-01-03T20:14:20Z'
+  version: 2.8.0
+- commits:
+    - author: gaudi
+      body: 'Connects to #58.'
+      hash: 617248703d07650b710481a50b0cdef4f71005b6
+      subject: 'Default to internal versionist.conf.js if none is passed (#58)'
+  date: '2016-12-20T09:50:38Z'
+  version: 2.7.0
+- commits:
+    - author: Heds Simons
+      body: 'Connects to #56.'
+      footers:
+        change-type: patch
+      hash: 05bcf8f8ba4700448ec717edc8a83cd1bed3f98b
+      subject: >-
+        Remove `lodash` completely, removing dependencies on non-standard
+        library.
+  date: '2016-12-09T12:24:42Z'
+  version: 2.6.2
+- commits:
+    - author: Heds Simons
+      body: ''
+      footers:
+        change-type: patch
+      hash: 9a86a4ef317d88f00aa4963eb154966c2612c50b
+      subject: >-
+        Ensure that referencing lodash occurs via the versionist base directory
+        and not the CWD.
+  date: '2016-12-09T11:46:26Z'
+  version: 2.6.1
+- commits:
+    - author: Heds Simons
+      body: ''
+      footers:
+        change-type: minor
+      hash: 6e5283c5878c35886bc6f941df63d9e6c9056d86
+      subject: >-
+        Add a default resin.io `versionist` configuration file, for use in
+        future project.
+  date: '2016-12-09T10:05:28Z'
+  version: 2.6.0
+- commits:
+    - author: Cameron Diver
+      body: >-
+        The hash of the commit is retrieved by git, and parsed from the yaml,
+
+        and passed through as part of the commit object to the configuration
+        file.
+
+        Tests have also been changed to reflect the new output, and some
+
+        documentation has been added.
+      footers:
+        change-type: minor
+        connects-to: 50
+      hash: 39764b4870820276f69f6f93e23187166e1adaf7
+      subject: Add the passing of commit hash to the config file.
+  date: '2016-12-07T15:41:29Z'
+  version: 2.5.0
+- commits:
+    - author: Heds Simons
+      body: >-
+        This allows developers to mix case for tags and simplify checks for tags
+        in the `versionist.conf.js` configuration file.
+
+        Alters the current test-suite so that test configs use lowercased tags.
+
+        Connects to #48.
+      footers:
+        change-type: minor
+      hash: acff340d79709ad35235daa1b5d0a9b5c51935eb
+      subject: >-
+        Add a `lowerCaseFooterTags` option (default is `true`) which lowercases
+        all footer tags keys.
+    - author: Heds Simons
+      body: >-
+        This ensures that strict case testing is backwards compatible, and
+        offers more open options for configuration files.
+      hash: d4071b0f94fe2d07210d71231c29ca0e7eca43f5
+      subject: >-
+        Update the `lowerCaseFooterTags` option to produce lowercase versions of
+        footer tags alongside originals.
+    - author: Heds Simons
+      body: ''
+      hash: b6bea5ee28adf6421e8866266a2dc9bee35b5418
+      subject: >-
+        Optimise parseFooterTagLines() function, add unit tests for it with the
+        'lowerCaseFooterTags' option and replace single option parameter with
+        options object.
+    - author: Heds Simons
+      body: ''
+      hash: 4d5e729235b0c4918f137a07e7b434300e1712e4
+      subject: Ensure default value into `parseFooterTagLines()` is false.
+  date: '2016-12-06T19:41:59Z'
+  version: 2.4.0
+- commits:
+    - author: Heds Simons
+      body: |-
+        Due to the way `yargs` operates, a named option cannot be used
+        as an object to pass back a new set of options (in this case
+        the loaded configuration), as the key on `argv` essentially already
+        exists.
+        To mitigate this, the returned object is renamed `configuration` and
+        this is used in place of `config` for all further operations.
+      footers:
+        change-type: minor
+        changelog-entry: Ensure a specified config file is parsed correctly.
+      hash: 0fdbf38dd064b0dc3e1fb32e4d00b887d5f815b1
+      subject: 'fix: ensure a specified config file is parsed correctly'
+  date: '2016-11-30T22:44:49Z'
+  version: 2.3.0
+- commits:
+    - author: Juan Cruz Viotti
+      body: ''
+      footers:
+        signed-off-by: Juan Cruz Viotti <jviotti@openmailbox.org>
+      hash: 8d4acd92173fb36478ae2316bc824342a039fab2
+      subject: 'chore: fix lint warnings introduced in new ESLint versions'
+    - author: Andrew Scheller
+      body: ''
+      hash: 080c0fca584638022ad106ba3a41157e43cd6dc0
+      subject: 'style: fix typo in README.md'
+    - author: Juan Cruz Viotti
+      body: |-
+        The CLI configuration file loading/parsing logic is moved to
+        `lib/cli/configuration.js`. Moving this logic to a different file allows
+        this functionality to be unit-tested more easily.
+      footers:
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: 706483bd3f1edfe66ed59ae4566dbf7dc38338b7
+      subject: 'refactor: extract CLI configuration logic to a new module'
+    - author: Juan Cruz Viotti
+      body: |-
+        If we repeatedly call Versionist from the beginning of a project, all
+        the commits so far will be added over and over again.
+        The reason for this is that we default the start commit for
+        `versionist.readCommitHistory()` to `null` if a reference is not found,
+        independently on if it corresponds to the default initial version or
+        not.
+        To solve this issue, we only default the start commit to `null` if no
+        documented version was found on the repository.
+      footers:
+        change-type: patch
+        changelog-entry: Reject non-existent git references if there are documented versions.
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: 196d6531addd173a6a1a671968d8bb9f2294d5e0
+      subject: 'fix: reject non-existent git refs if there are documented versions'
+    - author: Juan Cruz Viotti
+      body: |-
+        The linter complained that the `commit` parameter was not used in the
+        function body.
+      footers:
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: 110d497c4d92ebcfd62c7ec9dc4041ca23728683
+      subject: 'style: fix lint warning in `no-parse-footer-tags.js` test case'
+    - author: Juan Cruz Viotti
+      body: |-
+        Turns out non-zero exit codes are swallowed by `shelljs.exec`.
+        Making sure that a non-zero exit code from the CLI test cases halts the
+        CI builds reveals that the CI services require us to configure `git`
+        before being able to use it directly to perform a commit.
+        We also needed to save the git commit message to a temporary file and
+        re-use it with `-F` on `git commit` given that Windows gets confused by
+        line breaks in `-m`.
+      footers:
+        see: 'http://stackoverflow.com/a/20438380/1641422'
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: 0ec4c9dd4801987c367905310353089e76929602
+      subject: 'minifix: make sure CLI tests exit with exit code 1 on failure'
+    - author: Juan Cruz Viotti
+      body: |-
+        The `parseFooterTags` config value was not propagated to
+        `gitLog.parseGitLogYAMLOutput()` via `versionist.readCommitHistory()`.
+      footers:
+        change-type: patch
+        changelog-entry: Fix `parseFooterTags` not taking effect.
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: 86acfc764bc2e6742e48f6cc2f164bb8a73cb049
+      subject: 'fix: `parseFooterTags` not taking effect'
+    - author: Juan Cruz Viotti
+      body: |-
+        Making sense about how all the available options play together to
+        perform their job is hard to grok for a beginner. This documentation
+        block attempts to ease that by explaining in detail how/when Versionist
+        uses all the available options.
+      footers:
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: 87ad8e2ca883e6c2d06ebf0540368d42115df315
+      subject: 'doc: document how all options fit together'
+    - author: Juan Cruz Viotti
+      body: |-
+        This test suite creates real repositories with real commits and performs
+        actions on them using the Versionist CLI. This approach will allow us to
+        run tests on the CLI code, and make sure certain scenarious are free
+        from regressions
+        The e2e test suite will run with `npm test` automatically.
+      footers:
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: d14e2e11bf638d777498cddbc8ff92331ff9ed6c
+      subject: 'test: create a basic CLI end to end test suite'
+    - author: Juan Cruz Viotti
+      body: |-
+        Presets should take an option object as the first argument. Such object
+        is automatically partially applied by the CLI when reading the
+        configuration file.
+      footers:
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: a81bfe82ae559d77f3d90dafa86b1414d5b6a425
+      subject: 'minifix: invalid version when using `semver` `incrementVersion` preset'
+    - author: Juan Cruz Viotti
+      body: |-
+        Currently, the `.getChangelogDocumentedVersions()` `changelog-headers`
+        preset throws an `ENOENT` error if a CHANGELOG file doesn't yet exist.
+        This causes confusions for users configuring Versionist on their
+        projects right at the beginning.
+        A better behaviour is to yield an empty array.
+      footers:
+        change-type: patch
+        changelog-entry: >-
+          Don't throw ENOENT in `changelog-headers` preset if the changelog file
+          doesn't exist.
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: cc71f566d199928ccd27df1880ad90b026336e06
+      subject: 'fix: `changelog-headers` ENOENT when no changelog file'
+    - author: Juan Cruz Viotti
+      body: |-
+        This option, which defaults to `0.0.1`, can be used to configure the
+        desired default initial version in case the
+        `getChangelogDocumentedVersions` hook doesn't find any version.
+        If the default version reference can't be found on git, then all commits
+        from the beginning of the project will be included in such version.
+      footers:
+        change-type: minor
+        changelog-entry: Add `defaultInitialVersion` option.
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: 31124634ed353e8f340e84de24e50581f527dc05
+      subject: 'feat: add `defaultInitialVersion` option'
+    - author: Juan Cruz Viotti
+      body: |-
+        This hook can be declared to customise how a version is incremented
+        given an increment level. It can be handy in some edge cases, and
+        defaults to incrementing a version based on semver rules.
+      footers:
+        change-type: minor
+        changelog-entry: Add `incrementVersion` option hook.
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: 509cab78c53ae8761155271489d1793cd6b4a47e
+      subject: 'feat: add `incrementVersion` option hook'
+  date: '2016-11-12T13:13:40Z'
+  version: 2.2.0
+- commits:
+    - author: Juan Cruz Viotti
+      body: |-
+        The callbacks in this waterfall entry all yield a version. When omitting
+        the version, we call `callback` without parameters, therefore the next
+        waterfall entry passes the new callback as the first parameter, causing
+        a confusing error to be thrown.
+        In order to be consistent with other callback calls, we manually pass a
+        `null` version as the second argument.
+      footers:
+        change-type: patch
+        changelog-entry: Fix uncaught exception if current version is omitted.
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: 1a7bd89172afc52441ac78eb33352323bf70956e
+      subject: 'fix: uncaught exception if current version is omitted'
+    - author: Juan Cruz Viotti
+      body: |-
+        This hook is useful to perform more advanced manipulations to the data
+        that is passed to the template. Can be useful in certain situations.
+      footers:
+        change-type: minor
+        changelog-entry: Add `transformTemplateData` option hook.
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: d6c15815d328c12f78352d492820a5809b3ee015
+      subject: 'feat: add `transformTemplateData` option hook'
+    - author: Juan Cruz Viotti
+      body: |-
+        This project now has its own Gitter channel, where we'll point from the
+        README and from error messages.
+      footers:
+        see: 'https://gitter.im/resin-io/versionist'
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: 0cc996fff8ad072a9031589cbf550207adceaefb
+      subject: 'chore: point to new versionist gitter channel'
+    - author: Juan Cruz Viotti
+      body: |-
+        This module mixes a lot of synchronous and asynchronous code. To make
+        sure every single exception is caught gets nicely displayed in the CLI
+        tool, we listen to the `uncaughtException` `process` event.
+      footers:
+        change-type: patch
+        changelog-entry: Make sure every exception is nicely displayed.
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: f465ded6b59974807f97dc2c807cda7de84c377f
+      subject: 'fix: make sure every exception is nicely displayed'
+  date: '2016-07-24T22:12:27Z'
+  version: 2.1.0
+- commits:
+    - author: Juan Cruz Viotti
+      body: |-
+        The CHANGELOG header was removed in 62c4da9 for simplicity purposes,
+        given we didn't have an easy way to deal with it on
+        `addEntryToChangelog` `prepend` preset.
+        This PR implements a `fromLine` option to the `prepend` preset, which as
+        the name implies, causes the prepending to happen from a certain line.
+        Now that we have this feature, we restore the original CHANGELOG header
+        and make use of `fromLine` in our `versionist.conf.js`.
+      footers:
+        change-type: minor
+        changelog-entry: >-
+          Implement `fromLine` option for `addEntryToChangelog`'s `prepend`
+          preset.
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: 11d1be4ad365e08690554a7ba016dc3c4cad1caf
+      subject: 'feat: implement addEntryToChangelog `prepend` `fromLine` option'
+    - author: Juan Cruz Viotti
+      body: |-
+        This PR allows the user to make use of a preset with an optional object
+        notation that looks like this:
+        ```
+        module.exports = {
+        ...
+        addEntryToChangelog: {
+        preset: 'prepend',
+        optionSupportedByPrepend1: 'value',
+        optionSupportedByPrepend2: 'value'
+        }
+        ...
+        }
+        ```
+        The options are then passed as the first argument to the preset.
+      footers:
+        change-type: minor
+        changelog-entry: Add support for preset options.
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: 50451201f7e1589a554ec2203d5b20e16d257a3c
+      subject: 'feat: add support for preset options'
+    - author: Juan Cruz Viotti
+      body: |-
+        Recent commits introduced plenty features, like automatic `CHANGELOG`
+        and `package.json` editing.
+        The example from the `README.md` was updated to showcase this feature.
+        In order to make sure there are always enough changes to get something
+        generated, we added an `example` annotated tag and instruct the user to
+        `checkout` it.
+      footers:
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: 79f81717d26ca53de48a6c5fb05190bcbe1454d5
+      subject: 'docs: update README example to showcase new features'
+    - author: Juan Cruz Viotti
+      body: |-
+        This option hook would be used to automatically increment the version in
+        the current project. It ships with a default `npm` preset which updates
+        `package.json`.
+      footers:
+        change-type: minor
+        changelog-entry: Add `updateVersion` option hook.
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: 3b02d2cd5692fffba0807a68398b518abf8c9eee
+      subject: 'feat: add `updateVersion` option hook'
+    - author: Juan Cruz Viotti
+      body: |-
+        This option is used to control whether the project version will be
+        edited by using the `updateVersion` hook.
+      footers:
+        change-type: minor
+        changelog-entry: Add `editVersion` option.
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: 9f2d93a4ee75508d3f60444bce73f371d34b8fd0
+      subject: 'feat: add `editVersion` option'
+    - author: Juan Cruz Viotti
+      body: |-
+        `semver.compare` can be passed to `Array#sort()` directly, which greatly
+        simplifies our reducer function uses `semver.gt`.
+      footers:
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: b80bbfbc1c6520be92e2568b456c4b6278204932
+      subject: 'refactor: use semver.compare to sort versions'
+    - author: Juan Cruz Viotti
+      body: ''
+      footers:
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: 0afec7979f19b0e238e406d3d43687397eff8463
+      subject: 'style: fix README typo'
+    - author: Juan Cruz Viotti
+      body: |-
+        For simplicity purposes. We'll be extending presets to take arguments
+        shortly, which would allows to deal with this edge case with the
+        `addEntryToChangelog`'s `prepend` preset.
+      footers:
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: 62c4da90832da9c3f73fb4f21abbfd4767a9dae2
+      subject: 'chore: remove CHANGELOG header'
+    - author: Juan Cruz Viotti
+      body: |-
+        This option hook is used to resolve a git reference out of a semantic
+        version. For example, you may create annotated git tags for each version
+        using the following convention: `vx.y.z`.
+        In order to resolve a `x.y.z` semantic version, you could declare a hook
+        that simply prepends a `v`.
+        In more complex use cases, this hook could traverse the git history or
+        available tags.
+      footers:
+        change-type: minor
+        changelog-entry: Add `getGitReferenceFromVersion` option hook.
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: 580b956a159746095abe473e01e4c22558fcde66
+      subject: 'feat: add `getGitReferenceFromVersion` option hook'
+    - author: Juan Cruz Viotti
+      body: |-
+        Using Versionist is very manual. We require users to manually specify
+        the range of commits to be parsed with the `--from` and `--to` CLI
+        arguments.
+        Since the addition of the `getChangelogDocumentedVersions` hook, we can
+        use the information returned by that function to automatically infer
+        these values.
+        The CLI doesn't have the `--from`/`--to` options anymore and instead:
+        - Defaults `--to` to `HEAD`.
+        - Defaults `--from` to the greater version returned by
+        `getChangelogDocumentedVersions`.
+      footers:
+        change-type: major
+        changelog-entry: Automatically infer the appropriate git commit range.
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: 47a7af3ae9b7dfad650af9aa57940b928bbeb274
+      subject: 'feat: infer `--from` and `--to`'
+    - author: Juan Cruz Viotti
+      body: |-
+        This function makes Versionist add the generated entry to the CHANGELOG
+        automatically, which is the default behaviour.
+        Instead, if the option is set to `false`, the generated entry is simply
+        printed to `stdout`, which is very useful for debugging purposes, or
+        while the user is working on its template.
+      footers:
+        change-type: minor
+        changelog-entry: Add `editChangelog` option.
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: c3805a79539b4bfa5bcaaf13859fd5040be7527b
+      subject: 'feat: add `editChangelog` option'
+    - author: Juan Cruz Viotti
+      body: |-
+        There is a bug in the way we apply default values for boolean options.
+        If the user explicitly sets an option to `false`, then `property ||
+        default` will incorrectly be evaluated to `default`, which might be
+        `true.
+      footers:
+        change-type: patch
+        changelog-entry: >-
+          Don't apply default values on boolean options explicitly set to
+          `false`.
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: 8134d572f58ba86710316407a35f8da550381448
+      subject: 'fix: apply default values if the current value is not defined'
+    - author: Juan Cruz Viotti
+      body: |-
+        This hook is used to determine which versions were already documented in
+        the project's CHANGELOG file specified in `changelogFile`.
+        The main purpose of this option is to prevent adding duplicate entries
+        to the CHANGELOG, and to calculate what's the latest documented version
+        automatically.
+      footers:
+        change-type: minor
+        changelog-entry: Add `getChangelogDocumentedVersions` option hook.
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: 10a1c90c86ad50f8db8c0428b5b3e0bc51d0ef78
+      subject: 'feat: add `getChangelogDocumentedVersions` option'
+    - author: Juan Cruz Viotti
+      body: |-
+        Currently, a generated entry is blindly added to the `CHANGELOG` file.
+        This means that if a user runs the same command over and over again, the
+        same duplicated entry will be added to the `CHANGELOG` multiple times.
+        This commit makes use of `getChangelogDocumentedVersions` to determine
+        whether the calculated version should be added to the CHANGELOG or not.
+      footers:
+        change-type: patch
+        changelog-entry: Make CHANGELOG entry addition idempotent.
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: c99f5f09a2f396fd65f3a7471dbabd01bb323d6f
+      subject: 'fix: make changelog entry addition idempotent'
+    - author: Juan Cruz Viotti
+      body: ''
+      footers:
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: 0f396776f9992e356a0cac331f050655f81c403c
+      subject: 'style: make sure all README paragraphs are wrapped'
+    - author: Juan Cruz Viotti
+      body: |-
+        We're currently forcing a UNIX linebreak style, which causes hundreds of
+        complaints from the linter when cloning the project in a Windows machine
+        with a default configuration.
+      footers:
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: f3e426abcf39dac67f686e52f9f2cfa8396a0a2f
+      subject: 'chore: don''t force a linebreak style in ESLint'
+    - author: Juan Cruz Viotti
+      body: This option determines the file path to the project CHANGELOG file.
+      footers:
+        change-type: minor
+        changelog-entry: Add `changelogFile` option.
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: a08ff608bcf4621532afb4b4b16631c8e7e7e12c
+      subject: 'feat: add `changelogFile` option'
+    - author: Juan Cruz Viotti
+      body: |-
+        This hooks is used to determine how the CHANGELOG generated by
+        Versionist is added to the project's CHANGELOG file.
+        It ships with a `prepend` preset, which as the name implies, simply
+        prepends the entry to the CHANGELOG file specified with `changelogFile`,
+        which uses as a default value..
+      footers:
+        change-type: minor
+        changelog-entry: Add `addEntryToChangelog` option hook.
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: a8e37358e4319c1e53d74dbefe806a7a7492a681
+      subject: 'feat: add `addEntryToChangelog` option hook'
+    - author: Juan Cruz Viotti
+      body: |-
+        We were currently blindly passing the version the user sets as the
+        `--current` option to the Handlebars template, without imposing any
+        validation or normalisation.
+        This would cause problems with invalid semver versions, or if the user
+        sometimes passes a version preppended with a `v` and sometimes not,
+        since the data passed to the template would not always be consistent.
+        This PR introduces a function called `semver.normalize()`, which returns
+        the normalised version, or throws if the version is not valid.
+      footers:
+        change-type: patch
+        changelog-entry: Normalize `--current` version before passing it to the template.
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: 1dbbf0fd241f5ad7e985f54d83914fa3c506f2aa
+      subject: 'fix: normalize template version'
+  date: '2016-07-13T18:57:56Z'
+  version: 2.0.0
+- commits:
+    - author: Juan Cruz Viotti
+      body: |-
+        Instead of simply showing how to run Versionist, we now provide detailed
+        instructions to clone the Versionist repository as an example, and run
+        Versionist on it for real, in order to get a better feel of what
+        Versionist is capable of.
+      footers:
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: 74bd58c17396175c3b902821ac2b29cdf8b7188b
+      subject: 'docs: add a full reproducible example to README'
+    - author: Juan Cruz Viotti
+      body: ''
+      footers:
+        see: 'https://github.com/resin-io/versionist/pull/4'
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: 0df1cf851bf0b3a9f09e7189e7fa000d5c2b9e06
+      subject: 'docs: template option is no longer required'
+    - author: Juan Cruz Viotti
+      body: |-
+        This means the `template` option is no longer required, and users can
+        get something to display in their terminals with really minimum
+        configuration.
+      footers:
+        change-type: minor
+        changelog-entry: Add a simple default template.
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: fbdfb17caabd8c5f235e9f1f218a0ce443b4af3c
+      subject: 'feat: add simple default template'
+    - author: Juan Cruz Viotti
+      body: |-
+        We use a `versionist.conf.js` in Versionist's repo itself for
+        demonstration purposes.
+      footers:
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: 80c8a645159471d4e4c9bc9e8d25d992f7cb267b
+      subject: 'chore: add versionist.conf.js'
+    - author: Juan Cruz Viotti
+      body: |-
+        Currently, `gitLog.getGitLogCommandThatOutputsYaml()` returns a string
+        containing the full command to get parseable `git log` output.
+        This is inconvenient since we can't use functions like
+        `child_process.spawn()` that take an array of arguments instead of a
+        full string with ease, or use a custom `git` binary path.
+        This commit introduces the following changes:
+        - Rename `getGitLogCommandThatOutputsYaml()` to
+        `getGitLogCommandArgumentsThatOutputYaml()`
+        - Make `getGitLogCommandThatOutputsYaml()` return an array of string
+        arguments, *omitting* the `git` binary
+        - Remove the double quotes around the `--pretty` format, since its not
+        necessary to escape it anymore.
+      footers:
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: 89ff305afdebbebb2bf516e8f60fce08633ce88d
+      subject: 'refactor: get git log args instead of full command'
+    - author: Juan Cruz Viotti
+      body: |-
+        `child_process.exec` imposes a limit on the largest amount of data
+        allowed on `stdout` or `stderr` (200 * 1024 bytes by default, according
+        to the documentation).
+        Since this limit can be easily reached when runnign Versionist on huge
+        projects, instead of executing the `git log` command, we spawn it,
+        and colelct the `stdout` output as it comes.
+      footers:
+        change-type: patch
+        changelog-entry: Fix `stdout maxBuffer exceeded` when parsing big logs.
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: 0c5656c9d8227c3f3a3a791d4f570099b72b1ff2
+      subject: 'fix: `stdout maxBuffer exceeded` when parsing big logs'
+    - author: Juan Cruz Viotti
+      body: |-
+        We specify a very particular `git log` format through a complex
+        `--pretty` format in `git-log.js`.
+        This means that if we do any change to the format, we have to edit
+        dozens of tests suites accordingly.
+        In order to mitigate this issue, we create a function that given a
+        commit subject and body generates output similar to out `--pretty`
+        format.
+        This way, if we ever change our format, we only have to update the tests
+        suite in a single place.
+      footers:
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: 08acf959ce0ee2268fd3672d2c159326bd060ca2
+      subject: 'refactor: decouple how to create formatted commits in tests'
+    - author: Juan Cruz Viotti
+      body: |-
+        There are some commits we've seen in the wild while using this module
+        that indent the body for some reason (a space or two spaces usually).
+        For example:
+        ```
+        My commit
+        Lorem ipsum dolor sit amet.
+        Hello world.
+        Fixes: #350
+        ```
+        This confuses the YAML parser, since applying our custom `git log
+        --pretty` format to such commits yields:
+        ```
+        - subject >-
+        My commit
+        body: |-
+        Lorem ipsum dolor sit amet.
+        Hello world.
+        Fixes: #350
+        ```
+        Which of course is not well indented.
+        We've considered moving away from YAML to another serialisation
+        technology that copes with these kind of multi-line string issues,
+        however we found a small workaround that allows us to not spend time
+        building and maintaing something else:
+        If we pass *any* dummy string as the first line of `body`, and make it
+        well indented, the remaining of the body will be parsed correctly.
+        Therefore, we tweak our parser to pass a dummy `XXX`, and implement code
+        in the parser to omit it.
+      footers:
+        change-type: patch
+        changelog-entry: Support commits with indented bodies.
+        signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
+      hash: 1997ff2bca7e577b148b61bfbdec809d22f13af6
+      subject: 'fix: parse commits with indented body'
+  date: '2016-07-08T16:26:05Z'
+  version: 1.1.0
