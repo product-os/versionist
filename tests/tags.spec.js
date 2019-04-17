@@ -238,6 +238,22 @@ describe('Tags', function() {
         bar: 'baz'
       });
     });
+
+    it('should not overwrite footers with the same key', function() {
+      const footer = tags.parseFooterTagLines([
+        'Foo: bar',
+        'Foo: bar',
+        'Bar: baz',
+        'Foo: baz'
+      ]);
+
+      m.chai.expect(footer).to.deep.equal({
+        Foo: 'bar',
+        Foo1: 'bar',
+        Bar: 'baz',
+        Foo2: 'baz'
+      });
+    });
   });
 
 });
