@@ -696,7 +696,7 @@ module.exports = {
           }
         },
 
-        (done) => {
+        (_, done) => {
           // Update first `version = "..."` occurrence immediately after `[package]`
           replace(
             cargoToml,
