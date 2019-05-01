@@ -1,6 +1,6 @@
 {
   "name": "versionist",
-  "version": "4.2.0",
+  "version": "4.2.1",
   "main": "bin/versionist.js",
   "description": "Flexible CHANGELOG generation toolkit that adapts to your commit conventions",
   "homepage": "https://github.com/resin-io/versionist",
