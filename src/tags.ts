@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-'use strict';
-
 /**
  * @module Versionist.Tags
  */
 
-const _ = require('lodash');
+import * as _ from 'lodash';
 
 /**
  * @summary Is line a tag line?
@@ -35,11 +33,11 @@ const _ = require('lodash');
  *   console.log('This line represents a tag');
  * }
  */
-exports.isTagLine = (line) => {
-  return _.some([
-    /^[\w-]+(\s+)?:[^//]/.test(line),
-    /^[\w-]+(\s+)?:$/.test(line)
-  ]);
+export const isTagLine = (line: string): boolean => {
+	return _.some([
+		/^[\w-]+(\s+)?:[^//]/.test(line),
+		/^[\w-]+(\s+)?:$/.test(line),
+	]);
 };
 
 /**
@@ -58,13 +56,13 @@ exports.isTagLine = (line) => {
  * console.log(parsedTag.value);
  * > bar
  */
-exports.parseTagLine = (line) => {
-  const firstColonIndex = _.indexOf(line, ':');
+export const parseTagLine = (line: string) => {
+	const firstColonIndex = _.indexOf(line, ':');
 
-  return {
-    key: line.slice(0, firstColonIndex).trim(),
-    value: line.slice(firstColonIndex + 1).trim() || undefined
-  };
+	return {
+		key: line.slice(0, firstColonIndex).trim(),
+		value: line.slice(firstColonIndex + 1).trim() || undefined,
+	};
 };
 
 /**
@@ -89,28 +87,25 @@ exports.parseTagLine = (line) => {
  * console.log(footer.Bar);
  * > baz
  */
-exports.parseFooterTagLines = (footerTagLines, options = {}) => {
-  return _.chain(footerTagLines)
-    .reject((line) => {
-      return _.isEmpty(line.trim());
-    })
-    .reduce((tags, tagLine) => {
-      const tag = exports.parseTagLine(tagLine);
+export const parseFooterTagLines = (
+	footerTagLines: string[],
+	options: { lowerCaseFooterTags?: boolean } = {},
+) => {
+	return _.chain(footerTagLines)
+		.reject(line => {
+			return _.isEmpty(line.trim());
+		})
+		.reduce((tags: Array<[string, string?]>, tagLine) => {
+			const tag = parseTagLine(tagLine);
 
-      tags.push([
-        tag.key,
-        tag.value
-      ]);
+			tags.push([tag.key, tag.value]);
 
-      if (options.lowerCaseFooterTags) {
-        tags.push([
-          tag.key.toLowerCase(),
-          tag.value
-        ]);
-      }
+			if (options.lowerCaseFooterTags) {
+				tags.push([tag.key.toLowerCase(), tag.value]);
+			}
 
-      return tags;
-    }, [])
-    .fromPairs()
-    .value();
+			return tags;
+		}, [])
+		.fromPairs()
+		.value();
 };

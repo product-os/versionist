@@ -13,23 +13,32 @@
     "versionist": "./bin/cli.js"
   },
   "scripts": {
-    "test": "npm run lint && mocha tests -R spec && node tests/cli/run",
-    "lint": "eslint lib/ tests/ bin/",
+    "test": "npm run prepare && npm run lint && mocha tests -R spec && node tests/cli/run",
+    "lint:javascript": "eslint src/ tests/ bin/",
+    "lint:typescript": "resin-lint --typescript lib/ tests/ bin/ && tsc --noEmit",
+    "lint": "npm run lint:javascript && npm run lint:typescript",
+    "prepare": "npx tsc",
+    "prettify": "prettier --config ./node_modules/resin-lint/config/.prettierrc --write *.ts \"{bin,lib,tests}/**/*.ts\"",
     "versionist": "./bin/cli.js"
   },
   "author": "Juan Cruz Viotti <juan@resin.io>",
   "license": "Apache-2.0",
   "devDependencies": {
     "eslint": "^3.0.0",
+    "husky": "^2.1.0",
     "indent-string": "^3.0.0",
+    "lint-staged": "^8.1.5",
     "mocha": "^2.5.3",
     "mochainon": "^1.0.0",
+    "prettier": "^1.17.0",
+    "resin-lint": "^3.0.2",
     "shelljs": "^0.7.3",
     "tmp": "0.0.28",
     "touch": "^3.1.0"
   },
   "dependencies": {
     "@octokit/rest": "^15.10.0",
+    "@types/lodash": "^4.14.123",
     "async": "^2.0.0-rc.6",
     "chalk": "^1.1.3",
     "debug": "2.5.1",
@@ -42,5 +51,10 @@
     "semver": "^5.2.0",
     "update-json": "https://github.com/resin-io-modules/update-json",
     "yargs": "^11.1.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }
