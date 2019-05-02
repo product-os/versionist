@@ -40,6 +40,7 @@
     "@octokit/rest": "^15.10.0",
     "@types/handlebars": "^4.1.0",
     "@types/handlebars-helpers": "^0.5.2",
+    "@types/js-yaml": "^3.12.1",
     "@types/lodash": "^4.14.123",
     "@types/semver": "^6.0.0",
     "async": "^2.0.0-rc.6",
