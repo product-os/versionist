@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-'use strict';
-
 /**
  * @module Versionist.Semver
  */
 
-const semver = require('semver');
-const _ = require('lodash');
+import * as _ from 'lodash';
+import * as semver from 'semver';
 
 /**
  * @summary Valid increment levels
@@ -34,11 +32,8 @@ const _ = require('lodash');
  * Elements with higher indexes have precedence
  * over other elements with lower indexes.
  */
-const VALID_INCREMENT_LEVELS = [
-  'patch',
-  'minor',
-  'major'
-];
+const VALID_INCREMENT_LEVELS = ['patch', 'minor', 'major'] as const;
+export type ValidIncrementLevel = typeof VALID_INCREMENT_LEVELS[number];
 
 /**
  * @summary Check if an increment level is valid
@@ -53,8 +48,10 @@ const VALID_INCREMENT_LEVELS = [
  *   console.log('This is a valid increment level');
  * }
  */
-exports.isValidIncrementLevel = (level) => {
-  return _.includes(VALID_INCREMENT_LEVELS, level);
+export const isValidIncrementLevel = (
+	level: string,
+): level is ValidIncrementLevel => {
+	return _.includes(VALID_INCREMENT_LEVELS, level);
 };
 
 /**
@@ -71,25 +68,24 @@ exports.isValidIncrementLevel = (level) => {
  * console.log(higherLevel);
  * > major
  */
-exports.getHigherIncrementLevel = (firstLevel, secondLevel) => {
-  _.each([ firstLevel, secondLevel ], (level) => {
-    if (_.every([
-      !_.isUndefined(level),
-      !_.isNull(level),
-      !exports.isValidIncrementLevel(level)
-    ])) {
-      throw new Error(`Invalid increment level: ${level}`);
-    }
-  });
+export const getHigherIncrementLevel = (
+	firstLevel?: string | null,
+	secondLevel?: string | null,
+): ValidIncrementLevel | null => {
+	_.each([firstLevel, secondLevel], level => {
+		if (level != null && !isValidIncrementLevel(level)) {
+			throw new Error(`Invalid increment level: ${level}`);
+		}
+	});
 
-  if (!firstLevel && !secondLevel) {
-    return null;
-  }
+	if (!firstLevel && !secondLevel) {
+		return null;
+	}
 
-  const firstLevelIndex = _.indexOf(VALID_INCREMENT_LEVELS, firstLevel);
-  const secondLevelIndex = _.indexOf(VALID_INCREMENT_LEVELS, secondLevel);
+	const firstLevelIndex = _.indexOf(VALID_INCREMENT_LEVELS, firstLevel);
+	const secondLevelIndex = _.indexOf(VALID_INCREMENT_LEVELS, secondLevel);
 
-  return _.nth(VALID_INCREMENT_LEVELS, Math.max(firstLevelIndex, secondLevelIndex));
+	return VALID_INCREMENT_LEVELS[Math.max(firstLevelIndex, secondLevelIndex)];
 };
 
 /**
@@ -127,16 +123,22 @@ exports.getHigherIncrementLevel = (firstLevel, secondLevel) => {
  *   }
  * });
  */
-exports.calculateNextIncrementLevel = (commits, options = {}) => {
+export const calculateNextIncrementLevel = <T>(
+	commits: T[],
+	options: { getIncrementLevelFromCommit: (commit: T) => ValidIncrementLevel },
+): string | null => {
+	if (_.isEmpty(commits)) {
+		throw new Error('No commits to calculate the next increment level from');
+	}
 
-  if (_.isEmpty(commits)) {
-    throw new Error('No commits to calculate the next increment level from');
-  }
-
-  return _.reduce(commits, (currentLevel, commit) => {
-    const commitLevel = options.getIncrementLevelFromCommit(commit);
-    return exports.getHigherIncrementLevel(commitLevel, currentLevel);
-  }, null);
+	return _.reduce(
+		commits,
+		(currentLevel, commit) => {
+			const commitLevel = options.getIncrementLevelFromCommit(commit);
+			return getHigherIncrementLevel(commitLevel, currentLevel);
+		},
+		null,
+	);
 };
 
 /**
@@ -154,11 +156,11 @@ exports.calculateNextIncrementLevel = (commits, options = {}) => {
  * semver.checkValid('foo');
  * > Error: invalid version foo
  */
-exports.checkValid = (version) => {
-  if (!semver.valid(version)) {
-    throw new Error(`Invalid version: ${version}`);
-  }
-  return true;
+export const checkValid = (version: string): boolean => {
+	if (!semver.valid(version)) {
+		throw new Error(`Invalid version: ${version}`);
+	}
+	return true;
 };
 
 /**
@@ -182,12 +184,12 @@ exports.checkValid = (version) => {
  * > -1
  *
  */
-const compareExtendedSemver = (a, b) => {
-  const semverCompare = semver.compare(a, b);
-  if (semverCompare === 0) {
-    return a.localeCompare(b);
-  }
-  return semverCompare;
+const compareExtendedSemver = (a: string, b: string): number => {
+	const semverCompare = semver.compare(a, b);
+	if (semverCompare === 0) {
+		return a.localeCompare(b);
+	}
+	return semverCompare;
 };
 
 /**
@@ -208,8 +210,8 @@ const compareExtendedSemver = (a, b) => {
  * console.log(version);
  * > 2.1.1
  */
-exports.getGreaterVersion = (versions) => {
-  return _.trim(_.last(versions.sort(compareExtendedSemver)));
+export const getGreaterVersion = (versions: string[]): string => {
+	return _.trim(_.last(versions.sort(compareExtendedSemver)));
 };
 
 /**
@@ -229,8 +231,8 @@ exports.getGreaterVersion = (versions) => {
  *
  * > false
  */
-exports.leq = (a, b) => {
-  return compareExtendedSemver(a, b) <= 0;
+export const leq = (a: string, b: string): boolean => {
+	return compareExtendedSemver(a, b) <= 0;
 };
 
 /**
@@ -250,6 +252,6 @@ exports.leq = (a, b) => {
  *
  * > false
  */
-exports.lss = (a, b) => {
-  return compareExtendedSemver(a, b) < 0;
+export const lss = (a: string, b: string): boolean => {
+	return compareExtendedSemver(a, b) < 0;
 };
