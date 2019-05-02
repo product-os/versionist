@@ -17,6 +17,7 @@
     "lint:javascript": "eslint src/ tests/ bin/",
     "lint:typescript": "resin-lint --typescript lib/ tests/ bin/ && tsc --noEmit",
     "lint": "npm run lint:javascript && npm run lint:typescript",
+    "prepare": "npx tsc",
     "prettify": "prettier --config ./node_modules/resin-lint/config/.prettierrc --write *.ts \"{bin,lib,tests}/**/*.ts\"",
     "versionist": "./bin/cli.js"
   },
@@ -37,6 +38,8 @@
   },
   "dependencies": {
     "@octokit/rest": "^15.10.0",
+    "@types/handlebars": "^4.1.0",
+    "@types/handlebars-helpers": "^0.5.2",
     "@types/lodash": "^4.14.123",
     "@types/semver": "^6.0.0",
     "async": "^2.0.0-rc.6",
