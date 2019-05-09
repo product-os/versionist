@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-'use strict';
-
 /**
  * @module Versionist.Template
  */
 
-const handlebars = require('handlebars');
-require('handlebars-helpers')({
-  handlebars: handlebars
+import * as handlebars from 'handlebars';
+import * as handlebarsHelpers from 'handlebars-helpers';
+handlebarsHelpers({
+	handlebars,
 });
 
 /**
@@ -39,8 +38,8 @@ require('handlebars-helpers')({
  *   name: 'John Doe'
  * });
  */
-exports.render = (template, data) => {
-  return handlebars.compile(template, {
-    noEscape: true
-  })(data);
+export const render = <T>(template: string, data: T): string => {
+	return handlebars.compile<T>(template, {
+		noEscape: true,
+	})(data);
 };

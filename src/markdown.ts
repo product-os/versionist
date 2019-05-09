@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-'use strict';
-
 /**
  * @module Versionist.Markdown
  */
 
-const _ = require('lodash');
-const markdown = require('markdown').markdown;
+import * as _ from 'lodash';
+// tslint:disable-next-line:no-var-requires
+const { markdown } = require('markdown') as {
+	markdown: { parse: (markdown: string) => any[] };
+};
 
 /**
  * @summary Extract node content
@@ -31,8 +32,8 @@ const markdown = require('markdown').markdown;
  * @param {String[]} node - node
  * @returns {String[]} node content
  */
-const extractNodeContent = (node) => {
-  return _.slice(node, 2);
+const extractNodeContent = (node: string[]): string[] => {
+	return _.slice(node, 2);
 };
 
 /**
@@ -43,14 +44,19 @@ const extractNodeContent = (node) => {
  * @param {String[]} node - node
  * @returns {String} node text
  */
-const extractNodeText = (node) => {
-  return _.join(_.flattenDeep(_.map(node, (content) => {
-    if (_.isArray(content)) {
-      return extractNodeContent(content);
-    }
+const extractNodeText = (node: string[]): string => {
+	return _.join(
+		_.flattenDeep(
+			_.map(node, content => {
+				if (_.isArray(content)) {
+					return extractNodeContent(content);
+				}
 
-    return content;
-  })), '');
+				return content;
+			}),
+		),
+		'',
+	);
 };
 
 /**
@@ -61,21 +67,25 @@ const extractNodeText = (node) => {
  * @param {Any[]} nodes - nodes
  * @returns {String[]} titles
  */
-const extractTitlesFromTree = (nodes) => {
-  return _.reduce(nodes, (accumulator, node) => {
-    const nodeType = _.first(node);
+const extractTitlesFromTree = (nodes: any[]): string[] => {
+	return _.reduce(
+		nodes,
+		(accumulator: string[], node) => {
+			const nodeType = _.first(node);
 
-    if (nodeType === 'header') {
-      const headerContents = extractNodeContent(node);
-      accumulator.push(extractNodeText(headerContents));
-    }
+			if (nodeType === 'header') {
+				const headerContents = extractNodeContent(node);
+				accumulator.push(extractNodeText(headerContents));
+			}
 
-    if (_.isArray(node)) {
-      accumulator = _.union(accumulator, extractTitlesFromTree(node));
-    }
+			if (_.isArray(node)) {
+				accumulator = _.union(accumulator, extractTitlesFromTree(node));
+			}
 
-    return accumulator;
-  }, []);
+			return accumulator;
+		},
+		[],
+	);
 };
 
 /**
@@ -93,7 +103,4 @@ const extractTitlesFromTree = (nodes) => {
  *   'Hello world!'
  * ].join('\n'));
  */
-exports.extractTitles = _.flow([
-  markdown.parse,
-  extractTitlesFromTree
-]);
+export const extractTitles = _.flow([markdown.parse, extractTitlesFromTree]);
