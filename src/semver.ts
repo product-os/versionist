@@ -20,6 +20,7 @@
 
 import * as _ from 'lodash';
 import * as semver from 'semver';
+import { Commit } from './git-log';
 
 /**
  * @summary Valid increment levels
@@ -123,10 +124,12 @@ export const getHigherIncrementLevel = (
  *   }
  * });
  */
-export const calculateNextIncrementLevel = <T>(
-	commits: T[],
-	options: { getIncrementLevelFromCommit: (commit: T) => ValidIncrementLevel },
-): string | null => {
+export const calculateNextIncrementLevel = (
+	commits: Commit[],
+	options: {
+		getIncrementLevelFromCommit: (commit: Commit) => ValidIncrementLevel;
+	},
+): ValidIncrementLevel | null => {
 	if (_.isEmpty(commits)) {
 		throw new Error('No commits to calculate the next increment level from');
 	}
