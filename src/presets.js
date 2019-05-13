@@ -823,6 +823,7 @@ module.exports = {
      * @summary Update version file
      * @function
      * @public
+     * @returns {null}
      *
      * @param {Object} options - options
      * @param {Boolean|RegExp} [options.clean=true] - determines how to sanitise the version
@@ -840,8 +841,51 @@ module.exports = {
     'update-version-file': (options, cwd, version, callback) => {
       const versionFile = path.join(cwd, 'VERSION');
 
-      fs.writeFile(versionFile, version, callback);
+      // Write with r+ mode, this will cause an error if no VERSION file is present
+      return fs.writeFile(versionFile, version, {
+        flag: 'r+'
+      }, callback);
+    },
+
+    /**
+     * @summary Will attempt to update several possible targets and ignore failures
+     * @function
+     * @public
+     * @returns {null}
+     *
+     * @param {Object} options - options
+     * @param {Boolean|RegExp} [options.clean=true] - determines how to sanitise the version
+     * @param {String} cwd - current working directory
+     * @param {String} version - version
+     * @param {Function} callback - callback (error)
+     *
+     * @example
+     * presets.updateVersion.mixed({}, process.cwd(), '1.0.0', (error) => {
+     *   if (error) {
+     *     throw error;
+     *   }
+     * });
+     */
+    mixed: (options, cwd, version, callback) => {
+      // Wrap update functions to ignore any errors
+      const wrapped = _.map([
+        module.exports.updateVersion.npm,
+        module.exports.updateVersion.cargo,
+        module.exports.updateVersion['update-version-file'],
+        module.exports.updateVersion.initPy
+      ], (updateFn) => {
+        // This will be used for async.parallel
+        return (cb) => {
+          return updateFn(options, cwd, version, () => {
+            // Ignoring errors will cause async.parallel to run through all
+            // possibilities without short-circuiting
+            return cb(null);
+          });
+        };
+      });
+      return async.parallel(wrapped, callback);
     }
+
   },
 
   incrementVersion: {

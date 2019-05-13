@@ -2428,6 +2428,71 @@ describe('Presets', function() {
 
     });
 
+    describe('.mixed', () => {
+      describe('given no valid version file', function() {
+
+        beforeEach(function() {
+          this.cwd = tmp.dirSync();
+        });
+
+        afterEach(function() {
+          this.cwd.removeCallback();
+        });
+
+        it('should not throw an error', function(done) {
+          presets.updateVersion.mixed({}, this.cwd.name, '1.0.0', (error) => {
+            m.chai.expect(error).to.not.exist;
+            done();
+          });
+        });
+
+      });
+
+      describe('given existing package.json and VERSION file', function() {
+
+        beforeEach(function() {
+          this.cwd = tmp.dirSync();
+          this.packageJSON = path.join(this.cwd.name, 'package.json');
+          this.versionFile = path.join(this.cwd.name, 'VERSION');
+
+          fs.writeFileSync(this.packageJSON, JSON.stringify({
+            name: 'foo',
+            version: '1.0.0'
+          }, null, 2));
+
+          fs.writeFileSync(this.versionFile, '1.0.0');
+        });
+
+        afterEach(function() {
+          fs.unlinkSync(this.packageJSON);
+          fs.unlinkSync(this.versionFile);
+          this.cwd.removeCallback();
+        });
+
+        it('should be able to update the version in both', function(done) {
+          presets.updateVersion.mixed({}, this.cwd.name, '1.1.0', (error) => {
+            m.chai.expect(error).to.not.exist;
+
+            const packageJSON = JSON.parse(fs.readFileSync(this.packageJSON, {
+              encoding: 'utf8'
+            }));
+
+            const versionFile = fs.readFileSync(this.versionFile, {
+              encoding: 'utf8'
+            });
+
+            m.chai.expect(packageJSON).to.deep.equal({
+              name: 'foo',
+              version: '1.1.0'
+            });
+
+            m.chai.expect(versionFile).to.equal('1.1.0');
+
+            done();
+          });
+        });
+      });
+    });
   });
 
   describe('.incrementVersion', function() {
