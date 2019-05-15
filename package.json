@@ -15,10 +15,10 @@
   "scripts": {
     "test": "npm run prepare && npm run lint && mocha tests -R spec && node tests/cli/run",
     "lint:javascript": "eslint src/ tests/ bin/",
-    "lint:typescript": "resin-lint --typescript lib/ tests/ bin/ && tsc --noEmit",
+    "lint:typescript": "resin-lint --typescript src/ && tsc --noEmit",
     "lint": "npm run lint:javascript && npm run lint:typescript",
     "prepare": "npx tsc",
-    "prettify": "prettier --config ./node_modules/resin-lint/config/.prettierrc --write *.ts \"{bin,lib,tests}/**/*.ts\"",
+    "prettify": "prettier --config ./node_modules/resin-lint/config/.prettierrc --write *.ts \"src/**/*.ts\"",
     "versionist": "./bin/cli.js"
   },
   "author": "Juan Cruz Viotti <juan@resin.io>",
