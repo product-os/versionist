@@ -268,13 +268,13 @@ describe('Semver', function() {
 
   describe('.getGreaterVersion()', function() {
 
-    it('should throw if there is an invalid version', function() {
-      m.chai.expect(() => {
-        semver.getGreaterVersion([
-          '=====',
-          '1.0.0'
-        ]);
-      }).to.throw('Invalid Version: =====');
+    it('should not throw even if there is an invalid version', function() {
+      const greater = semver.getGreaterVersion([
+        '=====',
+        '1.0.0'
+      ]);
+
+      m.chai.expect(greater).to.equal('1.0.0');
     });
 
     it('should return the greater version', function() {
@@ -311,6 +311,30 @@ describe('Semver', function() {
       ]);
 
       m.chai.expect(greater).to.equal('2.14.3+rev3');
+    });
+
+    it('should return the greater version', function() {
+      const greater = semver.getGreaterVersion([
+        'balenaOS 2019.04',
+        'balenaOS 2019.04.1',
+        'balenaOS 2019.04.2',
+        'balenaOS 2019.04.3',
+        'balenaOS 2019.4.2',
+        'balenaOS 2019.4.1'
+      ]);
+
+      m.chai.expect(greater).to.equal('balenaOS 2019.04.3');
+    });
+
+    it('should correctly order versions with leading 0s', function() {
+      const greater = semver.getGreaterVersion([
+        '17.1.2',
+        '18.5.1',
+        '17.3.0',
+        '18.04.3'
+      ]);
+
+      m.chai.expect(greater).to.equal('18.5.1');
     });
 
     it('should return the greater version', function() {

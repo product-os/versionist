@@ -25,8 +25,7 @@ const async = require('async');
 const path = require('path');
 const updateJSON = require('update-json');
 const fs = require('fs');
-const semver = require('semver');
-const semverUtils = require('./semver');
+const semver = require('./semver');
 const replaceInFile = require('replace-in-file');
 const markdown = require('./markdown');
 const yaml = require('js-yaml');
@@ -58,7 +57,7 @@ const getAuthor = (commitHash) => {
 const extractContentsBetween = (changelog, repo, start, end) => {
   return _(changelog)
   .filter((entry) => {
-    return semverUtils.lss(start, entry.version) && semverUtils.leq(entry.version, end);
+    return semver.lt(start, entry.version) && semver.lte(entry.version, end);
   })
   .map((entry) => {
     entry.version = `${repo}-${entry.version}`;
@@ -187,7 +186,7 @@ const getCleanFunction = (options) => {
       return version.replace(options.clean, '');
     };
   }
-  return options.clean ? semver.clean : _.identity;
+  return options.clean ? semver.valid : _.identity;
 };
 
 module.exports = {
@@ -423,7 +422,7 @@ module.exports = {
      *
      */
     'latest-documented': (options, documentedVersions, history, callback) => {
-      return callback(null, semverUtils.getGreaterVersion(documentedVersions));
+      return callback(null, semver.getGreaterVersion(documentedVersions));
     }
   },
 
@@ -689,7 +688,9 @@ module.exports = {
               cargoLock,
               new RegExp(`(name\\s*=\\s*(?:"|')${packageName}(?:"|')[^[]+?version\\s*=\\s*)("|').*?\\2`, 'm'),
               '$1$2' + cleanedVersion + '$2',
-              done
+              (err) => {
+                return done(err || null);
+              }
             );
           } else {
             done(null);

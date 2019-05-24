@@ -19,7 +19,7 @@
  */
 
 import * as _ from 'lodash';
-import * as semver from 'semver';
+import * as semver from 'resin-semver';
 import { Commit } from './git-log';
 
 /**
@@ -167,35 +167,6 @@ export const checkValid = (version: string): boolean => {
 };
 
 /**
- * @summary Compare extended semver versions. Used for sorting
- * @function
- * @private
- *
- * @param {String} a - extended semver string
- * @param {String} b - extended semver string
- * @returns {Number}
- * a > b => 1
- * a = b => 0
- * a < b => -1
- *
- * @example
- * compareExtendedSemver('2.1.1', '2.1.0')
- * > 1
- * compareExtendedSemver('2.1.1', '2.1.0+rev1')
- * > 1
- * compareExtendedSemver('2.1.1+rev1', '2.1.1+rev2')
- * > -1
- *
- */
-const compareExtendedSemver = (a: string, b: string): number => {
-	const semverCompare = semver.compare(a, b);
-	if (semverCompare === 0) {
-		return a.localeCompare(b);
-	}
-	return semverCompare;
-};
-
-/**
  * @summary Get greater semantic version
  * @function
  * @public
@@ -213,48 +184,14 @@ const compareExtendedSemver = (a: string, b: string): number => {
  * console.log(version);
  * > 2.1.1
  */
-export const getGreaterVersion = (versions: string[]): string => {
-	return _.trim(_.last(versions.sort(compareExtendedSemver)));
+export const getGreaterVersion = (versions: string[]): string | undefined => {
+	return _.first(
+		versions
+			.map(v => {
+				return v.trim();
+			})
+			.sort(semver.rcompare),
+	);
 };
 
-/**
- * @summary Lesser or equal for extended semver
- * @function
- * @public
- *
- * @param {String} a - extended semver string
- * @param {String} b - extended semver string
- * @returns {Boolean} True if a <= b
- *
- * @example
- * console.log(semver.leq(
- *   '2.1.1',
- *   '2.1.0',
- * ));
- *
- * > false
- */
-export const leq = (a: string, b: string): boolean => {
-	return compareExtendedSemver(a, b) <= 0;
-};
-
-/**
- * @summary Lesser than for extended semver
- * @function
- * @public
- *
- * @param {String} a - extended semver string
- * @param {String} b - extended semver string
- * @returns {Boolean} True if a < b
- *
- * @example
- * console.log(semver.lss(
- *   '2.1.1',
- *   '2.1.0',
- * ));
- *
- * > false
- */
-export const lss = (a: string, b: string): boolean => {
-	return compareExtendedSemver(a, b) < 0;
-};
+export * from 'resin-semver';
