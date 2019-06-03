@@ -14,6 +14,7 @@
   },
   "scripts": {
     "test": "npm run prepare && npm run lint && mocha tests -R spec && node tests/cli/run",
+    "test-cli": "npm run prepare && node tests/cli/run",
     "lint:javascript": "eslint src/ tests/ bin/",
     "lint:typescript": "resin-lint --typescript src/ && tsc --noEmit",
     "lint": "npm run lint:javascript && npm run lint:typescript",
