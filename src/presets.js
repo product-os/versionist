@@ -45,33 +45,41 @@ const authenticate = () => {
 const templateDefaults = [
   '{{#*inline "commits"}}',
   '{{> render-header }}',
-  '',
-  '{{#each commits}}',
-    '{{> render-with-nesting nesting=../nesting ~}}',
-  '{{/each}}',
-  '{{/inline}}',
+  '{{> block-newline}}',
+  '{{~#each commits~}}',
+    '{{> render-with-nesting nesting=../nesting block=../block ~}}',
+  '{{~/each~}}',
+  '{{/inline~}}',
 
   '{{#*inline "render-with-nesting"}}',
-    '{{#if this.nested}}',
+    '{{~#if this.nested ~}}',
       '<details>',
         '<summary> {{> render-with-author}} </summary>',
-        '{{#each this.nested}}',
-          '{{> commits nesting=(append ../nesting "#")}}',
-        '{{/each}}',
+        '{{~#each this.nested~}}',
+          '{{> commits nesting=(append ../nesting "#") block=(append ../block ">") ~}}',
+        '{{~/each~}}',
       '</details>',
-      '',
-    '{{else}}',
-      '* {{> render-with-author}}',
-      '',
-    '{{/if}}',
+      '{{> block-newline}}',
+    '{{~else~}}',
+      '{{> block-prefix}}* {{> render-with-author}}',
+      '{{> block-newline}}',
+    '{{~/if~}}',
   '{{/inline}}',
 
   '{{#*inline "render-with-author"}}',
     '{{#if this.author ~}}',
       '{{this.subject}} [{{this.author}}] ',
     '{{~else~}}',
-      '{{this.subject~}} ',
-    '{{~/if ~}}',
+      '{{this.subject}} ',
+    '{{~/if~}}',
+  '{{/inline}}',
+
+  '{{#*inline "block-prefix"}}',
+    '{{#isnt block "" ~}}{{block}} {{/isnt~}}',
+  '{{/inline}}',
+
+  '{{#*inline "block-newline"}}',
+    '{{#isnt block ""}}{{block}} {{else}}{{/isnt}}',
   '{{/inline}}'
 ].join('\n');
 /* eslint-enable indent */
@@ -962,18 +970,18 @@ module.exports = {
   template: {
     oneline: templateDefaults.concat([
       '{{#*inline "render-header"}}',
-        '{{nesting}} {{version}} - {{moment date "Y-MM-DD"}}',
+        '{{> block-prefix}}{{nesting}} {{version}} - {{moment date "Y-MM-DD"}}',
       '{{/inline}}',
 
-      '{{> commits nesting="##"}}'
+      '{{> commits nesting="##" block=""}}'
     ].join('\n')),
     default: templateDefaults.concat([
       '{{#*inline "render-header"}}',
-        '{{nesting}} {{#eq nesting "#"}}v{{else}}{{/eq}}{{version}}',
-        '{{nesting}}# ({{moment date "Y-MM-DD"}})',
+        '{{> block-prefix}}{{nesting}} {{#eq nesting "#"}}v{{else}}{{/eq}}{{version}}',
+        '{{> block-prefix}}{{nesting}}# ({{moment date "Y-MM-DD"}})',
       '{{/inline}}',
 
-      '{{> commits nesting="#"}}'
+      '{{> commits nesting="#" block=""}}'
     ].join('\n'))
   },
   /* eslint-enable indent */
