@@ -1,3 +1,15 @@
+- commits:
+    - subject: 'versionbot: add structured CHANGELOG.yml'
+      hash: 4ee63a31703827606fb249b4855f90f5f68f3754
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 5.0.2
+  date: 2019-06-17T14:56:18.367Z
 - version: 5.0.0
   date: '2019-05-24T00:00:00Z'
   commits:
