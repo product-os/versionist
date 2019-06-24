@@ -1,4 +1,16 @@
 - commits:
+    - subject: Update dependencies to fix vulnerabilities
+      hash: 9b8a20396367baf959108192e57bbbcb51fc6560
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Giovanni Garufi <giovanni@balena.io>
+        signed-off-by: Giovanni Garufi <giovanni@balena.io>
+      author: Giovanni Garufi
+  version: 5.0.3
+  date: 2019-06-24T08:21:07.138Z
+- commits:
     - subject: 'versionbot: add structured CHANGELOG.yml'
       hash: 4ee63a31703827606fb249b4855f90f5f68f3754
       body: ''
