@@ -1,4 +1,25 @@
 - commits:
+    - subject: Add blockquotes in nested changelogs
+      hash: d57ded3fab78d83aaee29afc554370186878adac
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Giovanni Garufi <giovanni@balena.io>
+        signed-off-by: Giovanni Garufi <giovanni@balena.io>
+      author: Giovanni Garufi
+    - subject: Prettify nested-changelogs output
+      hash: a790a88a9f8f9d7a21f01a008631003ecf16beab
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Giovanni Garufi <giovanni@balena.io>
+        signed-off-by: Giovanni Garufi <giovanni@balena.io>
+      author: Giovanni Garufi
+  version: 5.1.0
+  date: 2019-06-24T09:29:23.660Z
+- commits:
     - subject: Update dependencies to fix vulnerabilities
       hash: 9b8a20396367baf959108192e57bbbcb51fc6560
       body: ''
