@@ -41,6 +41,50 @@ const authenticate = () => {
   });
 };
 
+/* eslint-disable indent */
+const templateDefaults = [
+  '{{#*inline "commits"}}',
+  '{{> render-header }}',
+  '{{> block-newline}}',
+  '{{#each commits}}',
+    '{{> render-with-nesting nesting=../nesting block=../block ~}}',
+  '{{/each~}}',
+  '{{/inline~}}',
+
+  '{{#*inline "render-with-nesting"}}',
+    '{{~#if this.nested ~}}',
+      '<details>',
+        '<summary> {{> render-with-author}} </summary>',
+        '{{#each this.nested}}',
+          '{{> commits nesting=(append ../nesting "#") block=(append ../block ">") ~}}',
+        '{{/each~}}',
+      '</details>',
+      '',
+      '{{> block-newline}}',
+    '{{~else~}}',
+      '{{> block-prefix}}* {{> render-with-author}}',
+      '{{> block-newline}}',
+    '{{~/if~}}',
+  '{{/inline}}',
+
+  '{{#*inline "render-with-author"}}',
+    '{{#if this.author ~}}',
+      '{{this.subject}} [{{this.author}}] ',
+    '{{~else~}}',
+      '{{this.subject}} ',
+    '{{~/if~}}',
+  '{{/inline}}',
+
+  '{{#*inline "block-prefix"}}',
+    '{{#isnt block "" ~}}{{block}} {{/isnt~}}',
+  '{{/inline}}',
+
+  '{{#*inline "block-newline"}}',
+    '{{#isnt block ""}}{{block}} {{else}}{{/isnt}}',
+  '{{/inline}}'
+].join('\n');
+/* eslint-enable indent */
+
 const isIncrementalCommit = (changeType) => {
   return Boolean(changeType) && changeType.trim().toLowerCase() !== 'none';
 };
@@ -492,7 +536,9 @@ module.exports = {
           if (err) {
             return callback(err);
           }
-          data.commits = commits;
+          data.commits = _.sortBy(commits, (commit) => {
+            return Boolean(commit.nested);
+          });
 
           return callback(err, data);
         }
@@ -923,37 +969,21 @@ module.exports = {
   },
   /* eslint-disable indent */
   template: {
-    'nested-changelogs': [
-      '{{#*inline "commits"}}',
-      '{{nesting}} {{#eq nesting "#"}}v{{else}}{{/eq}}{{version}}',
-      '{{nesting}}# ({{moment date "Y-MM-DD"}})',
-      '',
-      '{{#each commits}}',
-        '{{#if this.author}}',
-          '* {{this.subject}} [{{this.author}}]',
-        '{{else}}',
-          '* {{this.subject}}',
-        '{{/if}}',
-        '{{> nested nesting=../nesting}}',
-      '{{/each}}',
+    oneline: templateDefaults.concat([
+      '{{#*inline "render-header"}}',
+        '{{> block-prefix}}{{nesting}} {{version}} - {{moment date "Y-MM-DD"}}',
       '{{/inline}}',
 
-      '{{#*inline "nested"}}',
-        '{{#if this.nested}}',
-          '',
-          '<details>',
-            '<summary> View details </summary>',
-            '{{#each this.nested}}',
-              '',
-              '{{> commits nesting=(append ../nesting "#")}}',
-            '{{/each}}',
-          '</details>',
-          '',
-        '{{/if}}',
+      '{{> commits nesting="##" block=""}}'
+    ].join('\n')),
+    default: templateDefaults.concat([
+      '{{#*inline "render-header"}}',
+        '{{> block-prefix}}{{nesting}} {{#eq nesting "#"}}v{{else}}{{/eq}}{{version}}',
+        '{{> block-prefix}}{{nesting}}# ({{moment date "Y-MM-DD"}})',
       '{{/inline}}',
 
-      '{{> commits nesting="#"}}'
-    ].join('\n')
+      '{{> commits nesting="#" block=""}}'
+    ].join('\n'))
   },
   /* eslint-enable indent */
   INITIAL_CHANGELOG: INITIAL_CHANGELOG

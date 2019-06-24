@@ -35,19 +35,31 @@ utils.createVersionistConfiguration([
   '    return data',
   '  },',
   '  transformTemplateDataAsync: (data, cb) => {',
-  '    data.commits[0].nested = [{',
+  '    data.commits[1].nested = [{',
   '      version: \'0.1.1\',',
   '      date: \'2018-09-23T15:05:11.877Z\',',
   '      commits: [',
   '        {',
   '          subject: \'foo\',',
-  '          author: \'Bar\'',
+  '          author: \'Test\'',
+  '        }, {',
+  '          subject: \'baz\',',
+  '          author: \'Test\'',
+  '        }',
+  '      ]',
+  '    }, {',
+  '      version: \'0.1.0\',',
+  '      date: \'2018-09-23T15:05:00.000Z\',',
+  '      commits: [',
+  '        {',
+  '          subject: \'qux\',',
+  '          author: \'Test\'',
   '        }',
   '      ]',
   '    }]',
   '    return cb(null, data)',
   '  },',
-  '  template: \'nested-changelogs\'',
+  '  template: \'default\'',
   '};',
   ''
 ].join('\n'));
@@ -59,21 +71,41 @@ utils.createCommit('feat: implement x', {
   'Change-Type': 'patch'
 });
 
+utils.createCommit('feat: implement y', {
+  'Change-Type': 'patch'
+});
+
+utils.createCommit('feat: implement z', {
+  'Change-Type': 'patch'
+});
+
 utils.callVersionist();
 
 m.chai.expect(shelljs.cat('CHANGELOG.md').stdout).to.deep.equal([
   '# v0.0.2',
   '## (2018-09-23)',
   '',
-  '* feat: implement x',
+  '* feat: implement z',
   '',
   '<details>',
-  '<summary> View details </summary>',
+  '<summary> feat: implement y </summary>',
   '',
-  '## 0.1.1',
-  '### (2018-09-23)',
+  '> ## 0.1.1',
+  '> ### (2018-09-23)',
+  '> ',
+  '> * foo [Test]',
+  '> ',
+  '> * baz [Test]',
+  '> ',
   '',
-  '* foo [Bar]',
+  '> ## 0.1.0',
+  '> ### (2018-09-23)',
+  '> ',
+  '> * qux [Test]',
+  '> ',
   '</details>',
+  '',
+  '',
+  '* feat: implement x',
   ''
 ].join('\n'));
