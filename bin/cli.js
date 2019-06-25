@@ -78,6 +78,10 @@ const tryReferenceFromCommit = (reference, callback) => {
   });
 };
 
+const getCurrentCommand = (currentYargs) => {
+  return currentYargs._[0];
+};
+
 const argv = yargs
   .usage('Usage: $0 [OPTIONS]')
   .help()
@@ -135,6 +139,13 @@ const argv = yargs
     })
     .example('$0 get version');
   })
+  .command('set <target>', 'set target version', (yargsSet) => {
+    yargsSet.positional('target', {
+      describe: 'target version',
+      type: 'string'
+    })
+    .example('$0 set version 1.2.0');
+  })
   .example('$0 --current 1.1.0')
   .fail((message) => {
 
@@ -161,13 +172,13 @@ async.waterfall([
       return documentedVersions;
     });
     const latest = semver.getGreaterVersion(versions);
-    if (argv.target === 'version') {
+    if (getCurrentCommand(argv) === 'get' && argv.target === 'version') {
       console.log(latest);
       return callback(new Error(stopError));
     }
 
     const gitReference = argv.configuration.getGitReferenceFromVersion(latest);
-    if (argv.target === 'reference') {
+    if (getCurrentCommand(argv) === 'get' && argv.target === 'reference') {
       console.log(gitReference);
       return callback(new Error(stopError));
     }
@@ -222,11 +233,16 @@ async.waterfall([
   },
 
   (currentVersion, documentedVersions, history, callback) => {
-    const version = versionist.calculateNextVersion(history, {
-      getIncrementLevelFromCommit: argv.configuration.getIncrementLevelFromCommit,
-      currentVersion: currentVersion,
-      incrementVersion: argv.configuration.incrementVersion
-    });
+    let version;
+    if (getCurrentCommand(argv) === 'set') {
+      version = argv.target;
+    } else {
+      version = versionist.calculateNextVersion(history, {
+        getIncrementLevelFromCommit: argv.configuration.getIncrementLevelFromCommit,
+        currentVersion: currentVersion,
+        incrementVersion: argv.configuration.incrementVersion
+      });
+    }
 
     if (_.includes(documentedVersions, version)) {
       return callback(new Error(`No commits were annotated with a change type since version ${version}`), null);
