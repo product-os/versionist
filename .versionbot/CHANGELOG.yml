@@ -1,4 +1,25 @@
 - commits:
+    - subject: Remove extra newline between nested changelog entries
+      hash: 65aef73dc8b9965d23567b3b0136f330e81cce4e
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Giovanni Garufi <giovanni@balena.io>
+        signed-off-by: Giovanni Garufi <giovanni@balena.io>
+      author: Giovanni Garufi
+    - subject: Add set command
+      hash: b82595ce7e9a4b3a90ec5c46eea764d948af0630
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Giovanni Garufi <giovanni@balena.io>
+        signed-off-by: Giovanni Garufi <giovanni@balena.io>
+      author: Giovanni Garufi
+  version: 5.2.0
+  date: 2019-06-25T15:23:13.425Z
+- commits:
     - subject: Add blockquotes in nested changelogs
       hash: d57ded3fab78d83aaee29afc554370186878adac
       body: ''
