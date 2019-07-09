@@ -1,4 +1,16 @@
 - commits:
+    - subject: add script for generating structured changelogs from git history
+      hash: 10b9bdeb1efcc57ef024eb42da06d168d3f02cac
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 5.3.0
+  date: 2019-06-28T16:41:47.269Z
+- commits:
     - subject: Remove extra newline between nested changelog entries
       hash: 65aef73dc8b9965d23567b3b0136f330e81cce4e
       body: ''
