@@ -93,7 +93,11 @@ export const parseFooterTagLines = (
 ): _.Dictionary<string> => {
 	return _.chain(footerTagLines)
 		.reject(line => {
-			return _.isEmpty(line.trim());
+			line = line.trim();
+			return (
+				_.isEmpty(line) ||
+				/^\(cherry\spicked\sfrom\scommit\s[0-9a-f]{7,40}\)$/.test(line)
+			);
 		})
 		.reduce((tags: Array<[string, string?]>, tagLine) => {
 			const tag = parseTagLine(tagLine);

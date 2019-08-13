@@ -238,6 +238,31 @@ describe('Tags', function() {
         bar: 'baz'
       });
     });
-  });
 
+    it('should ignore signed cherry-pick lines (long commit)', function() {
+      const footer = tags.parseFooterTagLines([
+        'Foo: bar',
+        '(cherry picked from commit 15b916f6bbbbbe2c9dfd5bad2a92aa5c3c8d49a6)',
+        'bar: baz'
+      ]);
+
+      m.chai.expect(footer).to.deep.equal({
+        Foo: 'bar',
+        bar: 'baz'
+      });
+    });
+
+    it('should ignore signed cherry-pick lines (short commit)', function() {
+      const footer = tags.parseFooterTagLines([
+        'Foo: bar',
+        '(cherry picked from commit 15b916f)',
+        'bar: baz'
+      ]);
+
+      m.chai.expect(footer).to.deep.equal({
+        Foo: 'bar',
+        bar: 'baz'
+      });
+    });
+  });
 });
