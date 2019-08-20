@@ -40,7 +40,7 @@ const showErrorAndQuit = (error) => {
   console.error(chalk.red(error.message));
   debug(chalk.red(error.stack));
   console.error('If you run into any issues, feel free to let us know on GitHub!');
-  console.error('  https://github.com/resin-io/versionist/issues');
+  console.error('  https://github.com/balena-io/versionist/issues');
   process.exit(1);
 };
 
