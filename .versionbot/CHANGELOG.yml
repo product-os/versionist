@@ -1,4 +1,16 @@
 - commits:
+    - subject: 'meta: update resin references to balena, remove dead gitter'
+      hash: 474def0256cf4e5fc9b3e958e8d57aa867453e4e
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Matthew McGinn <matthew@balena.io>
+        signed-off-by: Matthew McGinn <matthew@balena.io>
+      author: Matthew McGinn
+  version: 5.3.1
+  date: 2019-08-20T19:13:20.977Z
+- commits:
     - subject: add script for generating structured changelogs from git history
       hash: 10b9bdeb1efcc57ef024eb42da06d168d3f02cac
       body: ''
