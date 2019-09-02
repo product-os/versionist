@@ -1,4 +1,20 @@
 - commits:
+    - subject: Do not reject cherry-picked commits
+      hash: f2fae4a24ce847809d64e8a4b4a7431c9e4ed4fe
+      body: |
+        Currently commits that result from running `git cherry-pick -x COMMIT`
+        are not allowed by versionist.
+      footer:
+        Connects-to: 'https://github.com/balena-io/versionist/issues/133'
+        connects-to: 'https://github.com/balena-io/versionist/issues/133'
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Robert Günzler <robertg@balena.io>
+        signed-off-by: Robert Günzler <robertg@balena.io>
+      author: Robert Günzler
+  version: 5.4.0
+  date: 2019-08-30T18:07:53.336Z
+- commits:
     - subject: 'meta: update resin references to balena, remove dead gitter'
       hash: 474def0256cf4e5fc9b3e958e8d57aa867453e4e
       body: ''
