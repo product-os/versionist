@@ -1,4 +1,18 @@
 - commits:
+    - subject: Create parsable changelog if .versionbot folder is present
+      hash: 853ac15c06051594fa564678ad4a12a525945ab0
+      body: |
+        Also do not throw an error if CHANGELOG.yml file is empty but just treat
+        it as an empty array
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Giovanni Garufi <giovanni@balena.io>
+        signed-off-by: Giovanni Garufi <giovanni@balena.io>
+      author: Giovanni Garufi
+  version: 5.4.1
+  date: 2019-09-06T11:52:37.085Z
+- commits:
     - subject: Do not reject cherry-picked commits
       hash: f2fae4a24ce847809d64e8a4b4a7431c9e4ed4fe
       body: |
