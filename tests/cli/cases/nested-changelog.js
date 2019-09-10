@@ -102,6 +102,7 @@ m.chai.expect(shelljs.cat('CHANGELOG.md').stdout).to.deep.equal([
   '> * qux [Test]',
   '</details>',
   '',
+  '',
   '* feat: implement x',
   ''
 ].join('\n'));
