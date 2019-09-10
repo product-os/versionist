@@ -1,4 +1,18 @@
 - commits:
+    - subject: >-
+        Add extra space after details to prevent layout from breaking with
+        nesting > 2
+      hash: 5caff989c42ef0a8e8df1223cf5ae4782448f5d1
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Giovanni Garufi <giovanni@balena.io>
+        signed-off-by: Giovanni Garufi <giovanni@balena.io>
+      author: Giovanni Garufi
+  version: 5.4.2
+  date: 2019-09-10T10:16:33.357Z
+- commits:
     - subject: Create parsable changelog if .versionbot folder is present
       hash: 853ac15c06051594fa564678ad4a12a525945ab0
       body: |
