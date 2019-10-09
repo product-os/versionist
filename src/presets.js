@@ -887,7 +887,7 @@ module.exports = {
      * @param {Function} callback - callback (error)
      *
      * @example
-     * presets.updateVersion.npm({}, process.cwd(), '1.0.0', (error) => {
+     * presets.updateVersion["update-version-file"]({}, process.cwd(), '1.0.0', (error) => {
      *   if (error) {
      *     throw error;
      *   }
@@ -896,9 +896,9 @@ module.exports = {
     'update-version-file': (options, cwd, version, callback) => {
       const versionFile = path.join(cwd, 'VERSION');
 
-      // Write with r+ mode, this will cause an error if no VERSION file is present
+      // Write with w+ mode, this will create the file if not preset
       return fs.writeFile(versionFile, version, {
-        flag: 'r+'
+        flag: 'w+'
       }, callback);
     },
 
