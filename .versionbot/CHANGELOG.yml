@@ -1,4 +1,16 @@
 - commits:
+    - subject: Create VERSION file if not preset
+      hash: 37c5454851d44255060ae17ec79edd2d069c77e8
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Giovanni Garufi <giovanni@balena.io>
+        signed-off-by: Giovanni Garufi <giovanni@balena.io>
+      author: Giovanni Garufi
+  version: 5.4.3
+  date: 2019-12-17T09:27:02.835Z
+- commits:
     - subject: >-
         Add extra space after details to prevent layout from breaking with
         nesting > 2
