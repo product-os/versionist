@@ -2433,15 +2433,22 @@ describe('Presets', function() {
 
         beforeEach(function() {
           this.cwd = tmp.dirSync();
+          this.versionedFile = path.join(this.cwd.name, 'VERSION');
         });
 
         afterEach(function() {
+          fs.unlinkSync(this.versionedFile);
           this.cwd.removeCallback();
         });
 
-        it('should not throw an error', function(done) {
-          presets.updateVersion.mixed({}, this.cwd.name, '1.0.0', (error) => {
+        it('should not throw an error and create the VERSION file', function(done) {
+          presets.updateVersion.mixed({}, this.cwd.name, '1.1.0', (error) => {
             m.chai.expect(error).to.not.exist;
+            const versionedFile = fs.readFileSync(this.versionedFile, {
+              encoding: 'utf8'
+            });
+
+            m.chai.expect(versionedFile).to.equal('1.1.0');
             done();
           });
         });
@@ -2453,19 +2460,19 @@ describe('Presets', function() {
         beforeEach(function() {
           this.cwd = tmp.dirSync();
           this.packageJSON = path.join(this.cwd.name, 'package.json');
-          this.versionFile = path.join(this.cwd.name, 'VERSION');
+          this.versionedFile = path.join(this.cwd.name, 'VERSION');
 
           fs.writeFileSync(this.packageJSON, JSON.stringify({
             name: 'foo',
             version: '1.0.0'
           }, null, 2));
 
-          fs.writeFileSync(this.versionFile, '1.0.0');
+          fs.writeFileSync(this.versionedFile, '1.0.0');
         });
 
         afterEach(function() {
           fs.unlinkSync(this.packageJSON);
-          fs.unlinkSync(this.versionFile);
+          fs.unlinkSync(this.versionedFile);
           this.cwd.removeCallback();
         });
 
@@ -2477,7 +2484,7 @@ describe('Presets', function() {
               encoding: 'utf8'
             }));
 
-            const versionFile = fs.readFileSync(this.versionFile, {
+            const versionedFile = fs.readFileSync(this.versionedFile, {
               encoding: 'utf8'
             });
 
@@ -2486,7 +2493,7 @@ describe('Presets', function() {
               version: '1.1.0'
             });
 
-            m.chai.expect(versionFile).to.equal('1.1.0');
+            m.chai.expect(versionedFile).to.equal('1.1.0');
 
             done();
           });
