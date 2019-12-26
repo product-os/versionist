@@ -536,6 +536,61 @@ module.exports = {
     }
   },
 
+  addEntryToHistoryFile: {
+    /**
+     * @summary Prepend entry to .versionbot/CHANGELOG.yml
+     * @function
+     * @public
+     *
+     * @param {Object} options - options
+     * @param {String} file - path to version file
+     * @param {String} raw - changelog raw entry
+     * @param {Function} callback - callback
+     * @returns {null}
+     *
+     * @example
+     * presets.addEntryToHistoryFile.ymlPrepend({},
+     * { commits:
+     *    [ { subject: 'Subject',
+     *      body: '',
+     *      footer: {},
+     *      author: 'test'
+     *    }
+     *  ],
+     *  version: '5.4.4',
+     *  date: 2019-12-26T16:53:28.111Z
+     * }, (error) => {
+     *   if (error) {
+     *     throw error;
+     *   }
+     * });
+     */
+    ymlPrepend: (options, file, raw, callback) => {
+      if (fs.existsSync(file)) {
+        let changelog = [];
+        try {
+          changelog = yaml.safeLoad(
+            fs.readFileSync(file, 'utf8')
+          );
+
+          // If the file was empty we explicitly set as empty array
+          if (_.isUndefined(changelog)) {
+            changelog = [];
+          }
+        } catch (e) {
+          if (e.code !== 'ENOENT') {
+            return callback(e);
+          }
+        }
+
+        changelog.unshift(raw);
+        fs.writeFile(file, yaml.safeDump(changelog), callback);
+      } else {
+        return callback(null);
+      }
+    }
+  },
+
   transformTemplateDataAsync: {
     'nested-changelogs': (options, data, callback) => {
       async.map(data.commits,
@@ -993,6 +1048,7 @@ module.exports = {
       '{{> commits nesting="#" block=""}}'
     ].join('\n'))
   },
+
   /* eslint-enable indent */
   INITIAL_CHANGELOG: INITIAL_CHANGELOG
 };
