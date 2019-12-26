@@ -2541,6 +2541,72 @@ describe('Presets', function() {
     });
 
   });
+  describe('.getIncrementLevelFromCommit', () => {
+
+    describe('.subject', () => {
+
+      it('should extract increment level from commit subject', () => {
+        const data = {
+          subject: 'patch: rest of subject',
+          footer: {
+            foo: 'bar'
+          }
+        };
+        const incrementLevel = presets.getIncrementLevelFromCommit.subject({}, data);
+        m.chai.expect(incrementLevel).to.equal('patch');
+      });
+    });
+
+    describe('.change-type', () => {
+
+      it('should extract increment level from commit footers', () => {
+        const data = {
+          subject: 'subject',
+          footer: {
+            'change-type': 'patch'
+          }
+        };
+        const incrementLevel = presets.getIncrementLevelFromCommit['change-type']({}, data);
+        m.chai.expect(incrementLevel).to.equal('patch');
+      });
+    });
+
+    describe('.changeTypeOrSubject', () => {
+
+      it('should extract increment level from commit footers', () => {
+        const data = {
+          subject: 'subject',
+          footer: {
+            'change-type': 'patch'
+          }
+        };
+        const incrementLevel = presets.getIncrementLevelFromCommit.changeTypeOrSubject({}, data);
+        m.chai.expect(incrementLevel).to.equal('patch');
+      });
+
+      it('should extract increment level from commit subject', () => {
+        const data = {
+          subject: 'patch: subject',
+          footer: {
+            foo: 'bar'
+          }
+        };
+        const incrementLevel = presets.getIncrementLevelFromCommit.changeTypeOrSubject({}, data);
+        m.chai.expect(incrementLevel).to.equal('patch');
+      });
+
+      it('should prefer increment level from footers over the one in the title', () => {
+        const data = {
+          subject: 'minor: subject',
+          footer: {
+            'change-type': 'patch'
+          }
+        };
+        const incrementLevel = presets.getIncrementLevelFromCommit.changeTypeOrSubject({}, data);
+        m.chai.expect(incrementLevel).to.equal('patch');
+      });
+    });
+  });
 
   describe('.transformTemplateData', () => {
 
