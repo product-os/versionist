@@ -1,4 +1,16 @@
 - commits:
+    - subject: Move editing of CHANGELOG.yml after dry checks
+      hash: c09de0699dfb2c002ed5c62d5bf296b43a099845
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Giovanni Garufi <giovanni@balena.io>
+        signed-off-by: Giovanni Garufi <giovanni@balena.io>
+      author: Giovanni Garufi
+  version: 5.4.4
+  date: 2019-12-27T13:31:52.188Z
+- commits:
     - subject: Create VERSION file if not preset
       hash: 37c5454851d44255060ae17ec79edd2d069c77e8
       body: ''
