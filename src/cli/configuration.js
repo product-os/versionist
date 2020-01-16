@@ -23,6 +23,7 @@
 const _ = require('lodash');
 const presets = require('../presets');
 const fs = require('fs');
+const path = require('path');
 
 /**
  * @summary Configuration default values
@@ -38,6 +39,10 @@ const DEFAULTS = {
   changelogFile: {
     type: 'string',
     default: 'CHANGELOG.md'
+  },
+  historyFile: {
+    type: 'string',
+    default: path.join('.versionbot', 'CHANGELOG.yml')
   },
   defaultInitialVersion: {
     type: 'string',
@@ -147,7 +152,14 @@ const DEFAULTS = {
       '{{/each}}'
     ].join('\n'),
     allowsPresets: true
+  },
   /* eslint-enable indent */
+  addEntryToHistoryFile: {
+    type: 'function',
+    default: {
+      preset: 'ymlPrepend'
+    },
+    allowsPresets: true
   }
 };
 

@@ -55,6 +55,7 @@ utils.createVersionistConfiguration([
 
 shelljs.exec('git init');
 shelljs.mkdir('-p', '.versionbot');
+shelljs.touch('.versionbot/CHANGELOG.yml');
 
 utils.createCommit('feat: implement x', {
   'Changelog-Entry': 'Implement x',

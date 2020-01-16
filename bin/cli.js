@@ -254,21 +254,26 @@ async.waterfall([
       transformTemplateData: argv.configuration.transformTemplateData,
       transformTemplateDataAsync: argv.configuration.transformTemplateDataAsync,
       version: version
-    }, (error, entry) => {
+    }, (error, rendered, raw) => {
       if (error) {
         return callback(error);
       }
-      return callback(null, version, entry);
+      return callback(null, version, rendered, raw);
     });
   },
 
-  (version, entry, callback) => {
+  (version, rendered, raw, callback) => {
     if (argv.dry) {
-      console.log(chalk.green(entry));
+      console.log(chalk.green(rendered));
       return callback(null, version);
     } else if (argv.configuration.editChangelog) {
-      argv.configuration.addEntryToChangelog(argv.configuration.changelogFile, entry, (error) => {
-        return callback(error, version);
+      argv.configuration.addEntryToHistoryFile(argv.configuration.historyFile, raw, (error) => {
+        if (error) {
+          return callback(error);
+        }
+        argv.configuration.addEntryToChangelog(argv.configuration.changelogFile, rendered, (err) => {
+          return callback(err, version);
+        });
       });
     } else {
       return callback(null, version);

@@ -19,10 +19,7 @@
  */
 
 import * as childProcess from 'child_process';
-import * as fs from 'fs';
-import * as yaml from 'js-yaml';
 import * as _ from 'lodash';
-import * as path from 'path';
 
 import * as gitLog from './git-log';
 import * as semver from './semver';
@@ -263,7 +260,7 @@ export const generateChangelog = (
 		) => void;
 		includeCommitWhen: _.ListIterateeCustom<gitLog.Commit, boolean>;
 	},
-	callback: Callback<string>,
+	callback: (err?: Error, rendered?: string, raw?: TemplateData) => void,
 ) => {
 	if (_.isEmpty(commits)) {
 		throw new Error('No commits to generate the CHANGELOG from');
@@ -310,35 +307,11 @@ export const generateChangelog = (
 		if (error) {
 			return callback(error);
 		}
-		const parsableChangelogFolder = '.versionbot';
-		const parsableChangelogName = 'CHANGELOG.yml';
-		const parsableChangelogPath = path.join(
-			parsableChangelogFolder,
-			parsableChangelogName,
-		);
-		if (fs.existsSync(parsableChangelogFolder)) {
-			let changelog = [];
-			try {
-				changelog = yaml.safeLoad(
-					fs.readFileSync(parsableChangelogPath, 'utf8'),
-				);
-				// If the file was empty we explicitly set as empty array
-				if (_.isUndefined(changelog)) {
-					changelog = [];
-				}
-			} catch (e) {
-				if (e.code !== 'ENOENT') {
-					throw e;
-				}
-			}
-
-			changelog.unshift(transformedTemplate);
-			fs.writeFileSync(parsableChangelogPath, yaml.safeDump(changelog));
-		}
 
 		return callback(
 			undefined,
 			template.render(options.template, transformedTemplate),
+			transformedTemplate,
 		);
 	});
 };
