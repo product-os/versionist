@@ -386,19 +386,74 @@ module.exports = {
      * @returns {String} Increment level
      *
      * @example
-     * if (presets.includeCommitWhen['has-changetype']({}, {
+     * if (presets.getIncrementLevelFromCommit['change-type']({}, {
      *   subject: 'A change',
      *   footer: {
      *     'change-type': 'minor'
      *   }
      * })) {
-     *   console.log('The commit should be included');
+     *   console.log('minor');
      * }
      */
     'change-type': (options, commit) => {
       if (isIncrementalCommit(commit.footer['change-type'])) {
         return commit.footer['change-type'].trim().toLowerCase();
       }
+    },
+
+    /**
+     * @summary Calculate increment level from subject
+     * @function
+     * @public
+     *
+     *
+     * @param {Object} options - options
+     * @param {Object} commit - commit
+     * @returns {String} Increment level
+     *
+     * @example
+     * if (presets.getIncrementLevelFromCommit['title']({}, {
+     *   subject: 'patch: a change',
+     *   footer: {
+     *     'foo': 'bar'
+     *   }
+     * })) {
+     *   console.log('patch');
+     * }
+     */
+    subject: (options, commit) => {
+      const match = commit.subject.match(/(patch|minor|major)/);
+      if (_.isArray(match) && isIncrementalCommit(match[1])) {
+        return match[1].trim().toLowerCase();
+      }
+    },
+
+    /**
+     * @summary Calculate increment level from footers or title if not change-type footer is present
+     * @function
+     * @public
+     *
+     *
+     * @param {Object} options - options
+     * @param {Object} commit - commit
+     * @returns {String} Increment level
+     *
+     * @example
+     * if (presets.getIncrementLevelFromCommit.changeTypeOrSubject({}, {
+     *   subject: 'patch: a change',
+     *   footer: {
+     *     'change-type': 'minor'
+     *   }
+     * })) {
+     *   console.log('minor');
+     * }
+     */
+    changeTypeOrSubject: (options, commit) => {
+      const ctIncrement = module.exports.getIncrementLevelFromCommit['change-type'](options, commit);
+      if (_.isString(ctIncrement)) {
+        return ctIncrement;
+      }
+      return module.exports.getIncrementLevelFromCommit.subject(options, commit);
     }
   },
 
