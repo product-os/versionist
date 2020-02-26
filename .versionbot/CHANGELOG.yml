@@ -1,4 +1,22 @@
 - commits:
+    - subject: Add getIncrementLevelFromCommit options
+      hash: 684793d0ca13e60ed2ce37ee694813c1f86f6f19
+      body: |
+        Added subject, which extracts increment level from the prefix in the
+        commit subject
+
+        Added changeTypeOrSubject which tries to extract the increment from the
+        change type at first, and if that fails tries to extract it from the
+        subject instead
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Giovanni Garufi <giovanni@balena.io>
+        signed-off-by: Giovanni Garufi <giovanni@balena.io>
+      author: Giovanni Garufi
+  version: 5.5.0
+  date: 2020-02-25T17:05:42.251Z
+- commits:
     - subject: Move editing of CHANGELOG.yml after dry checks
       hash: c09de0699dfb2c002ed5c62d5bf296b43a099845
       body: ''
