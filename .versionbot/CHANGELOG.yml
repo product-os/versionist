@@ -1,4 +1,31 @@
 - commits:
+    - subject: Bump lodash from 4.17.11 to 4.17.13
+      hash: ceec848d1aaba47a2298ca95a3aa10d025114158
+      body: >
+        Bumps [lodash](https://github.com/lodash/lodash) from 4.17.11 to
+        4.17.13.
+
+        - [Release notes](https://github.com/lodash/lodash/releases)
+
+        - [Commits](https://github.com/lodash/lodash/compare/4.17.11...4.17.13)
+      footer:
+        Signed-off-by: 'dependabot[bot] <support@github.com>'
+        signed-off-by: 'dependabot[bot] <support@github.com>'
+        Change-type: patch
+        change-type: patch
+      author: 'dependabot[bot]'
+    - subject: Extend has-changetype so subject changes are also considered
+      hash: b8d28db674934ca0002d2eb9b6e1ebb3c1691632
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Giovanni Garufi <giovanni@balena.io>
+        signed-off-by: Giovanni Garufi <giovanni@balena.io>
+      author: Giovanni Garufi
+  version: 6.1.0
+  date: 2020-03-18T17:11:52.199Z
+- commits:
     - subject: Fix presets to have proper casing
       hash: f4956edc9269fe08539b9c7f9d623c3f0a69e5b2
       body: ''
