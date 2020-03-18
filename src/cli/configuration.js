@@ -111,7 +111,7 @@ const DEFAULTS = {
   },
   getIncrementLevelFromCommit: {
     type: 'function',
-    default: 'change-type',
+    default: 'change-type-or-subject',
     allowsPresets: true
   },
   incrementVersion: {
@@ -140,25 +140,13 @@ const DEFAULTS = {
   /* eslint-disable indent */
   template: {
     type: 'string',
-    default: [
-      '## {{version}} - {{moment date "Y-MM-DD"}}',
-      '',
-      '{{#each commits}}',
-        '{{#if this.author}}',
-          '* {{capitalize this.subject}} [{{this.author}}]',
-        '{{else}}',
-          '* {{capitalize this.subject}}',
-        '{{/if}}',
-      '{{/each}}'
-    ].join('\n'),
+    default: 'default',
     allowsPresets: true
   },
   /* eslint-enable indent */
   addEntryToHistoryFile: {
     type: 'function',
-    default: {
-      preset: 'ymlPrepend'
-    },
+    default: 'yml-prepend',
     allowsPresets: true
   }
 };

@@ -439,7 +439,7 @@ module.exports = {
      * @returns {String} Increment level
      *
      * @example
-     * if (presets.getIncrementLevelFromCommit.changeTypeOrSubject({}, {
+     * if (presets.getIncrementLevelFromCommit['change-type-or-subject']({}, {
      *   subject: 'patch: a change',
      *   footer: {
      *     'change-type': 'minor'
@@ -448,7 +448,7 @@ module.exports = {
      *   console.log('minor');
      * }
      */
-    changeTypeOrSubject: (options, commit) => {
+    'change-type-or-subject': (options, commit) => {
       const ctIncrement = module.exports.getIncrementLevelFromCommit['change-type'](options, commit);
       if (_.isString(ctIncrement)) {
         return ctIncrement;
@@ -620,7 +620,7 @@ module.exports = {
      *   }
      * });
      */
-    ymlPrepend: (options, file, raw, callback) => {
+    'yml-prepend': (options, file, raw, callback) => {
       if (fs.existsSync(file)) {
         let changelog = [];
         try {

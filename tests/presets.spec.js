@@ -2580,7 +2580,7 @@ describe('Presets', function() {
             'change-type': 'patch'
           }
         };
-        const incrementLevel = presets.getIncrementLevelFromCommit.changeTypeOrSubject({}, data);
+        const incrementLevel = presets.getIncrementLevelFromCommit['change-type-or-subject']({}, data);
         m.chai.expect(incrementLevel).to.equal('patch');
       });
 
@@ -2591,7 +2591,7 @@ describe('Presets', function() {
             foo: 'bar'
           }
         };
-        const incrementLevel = presets.getIncrementLevelFromCommit.changeTypeOrSubject({}, data);
+        const incrementLevel = presets.getIncrementLevelFromCommit['change-type-or-subject']({}, data);
         m.chai.expect(incrementLevel).to.equal('patch');
       });
 
@@ -2602,7 +2602,7 @@ describe('Presets', function() {
             'change-type': 'patch'
           }
         };
-        const incrementLevel = presets.getIncrementLevelFromCommit.changeTypeOrSubject({}, data);
+        const incrementLevel = presets.getIncrementLevelFromCommit['change-type-or-subject']({}, data);
         m.chai.expect(incrementLevel).to.equal('patch');
       });
     });
