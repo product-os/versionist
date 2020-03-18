@@ -1,4 +1,16 @@
 - commits:
+    - subject: Fix presets to have proper casing
+      hash: f4956edc9269fe08539b9c7f9d623c3f0a69e5b2
+      body: ''
+      footer:
+        Change-type: major
+        change-type: major
+        Signed-off-by: Giovanni Garufi <giovanni@balena.io>
+        signed-off-by: Giovanni Garufi <giovanni@balena.io>
+      author: Giovanni Garufi
+  version: 6.0.0
+  date: 2020-03-17T19:03:29.818Z
+- commits:
     - subject: Add getIncrementLevelFromCommit options
       hash: 684793d0ca13e60ed2ce37ee694813c1f86f6f19
       body: |
