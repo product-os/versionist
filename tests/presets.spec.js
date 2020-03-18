@@ -214,7 +214,6 @@ describe('Presets', function() {
       });
 
     });
-
   });
 
   describe('.getChangelogDocumentedVersions', function() {
@@ -2571,7 +2570,7 @@ describe('Presets', function() {
       });
     });
 
-    describe('.changeTypeOrSubject', () => {
+    describe('.change-type-or-subject', () => {
 
       it('should extract increment level from commit footers', () => {
         const data = {

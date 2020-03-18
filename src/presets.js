@@ -326,7 +326,7 @@ module.exports = {
     },
 
     /**
-     * @summary Include commit only if it contains a change-type footer
+     * @summary Include commit only if it contains a change-type, either in a footer or the subject
      * @function
      * @public
      *
@@ -346,7 +346,8 @@ module.exports = {
      * }
      */
     'has-changetype': (options, commit) => {
-      return isIncrementalCommit(commit.footer['change-type']);
+      return isIncrementalCommit(commit.footer['change-type'])
+          || isIncrementalCommit(module.exports.getIncrementLevelFromCommit.subject({}, commit));
     },
 
     /**
@@ -360,17 +361,17 @@ module.exports = {
      * @returns {Boolean} whether the commit should be included
      *
      * @example
-     * if (presets.includeCommitWhen['has-changetype']({}, {
+     * if (presets.includeCommitWhen['has-changelog-entry']({}, {
      *   subject: 'A change',
      *   footer: {
-     *     'change-type': 'minor'
+     *     'changelog-entry': 'Longer explanation of the change'
      *   }
      * })) {
      *   console.log('The commit should be included');
      * }
      */
     'has-changelog-entry': (options, commit) => {
-      return isIncrementalCommit(commit.footer['changelog-entry']);
+      return Boolean(commit.footer['changelog-entry']);
     }
   },
 
@@ -422,6 +423,9 @@ module.exports = {
      * }
      */
     subject: (options, commit) => {
+      if (!_.isString(commit.subject)) {
+        return null;
+      }
       const match = commit.subject.match(/(patch|minor|major)/);
       if (_.isArray(match) && isIncrementalCommit(match[1])) {
         return match[1].trim().toLowerCase();
