@@ -28,73 +28,77 @@ shelljs.rm('-rf', TEST_DIRECTORY);
 shelljs.mkdir('-p', TEST_DIRECTORY);
 shelljs.cd(TEST_DIRECTORY);
 
-utils.createVersionistConfiguration([
-  '\'use strict\';',
-  'module.exports = {',
-  '  subjectParser: \'angular\',',
-  '  editVersion: false,',
-  '  addEntryToChangelog: \'prepend\',',
-  '  includeCommitWhen: (commit) => {',
-  '    return commit.footer[\'Changelog-Entry\'];',
-  '  },',
-  '  getIncrementLevelFromCommit: (commit) => {',
-  '    return commit.footer[\'Change-Type\'];',
-  '  },',
-  '  template: [',
-  '    \'## {{version}}\',',
-  '    \'\',',
-  '    \'{{#each commits}}\',',
-  '    \'{{#with footer}}\',',
-  '    \'- {{capitalize Changelog-Entry}}\',',
-  '    \'{{/with}}\',',
-  '    \'{{/each}}\'',
-  '  ].join(\'\\n\')',
-  '};',
-  ''
-].join('\n'));
+utils.createVersionistConfiguration(
+	[
+		"'use strict';",
+		'module.exports = {',
+		"  subjectParser: 'angular',",
+		'  editVersion: false,',
+		"  addEntryToChangelog: 'prepend',",
+		'  includeCommitWhen: (commit) => {',
+		"    return commit.footer['Changelog-Entry'];",
+		'  },',
+		'  getIncrementLevelFromCommit: (commit) => {',
+		"    return commit.footer['Change-Type'];",
+		'  },',
+		'  template: [',
+		"    '## {{version}}',",
+		"    '',",
+		"    '{{#each commits}}',",
+		"    '{{#with footer}}',",
+		"    '- {{capitalize Changelog-Entry}}',",
+		"    '{{/with}}',",
+		"    '{{/each}}'",
+		"  ].join('\\n')",
+		'};',
+		'',
+	].join('\n'),
+);
 
 shelljs.exec('git init');
 shelljs.mkdir('-p', '.versionbot');
 shelljs.exec('nodetouch .versionbot/CHANGELOG.yml');
 
 utils.createCommit('feat: implement x', {
-  'Changelog-Entry': 'Implement x',
-  'Change-Type': 'minor'
+	'Changelog-Entry': 'Implement x',
+	'Change-Type': 'minor',
 });
 
 utils.callVersionist();
 
-m.chai.expect(shelljs.cat('CHANGELOG.md').stdout).to.deep.equal([
-  `${presets.INITIAL_CHANGELOG}## 0.1.0`,
-  '',
-  '- Implement x',
-  ''
-].join('\n'));
+m.chai
+	.expect(shelljs.cat('CHANGELOG.md').stdout)
+	.to.deep.equal(
+		[`${presets.INITIAL_CHANGELOG}## 0.1.0`, '', '- Implement x', ''].join(
+			'\n',
+		),
+	);
 
 const parsableChangelog = _.map(
-  yaml.safeLoad(shelljs.cat('.versionbot/CHANGELOG.yml').stdout),
-  (entry) => {
-    entry.commits = _.map(entry.commits, (commit) => {
-      return _.omit(commit, 'hash');
-    });
-    return _.omit(entry, 'date');
-  });
+	yaml.safeLoad(shelljs.cat('.versionbot/CHANGELOG.yml').stdout),
+	(entry) => {
+		entry.commits = _.map(entry.commits, (commit) => {
+			return _.omit(commit, 'hash');
+		});
+		return _.omit(entry, 'date');
+	},
+);
 
 m.chai.expect(parsableChangelog).to.deep.equal([
-  {
-    commits: [
-      {
-        subject: 'Implement x',
-        body: '',
-        footer: {
-          'Changelog-Entry': 'Implement x',
-          'changelog-entry': 'Implement x',
-          'Change-Type': 'minor',
-          'change-type': 'minor'
-        },
-        author: 'Versionist'
-      }
-    ],
-    version: '0.1.0'
-  }
+	{
+		commits: [
+			{
+				subject: 'Implement x',
+				body: '',
+				footer: {
+					'Changelog-Entry': 'Implement x',
+					'changelog-entry': 'Implement x',
+					'Change-Type': 'minor',
+					'change-type': 'minor',
+				},
+				author: 'Versionist',
+			},
+		],
+		version: '0.1.0',
+	},
 ]);

@@ -37,6 +37,6 @@ bower_components
 *.pem
 
 # Temporal CLI test data
-tests/cli/temporal
+temporal-tests
 
 lib

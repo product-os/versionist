@@ -25,38 +25,42 @@ shelljs.rm('-rf', TEST_DIRECTORY);
 shelljs.mkdir('-p', TEST_DIRECTORY);
 shelljs.cd(TEST_DIRECTORY);
 
-utils.createVersionistConfiguration([
-  '\'use strict\';',
-  'module.exports = {',
-  '  subjectParser: \'angular\',',
-  '  editVersion: false,',
-  '  addEntryToChangelog: \'prepend\',',
-  '  includeCommitWhen: (commit) => {',
-  '    return commit.footer[\'Changelog-Entry\'];',
-  '  },',
-  '  getIncrementLevelFromCommit: (commit) => {',
-  '    return commit.footer[\'Change-Type\'];',
-  '  },',
-  '  template: [',
-  '    \'## {{version}}\',',
-  '    \'\',',
-  '    \'{{#each commits}}\',',
-  '    \'{{#with footer}}\',',
-  '    \'- {{capitalize Changelog-Entry}}\',',
-  '    \'{{/with}}\',',
-  '    \'{{/each}}\'',
-  '  ].join(\'\\n\')',
-  '};',
-  ''
-].join('\n'));
+utils.createVersionistConfiguration(
+	[
+		"'use strict';",
+		'module.exports = {',
+		"  subjectParser: 'angular',",
+		'  editVersion: false,',
+		"  addEntryToChangelog: 'prepend',",
+		'  includeCommitWhen: (commit) => {',
+		"    return commit.footer['Changelog-Entry'];",
+		'  },',
+		'  getIncrementLevelFromCommit: (commit) => {',
+		"    return commit.footer['Change-Type'];",
+		'  },',
+		'  template: [',
+		"    '## {{version}}',",
+		"    '',",
+		"    '{{#each commits}}',",
+		"    '{{#with footer}}',",
+		"    '- {{capitalize Changelog-Entry}}',",
+		"    '{{/with}}',",
+		"    '{{/each}}'",
+		"  ].join('\\n')",
+		'};',
+		'',
+	].join('\n'),
+);
 
 shelljs.exec('git init');
 
 utils.createCommit('feat: implement x', {
-  'Changelog-Entry': 'Implement x'
+	'Changelog-Entry': 'Implement x',
 });
 
 const execResult = utils.callVersionist();
 
 m.chai.expect(execResult.code).to.equal(1);
-m.chai.expect(execResult.stderr).to.contain('No commits were annotated with a change type');
+m.chai
+	.expect(execResult.stderr)
+	.to.contain('No commits were annotated with a change type');

@@ -47,7 +47,7 @@ const extractNodeContent = (node: string[]): string[] => {
 const extractNodeText = (node: string[]): string => {
 	return _.join(
 		_.flattenDeep(
-			_.map(node, content => {
+			_.map(node, (content) => {
 				if (_.isArray(content)) {
 					return extractNodeContent(content);
 				}

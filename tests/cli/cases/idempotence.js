@@ -25,47 +25,49 @@ shelljs.rm('-rf', TEST_DIRECTORY);
 shelljs.mkdir('-p', TEST_DIRECTORY);
 shelljs.cd(TEST_DIRECTORY);
 
-utils.createVersionistConfiguration([
-  '\'use strict\';',
-  'module.exports = {',
-  '  subjectParser: \'angular\',',
-  '  editVersion: false,',
-  '  addEntryToChangelog: \'prepend\',',
-  '  includeCommitWhen: (commit) => {',
-  '    return commit.footer[\'Changelog-Entry\'];',
-  '  },',
-  '  getIncrementLevelFromCommit: (commit) => {',
-  '    return commit.footer[\'Change-Type\'];',
-  '  },',
-  '  template: [',
-  '    \'## {{version}}\',',
-  '    \'\',',
-  '    \'{{#each commits}}\',',
-  '    \'{{#with footer}}\',',
-  '    \'- {{capitalize Changelog-Entry}}\',',
-  '    \'{{/with}}\',',
-  '    \'{{/each}}\'',
-  '  ].join(\'\\n\')',
-  '};',
-  ''
-].join('\n'));
+utils.createVersionistConfiguration(
+	[
+		"'use strict';",
+		'module.exports = {',
+		"  subjectParser: 'angular',",
+		'  editVersion: false,',
+		"  addEntryToChangelog: 'prepend',",
+		'  includeCommitWhen: (commit) => {',
+		"    return commit.footer['Changelog-Entry'];",
+		'  },',
+		'  getIncrementLevelFromCommit: (commit) => {',
+		"    return commit.footer['Change-Type'];",
+		'  },',
+		'  template: [',
+		"    '## {{version}}',",
+		"    '',",
+		"    '{{#each commits}}',",
+		"    '{{#with footer}}',",
+		"    '- {{capitalize Changelog-Entry}}',",
+		"    '{{/with}}',",
+		"    '{{/each}}'",
+		"  ].join('\\n')",
+		'};',
+		'',
+	].join('\n'),
+);
 
 shelljs.exec('git init');
 shelljs.exec('nodetouch CHANGELOG.md');
 
 utils.createCommit('feat: implement x', {
-  'Changelog-Entry': 'Implement x',
-  'Change-Type': 'minor'
+	'Changelog-Entry': 'Implement x',
+	'Change-Type': 'minor',
 });
 
 utils.createCommit('fix: fix y', {
-  'Changelog-Entry': 'Fix y',
-  'Change-Type': 'patch'
+	'Changelog-Entry': 'Fix y',
+	'Change-Type': 'patch',
 });
 
 utils.createCommit('fix: fix z', {
-  'Changelog-Entry': 'Fix z',
-  'Change-Type': 'patch'
+	'Changelog-Entry': 'Fix z',
+	'Change-Type': 'patch',
 });
 
 // Call Versionist many times
@@ -75,11 +77,8 @@ utils.callVersionist();
 utils.callVersionist();
 utils.callVersionist();
 
-m.chai.expect(shelljs.cat('CHANGELOG.md').stdout).to.deep.equal([
-  '## 0.1.0',
-  '',
-  '- Fix z',
-  '- Fix y',
-  '- Implement x',
-  ''
-].join('\n'));
+m.chai
+	.expect(shelljs.cat('CHANGELOG.md').stdout)
+	.to.deep.equal(
+		['## 0.1.0', '', '- Fix z', '- Fix y', '- Implement x', ''].join('\n'),
+	);

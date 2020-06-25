@@ -201,8 +201,8 @@ export const parseGitLogYAMLOutput = (
 	} = {},
 ): Commit[] => {
 	return _.map(
-		yaml.safeLoad(output),
-		(commit: Commit): Commit => {
+		yaml.safeLoad(output) as Commit[],
+		(commit): Commit => {
 			if (_.isUndefined(commit.subject)) {
 				throw new Error('Invalid commit: no subject');
 			}
@@ -212,11 +212,7 @@ export const parseGitLogYAMLOutput = (
 			}
 
 			// Omit the first line in the body
-			commit.body = _.chain(commit.body)
-				.split('\n')
-				.tail()
-				.join('\n')
-				.value();
+			commit.body = _.chain(commit.body).split('\n').tail().join('\n').value();
 
 			// The commit object to be returned
 			const commitObj: OptionalField<Commit, 'body'> = {

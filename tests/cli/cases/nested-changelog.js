@@ -25,84 +25,90 @@ shelljs.rm('-rf', TEST_DIRECTORY);
 shelljs.mkdir('-p', TEST_DIRECTORY);
 shelljs.cd(TEST_DIRECTORY);
 
-utils.createVersionistConfiguration([
-  '\'use strict\';',
-  'module.exports = {',
-  '  addEntryToChangelog: \'prepend\',',
-  '  editVersion: false,',
-  '  transformTemplateData: (data) => {',
-  '    data.date = \'2018-09-23T15:05:11.877Z\'',
-  '    return data',
-  '  },',
-  '  transformTemplateDataAsync: (data, cb) => {',
-  '    data.commits[1].nested = [{',
-  '      version: \'0.1.1\',',
-  '      date: \'2018-09-23T15:05:11.877Z\',',
-  '      commits: [',
-  '        {',
-  '          subject: \'foo\',',
-  '          author: \'Test\'',
-  '        }, {',
-  '          subject: \'baz\',',
-  '          author: \'Test\'',
-  '        }',
-  '      ]',
-  '    }, {',
-  '      version: \'0.1.0\',',
-  '      date: \'2018-09-23T15:05:00.000Z\',',
-  '      commits: [',
-  '        {',
-  '          subject: \'qux\',',
-  '          author: \'Test\'',
-  '        }',
-  '      ]',
-  '    }]',
-  '    return cb(null, data)',
-  '  },',
-  '  template: \'default\'',
-  '};',
-  ''
-].join('\n'));
+utils.createVersionistConfiguration(
+	[
+		"'use strict';",
+		'module.exports = {',
+		"  addEntryToChangelog: 'prepend',",
+		'  editVersion: false,',
+		'  transformTemplateData: (data) => {',
+		"    data.date = '2018-09-23T15:05:11.877Z'",
+		'    return data',
+		'  },',
+		'  transformTemplateDataAsync: (data, cb) => {',
+		'    data.commits[1].nested = [{',
+		"      version: '0.1.1',",
+		"      date: '2018-09-23T15:05:11.877Z',",
+		'      commits: [',
+		'        {',
+		"          subject: 'foo',",
+		"          author: 'Test'",
+		'        }, {',
+		"          subject: 'baz',",
+		"          author: 'Test'",
+		'        }',
+		'      ]',
+		'    }, {',
+		"      version: '0.1.0',",
+		"      date: '2018-09-23T15:05:00.000Z',",
+		'      commits: [',
+		'        {',
+		"          subject: 'qux',",
+		"          author: 'Test'",
+		'        }',
+		'      ]',
+		'    }]',
+		'    return cb(null, data)',
+		'  },',
+		"  template: 'default'",
+		'};',
+		'',
+	].join('\n'),
+);
 
 shelljs.exec('git init');
 shelljs.exec('nodetouch CHANGELOG.md');
 
 utils.createCommit('feat: implement x', {
-  'Change-Type': 'patch'
+	'Change-Type': 'patch',
 });
 
 utils.createCommit('feat: implement y', {
-  'Change-Type': 'patch'
+	'Change-Type': 'patch',
 });
 
 utils.createCommit('feat: implement z', {
-  'Change-Type': 'patch'
+	'Change-Type': 'patch',
 });
 
 utils.callVersionist();
 
-m.chai.expect(shelljs.cat('CHANGELOG.md').stdout).to.deep.equal([
-  '# v0.0.2',
-  '## (2018-09-23)',
-  '',
-  '* feat: implement z',
-  '',
-  '<details>',
-  '<summary> feat: implement y </summary>',
-  '',
-  '> ## 0.1.1',
-  '> ### (2018-09-23)',
-  '> ',
-  '> * foo [Test]',
-  '> * baz [Test]',
-  '',
-  '> ## 0.1.0',
-  '> ### (2018-09-23)',
-  '> ',
-  '> * qux [Test]',
-  '</details>',
-  '',
-  '',
-  '* feat: implement x',
-  ''
-].join('\n'));
+m.chai
+	.expect(shelljs.cat('CHANGELOG.md').stdout)
+	.to.deep.equal(
+		[
+			'# v0.0.2',
+			'## (2018-09-23)',
+			'',
+			'* feat: implement z',
+			'',
+			'<details>',
+			'<summary> feat: implement y </summary>',
+			'',
+			'> ## 0.1.1',
+			'> ### (2018-09-23)',
+			'> ',
+			'> * foo [Test]',
+			'> * baz [Test]',
+			'',
+			'> ## 0.1.0',
+			'> ### (2018-09-23)',
+			'> ',
+			'> * qux [Test]',
+			'</details>',
+			'',
+			'',
+			'* feat: implement x',
+			'',
+		].join('\n'),
+	);

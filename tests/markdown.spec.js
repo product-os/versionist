@@ -19,111 +19,97 @@
 const m = require('mochainon');
 const markdown = require('../lib/markdown');
 
-describe('Markdown', function() {
+describe('Markdown', function () {
+	describe('.extractTitles()', function () {
+		it('should return an empty array if no titles', function () {
+			const titles = markdown.extractTitles(
+				['Hello World', '', 'Lorem ipsum dolor sit amet'].join('\n'),
+			);
 
-  describe('.extractTitles()', function() {
+			m.chai.expect(titles).to.deep.equal([]);
+		});
 
-    it('should return an empty array if no titles', function() {
-      const titles = markdown.extractTitles([
-        'Hello World',
-        '',
-        'Lorem ipsum dolor sit amet'
-      ].join('\n'));
+		it('should parse titles with links', function () {
+			const titles = markdown.extractTitles(
+				[
+					'# [Hello](http://www.google.com) World',
+					'Foo bar',
+					'',
+					'# Hey [there](http://yahoo.com)',
+					'Bar baz',
+					'',
+					'# [Hola mundo](http://bing.com)',
+					'Baz qux',
+				].join('\n'),
+			);
 
-      m.chai.expect(titles).to.deep.equal([]);
-    });
+			m.chai
+				.expect(titles)
+				.to.deep.equal(['Hello World', 'Hey there', 'Hola mundo']);
+		});
 
-    it('should parse titles with links', function() {
-      const titles = markdown.extractTitles([
-        '# [Hello](http://www.google.com) World',
-        'Foo bar',
-        '',
-        '# Hey [there](http://yahoo.com)',
-        'Bar baz',
-        '',
-        '# [Hola mundo](http://bing.com)',
-        'Baz qux'
-      ].join('\n'));
+		it('should parse top-level titles in atx style', function () {
+			const titles = markdown.extractTitles(
+				['# Hello World', 'Foo bar', '', '# Hey there', 'Bar baz'].join('\n'),
+			);
 
-      m.chai.expect(titles).to.deep.equal([
-        'Hello World',
-        'Hey there',
-        'Hola mundo'
-      ]);
-    });
+			m.chai.expect(titles).to.deep.equal(['Hello World', 'Hey there']);
+		});
 
-    it('should parse top-level titles in atx style', function() {
-      const titles = markdown.extractTitles([
-        '# Hello World',
-        'Foo bar',
-        '',
-        '# Hey there',
-        'Bar baz'
-      ].join('\n'));
+		it('should parse top-level titles in setext style', function () {
+			const titles = markdown.extractTitles(
+				[
+					'Hello World',
+					'===========',
+					'Foo bar',
+					'',
+					'Hey there',
+					'=========',
+					'Bar baz',
+				].join('\n'),
+			);
 
-      m.chai.expect(titles).to.deep.equal([
-        'Hello World',
-        'Hey there'
-      ]);
-    });
+			m.chai.expect(titles).to.deep.equal(['Hello World', 'Hey there']);
+		});
 
-    it('should parse top-level titles in setext style', function() {
-      const titles = markdown.extractTitles([
-        'Hello World',
-        '===========',
-        'Foo bar',
-        '',
-        'Hey there',
-        '=========',
-        'Bar baz'
-      ].join('\n'));
+		it('should parse nested titles in atx style', function () {
+			const titles = markdown.extractTitles(
+				[
+					'# Hello world',
+					'Foo bar',
+					'',
+					'## Hey there',
+					'Bar baz',
+					'',
+					'### Hola mundo',
+					'Foo bar',
+				].join('\n'),
+			);
 
-      m.chai.expect(titles).to.deep.equal([
-        'Hello World',
-        'Hey there'
-      ]);
-    });
+			m.chai
+				.expect(titles)
+				.to.deep.equal(['Hello world', 'Hey there', 'Hola mundo']);
+		});
 
-    it('should parse nested titles in atx style', function() {
-      const titles = markdown.extractTitles([
-        '# Hello world',
-        'Foo bar',
-        '',
-        '## Hey there',
-        'Bar baz',
-        '',
-        '### Hola mundo',
-        'Foo bar'
-      ].join('\n'));
+		it('should parse nested titles in setext style', function () {
+			const titles = markdown.extractTitles(
+				[
+					'Hello world',
+					'===========',
+					'Foo bar',
+					'',
+					'Hey there',
+					'---------',
+					'Bar baz',
+					'',
+					'### Hola mundo',
+					'Foo bar',
+				].join('\n'),
+			);
 
-      m.chai.expect(titles).to.deep.equal([
-        'Hello world',
-        'Hey there',
-        'Hola mundo'
-      ]);
-    });
-
-    it('should parse nested titles in setext style', function() {
-      const titles = markdown.extractTitles([
-        'Hello world',
-        '===========',
-        'Foo bar',
-        '',
-        'Hey there',
-        '---------',
-        'Bar baz',
-        '',
-        '### Hola mundo',
-        'Foo bar'
-      ].join('\n'));
-
-      m.chai.expect(titles).to.deep.equal([
-        'Hello world',
-        'Hey there',
-        'Hola mundo'
-      ]);
-    });
-
-  });
-
+			m.chai
+				.expect(titles)
+				.to.deep.equal(['Hello world', 'Hey there', 'Hola mundo']);
+		});
+	});
 });

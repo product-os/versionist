@@ -92,7 +92,7 @@ export const parseFooterTagLines = (
 	options: { lowerCaseFooterTags?: boolean } = {},
 ): _.Dictionary<string> => {
 	return _.chain(footerTagLines)
-		.reject(line => {
+		.reject((line) => {
 			line = line.trim();
 			return (
 				_.isEmpty(line) ||
