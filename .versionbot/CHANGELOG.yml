@@ -1,4 +1,14 @@
 - commits:
+    - subject: 'Update dependencies, fixing some warnings'
+      hash: d9fa17f7c3ee3063c49e93bbe3b997032f75e6ad
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+  version: 6.1.2
+  date: 2020-06-25T16:03:34.277Z
+- commits:
     - subject: Remove issues call to action
       hash: f92c8f0b53c0173b177539c34efb727c61308e47
       body: ''
