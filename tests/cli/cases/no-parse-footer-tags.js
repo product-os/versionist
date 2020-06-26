@@ -25,58 +25,64 @@ shelljs.rm('-rf', TEST_DIRECTORY);
 shelljs.mkdir('-p', TEST_DIRECTORY);
 shelljs.cd(TEST_DIRECTORY);
 
-utils.createVersionistConfiguration([
-  '\'use strict\';',
-  'module.exports = {',
-  '  editVersion: false,',
-  '  parseFooterTags: false,',
-  '  addEntryToChangelog: \'prepend\',',
-  '  getIncrementLevelFromCommit: () => {',
-  '    return \'major\';',
-  '  },',
-  '  includeCommitWhen: () => {',
-  '    return true;',
-  '  },',
-  '  template: [',
-  '    \'## {{version}}\',',
-  '    \'\',',
-  '    \'{{#each commits}}\',',
-  '    \'- {{this.subject}}\',',
-  '    \'{{this.body}}\',',
-  '    \'\',',
-  '    \'{{/each}}\'',
-  '  ].join(\'\\n\')',
-  '};',
-  ''
-].join('\n'));
+utils.createVersionistConfiguration(
+	[
+		"'use strict';",
+		'module.exports = {',
+		'  editVersion: false,',
+		'  parseFooterTags: false,',
+		"  addEntryToChangelog: 'prepend',",
+		'  getIncrementLevelFromCommit: () => {',
+		"    return 'major';",
+		'  },',
+		'  includeCommitWhen: () => {',
+		'    return true;',
+		'  },',
+		'  template: [',
+		"    '## {{version}}',",
+		"    '',",
+		"    '{{#each commits}}',",
+		"    '- {{this.subject}}',",
+		"    '{{this.body}}',",
+		"    '',",
+		"    '{{/each}}'",
+		"  ].join('\\n')",
+		'};',
+		'',
+	].join('\n'),
+);
 
 shelljs.exec('git init');
 shelljs.exec('nodetouch CHANGELOG.md');
 
 utils.createCommit('Implement x', {
-  'My-Tag': 'Foo'
+	'My-Tag': 'Foo',
 });
 
 utils.createCommit('Fix y', {
-  'My-Tag': 'Bar'
+	'My-Tag': 'Bar',
 });
 
 utils.createCommit('Fix z', {
-  'My-Tag': 'Baz'
+	'My-Tag': 'Baz',
 });
 
 utils.callVersionist();
 
-m.chai.expect(shelljs.cat('CHANGELOG.md').stdout).to.deep.equal([
-  '## 1.0.0',
-  '',
-  '- Fix z',
-  'My-Tag: Baz',
-  '',
-  '- Fix y',
-  'My-Tag: Bar',
-  '',
-  '- Implement x',
-  'My-Tag: Foo',
-  ''
-].join('\n'));
+m.chai
+	.expect(shelljs.cat('CHANGELOG.md').stdout)
+	.to.deep.equal(
+		[
+			'## 1.0.0',
+			'',
+			'- Fix z',
+			'My-Tag: Baz',
+			'',
+			'- Fix y',
+			'My-Tag: Bar',
+			'',
+			'- Implement x',
+			'My-Tag: Foo',
+			'',
+		].join('\n'),
+	);

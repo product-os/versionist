@@ -27,60 +27,70 @@ shelljs.cd(TEST_DIRECTORY);
 
 const originalChangelog = shelljs.cat('CHANGELOG.md').stdout;
 
-utils.createVersionistConfiguration([
-  '\'use strict\';',
-  'module.exports = {',
-  '  subjectParser: \'angular\',',
-  '  editVersion: false,',
-  '  addEntryToChangelog: \'prepend\',',
-  '  includeCommitWhen: (commit) => {',
-  '    return commit.footer[\'Changelog-Entry\'];',
-  '  },',
-  '  getIncrementLevelFromCommit: (commit) => {',
-  '    return commit.footer[\'Change-Type\'];',
-  '  },',
-  '  template: [',
-  '    \'## {{version}}\',',
-  '    \'\',',
-  '    \'{{#each commits}}\',',
-  '    \'{{#with footer}}\',',
-  '    \'- {{capitalize Changelog-Entry}}\',',
-  '    \'{{/with}}\',',
-  '    \'{{/each}}\'',
-  '  ].join(\'\\n\')',
-  '};',
-  ''
-].join('\n'));
+utils.createVersionistConfiguration(
+	[
+		"'use strict';",
+		'module.exports = {',
+		"  subjectParser: 'angular',",
+		'  editVersion: false,',
+		"  addEntryToChangelog: 'prepend',",
+		'  includeCommitWhen: (commit) => {',
+		"    return commit.footer['Changelog-Entry'];",
+		'  },',
+		'  getIncrementLevelFromCommit: (commit) => {',
+		"    return commit.footer['Change-Type'];",
+		'  },',
+		'  template: [',
+		"    '## {{version}}',",
+		"    '',",
+		"    '{{#each commits}}',",
+		"    '{{#with footer}}',",
+		"    '- {{capitalize Changelog-Entry}}',",
+		"    '{{/with}}',",
+		"    '{{/each}}'",
+		"  ].join('\\n')",
+		'};',
+		'',
+	].join('\n'),
+);
 
 shelljs.exec('git init');
 
 utils.createCommit('feat: implement x', {
-  'Changelog-Entry': 'Implement x',
-  'Change-Type': 'minor'
+	'Changelog-Entry': 'Implement x',
+	'Change-Type': 'minor',
 });
 
 utils.createCommit('fix: fix y', {
-  'Changelog-Entry': 'Fix y',
-  'Change-Type': 'patch'
+	'Changelog-Entry': 'Fix y',
+	'Change-Type': 'patch',
 });
 
 utils.createCommit('fix: fix z', {
-  'Changelog-Entry': 'Fix z',
-  'Change-Type': 'patch'
+	'Changelog-Entry': 'Fix z',
+	'Change-Type': 'patch',
 });
 
-m.chai.expect(utils.callVersionist({
-  config: 'versionist.conf.js',
-  dry: true
-}).stdout).to.deep.equal([
-  '## 0.1.0',
-  '',
-  '- Fix z',
-  '- Fix y',
-  '- Implement x',
-  '',
-  'Done',
-  ''
-].join('\n'));
+m.chai
+	.expect(
+		utils.callVersionist({
+			config: 'versionist.conf.js',
+			dry: true,
+		}).stdout,
+	)
+	.to.deep.equal(
+		[
+			'## 0.1.0',
+			'',
+			'- Fix z',
+			'- Fix y',
+			'- Implement x',
+			'',
+			'Done',
+			'',
+		].join('\n'),
+	);
 
-m.chai.expect(shelljs.cat('CHANGELOG.md').stdout).to.deep.equal(originalChangelog);
+m.chai
+	.expect(shelljs.cat('CHANGELOG.md').stdout)
+	.to.deep.equal(originalChangelog);

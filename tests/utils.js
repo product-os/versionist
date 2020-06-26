@@ -39,14 +39,14 @@ const indentString = require('indent-string');
  * });
  */
 exports.formatCommit = (options) => {
-  return [
-    `- hash: ${options.hash}`,
-    '  subject: >-',
-    `    ${options.subject}`,
-    '  body: |-',
-    '    XXX',
-    indentString(options.body, 4)
-  ].join('\n');
+	return [
+		`- hash: ${options.hash}`,
+		'  subject: >-',
+		`    ${options.subject}`,
+		'  body: |-',
+		'    XXX',
+		indentString(options.body, 4),
+	].join('\n');
 };
 
 /**
@@ -61,11 +61,11 @@ exports.formatCommit = (options) => {
  * child.stdout.emit('foo');
  */
 exports.createChildProcessStub = () => {
-  const child = new EventEmitter();
+	const child = new EventEmitter();
 
-  child.stdout = new EventEmitter();
-  child.stderr = new EventEmitter();
-  child.kill = _.noop;
+	child.stdout = new EventEmitter();
+	child.stderr = new EventEmitter();
+	child.kill = _.noop;
 
-  return child;
+	return child;
 };

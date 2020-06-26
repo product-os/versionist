@@ -14,231 +14,236 @@
  * limitations under the License.
  */
 
-/* eslint indent: 0 */
 'use strict';
 
 const m = require('mochainon');
 const template = require('../lib/template');
 
-describe('Template', function() {
+describe('Template', function () {
+	describe('.render()', function () {
+		it('should be able to render a logic-less template', function () {
+			const result = template.render('Hello, {{name}}', {
+				name: 'John',
+			});
 
-  describe('.render()', function() {
+			m.chai.expect(result).to.equal('Hello, John');
+		});
 
-    it('should be able to render a logic-less template', function() {
-      const result = template.render('Hello, {{name}}', {
-        name: 'John'
-      });
+		it('should not HTML escape special characters', function () {
+			const result = template.render('{{message}}', {
+				message: 'Lorem `ipsum` \'dolor\' "sit" @amet@',
+			});
 
-      m.chai.expect(result).to.equal('Hello, John');
-    });
+			m.chai.expect(result).to.equal('Lorem `ipsum` \'dolor\' "sit" @amet@');
+		});
 
-    it('should not HTML escape special characters', function() {
-      const result = template.render('{{message}}', {
-        message: 'Lorem `ipsum` \'dolor\' "sit" @amet@'
-      });
+		it('should be able to render a complex template', function () {
+			// prettier-ignore
+			const result = template.render([
+				'{{#each items}}',
+					'{{this.key}} = {{this.value}}',
+				'{{/each}}'
+			].join('\n'), {
+				items: [
+					{
+						key: 'foo',
+						value: 'bar'
+					},
+					{
+						key: 'bar',
+						value: 'baz'
+					},
+					{
+						key: 'baz',
+						value: 'qux'
+					}
+				]
+			});
 
-      m.chai.expect(result).to.equal('Lorem `ipsum` \'dolor\' "sit" @amet@');
-    });
+			m.chai
+				.expect(result)
+				.to.equal(['foo = bar', 'bar = baz', 'baz = qux', ''].join('\n'));
+		});
 
-    it('should be able to render a complex template', function() {
-      const result = template.render([
-        '{{#each items}}',
-        '{{this.key}} = {{this.value}}',
-        '{{/each}}'
-      ].join('\n'), {
-        items: [
-          {
-            key: 'foo',
-            value: 'bar'
-          },
-          {
-            key: 'bar',
-            value: 'baz'
-          },
-          {
-            key: 'baz',
-            value: 'qux'
-          }
-        ]
-      });
+		it('should be able to render a nested template', function () {
+			// prettier-ignore
+			const result = template.render([
+				'{{#*inline "commits"}}',
+				'{{nesting}} {{version}}:',
+				'{{nesting}}# Date:',
+				'{{#each commits}}',
+					'* {{this.subject}}',
+					'{{> nested nesting=../nesting}}',
+				'{{/each}}',
+				'{{/inline}}',
 
-      m.chai.expect(result).to.equal([
-        'foo = bar',
-        'bar = baz',
-        'baz = qux',
-        ''
-      ].join('\n'));
-    });
+				'{{#*inline "nested"}}',
+					'{{#if this.nested}}',
+						'',
+						'<details>',
+							'<summary> View details </summary>',
+							'{{#each this.nested}}',
+								'',
+								'{{> commits nesting=(append ../nesting "#")}}',
+							'{{/each}}',
+						'</details>',
+						'',
+					'{{/if}}',
+				'{{/inline}}',
 
-    it('should be able to render a nested template', function() {
-      const result = template.render([
-        '{{#*inline "commits"}}',
-        '{{nesting}} {{version}}:',
-        '{{nesting}}# Date:',
-        '{{#each commits}}',
-          '* {{this.subject}}',
-          '{{> nested nesting=../nesting}}',
-        '{{/each}}',
-        '{{/inline}}',
+				'{{> commits nesting="#"}}'
+			].join('\n'), {
+				commits: [
+					{
+						subject: 'foo',
+						nested: [
+							{
+								commits: [
+									{
+										subject: 'bar'
+									}
+								],
+								version: '0.1'
+							},
+							{
+								commits: [
+									{
+										subject: 'baz'
+									}
+								],
+								version: '0.2'
+							}
+						]
+					},
+					{
+						subject: 'qux'
+					}
+				],
+			version: '1'
+			});
 
-        '{{#*inline "nested"}}',
-          '{{#if this.nested}}',
-            '',
-            '<details>',
-              '<summary> View details </summary>',
-              '{{#each this.nested}}',
-                '',
-                '{{> commits nesting=(append ../nesting "#")}}',
-              '{{/each}}',
-            '</details>',
-            '',
-          '{{/if}}',
-        '{{/inline}}',
+			m.chai
+				.expect(result)
+				.to.equal(
+					[
+						'# 1:',
+						'## Date:',
+						'* foo',
+						'',
+						'<details>',
+						'<summary> View details </summary>',
+						'',
+						'## 0.1:',
+						'### Date:',
+						'* bar',
+						'',
+						'## 0.2:',
+						'### Date:',
+						'* baz',
+						'</details>',
+						'',
+						'* qux',
+						'',
+					].join('\n'),
+				);
+		});
 
-        '{{> commits nesting="#"}}'
-      ].join('\n'), {
-        commits: [
-          {
-            subject: 'foo',
-            nested: [
-              {
-                commits: [
-                  {
-                    subject: 'bar'
-                  }
-                ],
-                version: '0.1'
-              },
-              {
-                commits: [
-                  {
-                    subject: 'baz'
-                  }
-                ],
-                version: '0.2'
-              }
-            ]
-          },
-          {
-            subject: 'qux'
-          }
-        ],
-      version: '1'
-      });
+		it('should be able to render a deeply nested template', function () {
+			// prettier-ignore
+			const result = template.render([
+				'{{#*inline "commits"}}',
+				'{{nesting}} Version:',
+				'{{nesting}}# Date:',
+				'{{#each commits}}',
+					'* {{this.subject}}',
+					'{{> nested nesting=../nesting}}',
+				'{{/each}}',
+				'{{/inline}}',
 
-      m.chai.expect(result).to.equal([
-        '# 1:',
-        '## Date:',
-        '* foo',
-        '',
-        '<details>',
-        '<summary> View details </summary>',
-        '',
-        '## 0.1:',
-        '### Date:',
-        '* bar',
-        '',
-        '## 0.2:',
-        '### Date:',
-        '* baz',
-        '</details>',
-        '',
-        '* qux',
-        ''
-      ].join('\n'));
-    });
+				'{{#*inline "nested"}}',
+					'{{#if this.nested}}',
+						'',
+						'<details>',
+							'<summary> View details </summary>',
+							'{{#each this.nested}}',
+								'',
+								'{{> commits nesting=(append ../nesting "#")}}',
+							'{{/each}}',
+						'</details>',
+						'',
+					'{{/if}}',
+				'{{/inline}}',
 
-    it('should be able to render a deeply nested template', function() {
-      const result = template.render([
-        '{{#*inline "commits"}}',
-        '{{nesting}} Version:',
-        '{{nesting}}# Date:',
-        '{{#each commits}}',
-          '* {{this.subject}}',
-          '{{> nested nesting=../nesting}}',
-        '{{/each}}',
-        '{{/inline}}',
+				'{{> commits nesting="#"}}'
+			].join('\n'), {
+				commits: [
+					{
+						subject: 'foo',
+						nested: [
+							{
+								commits: [
+									{
+										subject: 'bar'
+									}
+								]
+							},
+							{
+								commits: [
+									{
+										subject: 'baz',
+										nested: [
+											{
+												commits: [
+													{
+														subject: 'arm'
+													}
+												]
+											}
+										]
+									}
+								]
+							}
+						]
+					},
+					{
+						subject: 'qux'
+					}
+				]
+			});
 
-        '{{#*inline "nested"}}',
-          '{{#if this.nested}}',
-            '',
-            '<details>',
-              '<summary> View details </summary>',
-              '{{#each this.nested}}',
-                '',
-                '{{> commits nesting=(append ../nesting "#")}}',
-              '{{/each}}',
-            '</details>',
-            '',
-          '{{/if}}',
-        '{{/inline}}',
-
-        '{{> commits nesting="#"}}'
-      ].join('\n'), {
-        commits: [
-          {
-            subject: 'foo',
-            nested: [
-              {
-                commits: [
-                  {
-                    subject: 'bar'
-                  }
-                ]
-              },
-              {
-                commits: [
-                  {
-                    subject: 'baz',
-                    nested: [
-                      {
-                        commits: [
-                          {
-                            subject: 'arm'
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            subject: 'qux'
-          }
-        ]
-      });
-
-      m.chai.expect(result).to.equal([
-        '# Version:',
-        '## Date:',
-        '* foo',
-        '',
-        '<details>',
-        '<summary> View details </summary>',
-        '',
-        '## Version:',
-        '### Date:',
-        '* bar',
-        '',
-        '## Version:',
-        '### Date:',
-        '* baz',
-        '',
-        '<details>',
-        '<summary> View details </summary>',
-        '',
-        '### Version:',
-        '#### Date:',
-        '* arm',
-        '</details>',
-        '',
-        '</details>',
-        '',
-        '* qux',
-        ''
-      ].join('\n'));
-    });
-  });
+			m.chai
+				.expect(result)
+				.to.equal(
+					[
+						'# Version:',
+						'## Date:',
+						'* foo',
+						'',
+						'<details>',
+						'<summary> View details </summary>',
+						'',
+						'## Version:',
+						'### Date:',
+						'* bar',
+						'',
+						'## Version:',
+						'### Date:',
+						'* baz',
+						'',
+						'<details>',
+						'<summary> View details </summary>',
+						'',
+						'### Version:',
+						'#### Date:',
+						'* arm',
+						'</details>',
+						'',
+						'</details>',
+						'',
+						'* qux',
+						'',
+					].join('\n'),
+				);
+		});
+	});
 });

@@ -21,40 +21,45 @@ const shelljs = require('shelljs');
 const path = require('path');
 
 exports.getTestTemporalPathFromFilename = (filename) => {
-  const extension = path.extname(filename);
-  const name = path.basename(filename, extension);
-  return path.join(__dirname, 'temporal', name);
+	const extension = path.extname(filename);
+	const name = path.basename(filename, extension);
+	return path.join(__dirname, '..', '..', 'temporal-tests', name);
 };
 
 exports.createCommit = (title, tags) => {
-  const footer = _.join(_.map(tags, (value, name) => {
-    return `${name}: ${value}`;
-  }), '\n');
+	const footer = _.join(
+		_.map(tags, (value, name) => {
+			return `${name}: ${value}`;
+		}),
+		'\n',
+	);
 
-  shelljs.echo([
-    title,
-    '',
-    footer
-  ].join('\n')).to('message.txt');
+	shelljs.echo([title, '', footer].join('\n')).to('message.txt');
 
-  shelljs.exec('git -c "user.name=Versionist" -c "user.email=versionist@resin.io" commit --allow-empty -F message.txt');
+	shelljs.exec(
+		'git -c "user.name=Versionist" -c "user.email=versionist@resin.io" commit --allow-empty -F message.txt',
+	);
 };
 
 exports.createVersionistConfiguration = (configuration) => {
-  shelljs.echo(configuration).to('versionist.conf.js');
+	shelljs.echo(configuration).to('versionist.conf.js');
 };
 
 exports.callVersionist = (opts) => {
-  const cliPath = path.join(__dirname, '..', '..', 'bin', 'cli.js');
+	const cliPath = path.join(__dirname, '..', '..', 'bin', 'cli.js');
 
-  const configString = _.reduce(opts, function(result, value, key) {
-    if (key === 'cmd' || key === 'command') {
-      result = ` ${value} ${result}`;
-    } else {
-      result += ` --${key}=${value}`;
-    }
-    return result;
-  }, '');
+	const configString = _.reduce(
+		opts,
+		function (result, value, key) {
+			if (key === 'cmd' || key === 'command') {
+				result = ` ${value} ${result}`;
+			} else {
+				result += ` --${key}=${value}`;
+			}
+			return result;
+		},
+		'',
+	);
 
-  return shelljs.exec(`node ${cliPath}${configString}`);
+	return shelljs.exec(`node ${cliPath}${configString}`);
 };

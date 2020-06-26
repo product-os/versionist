@@ -1,10 +1,8 @@
 {
-	"*.coffee": [
-		"resin-lint"
-	],
 	"*.ts": [
-		"prettier --config ./node_modules/resin-lint/config/.prettierrc --write",
-		"resin-lint --typescript --no-prettier",
-		"git add"
+		"balena-lint --typescript --fix"
+	],
+	"*.js": [
+		"balena-lint --typescript --fix"
 	],
 }

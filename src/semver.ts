@@ -73,7 +73,7 @@ export const getHigherIncrementLevel = (
 	firstLevel?: string | null,
 	secondLevel?: string | null,
 ): ValidIncrementLevel | null => {
-	_.each([firstLevel, secondLevel], level => {
+	_.each([firstLevel, secondLevel], (level) => {
 		if (level != null && !isValidIncrementLevel(level)) {
 			throw new Error(`Invalid increment level: ${level}`);
 		}
@@ -187,7 +187,7 @@ export const checkValid = (version: string): boolean => {
 export const getGreaterVersion = (versions: string[]): string | undefined => {
 	return _.first(
 		versions
-			.map(v => {
+			.map((v) => {
 				return v.trim();
 			})
 			.sort(semver.rcompare),

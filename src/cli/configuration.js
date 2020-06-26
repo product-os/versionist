@@ -32,123 +32,121 @@ const path = require('path');
  * @private
  */
 const DEFAULTS = {
-  path: {
-    type: 'string',
-    default: process.cwd()
-  },
-  changelogFile: {
-    type: 'string',
-    default: 'CHANGELOG.md'
-  },
-  historyFile: {
-    type: 'string',
-    default: path.join('.versionbot', 'CHANGELOG.yml')
-  },
-  defaultInitialVersion: {
-    type: 'string',
-    default: '0.0.1'
-  },
-  gitDirectory: {
-    type: 'string',
-    default: '.git'
-  },
-  parseFooterTags: {
-    type: 'boolean',
-    default: true
-  },
-  lowerCaseFooterTags: {
-    type: 'boolean',
-    default: true
-  },
-  editChangelog: {
-    type: 'boolean',
-    default: true
-  },
-  editVersion: {
-    type: 'boolean',
-    default: true
-  },
-  subjectParser: {
-    type: 'function',
-    default: _.identity,
-    allowsPresets: true
-  },
-  bodyParser: {
-    type: 'function',
-    default: _.identity,
-    allowsPresets: true
-  },
-  includeCommitWhen: {
-    type: 'function',
-    default: 'has-changetype',
-    allowsPresets: true
-  },
-  transformTemplateData: {
-    type: 'function',
-    default: 'changelog-entry',
-    allowsPresets: true
-  },
-  transformTemplateDataAsync: {
-    type: 'function',
-    default: (data, cb) => {
-      return cb(null, data);
-    },
-    allowsPresets: true
-  },
-  includeMergeCommits: {
-    type: 'boolean',
-    default: false
-  },
-  getChangelogDocumentedVersions: {
-    type: 'function',
-    default: 'changelog-headers',
-    allowsPresets: true
-  },
-  getCurrentBaseVersion: {
-    type: 'function',
-    default: 'latest-documented',
-    allowsPresets: true
-  },
-  getIncrementLevelFromCommit: {
-    type: 'function',
-    default: 'change-type-or-subject',
-    allowsPresets: true
-  },
-  incrementVersion: {
-    type: 'function',
-    default: 'semver',
-    allowsPresets: true
-  },
-  getGitReferenceFromVersion: {
-    type: 'function',
-    default: 'v-prefix',
-    allowsPresets: true
-  },
-  addEntryToChangelog: {
-    type: 'function',
-    default: {
-      preset: 'prepend',
-      fromLine: 6
-    },
-    allowsPresets: true
-  },
-  updateVersion: {
-    type: [ 'function', 'array' ],
-    default: 'npm',
-    allowsPresets: true
-  },
-  /* eslint-disable indent */
-  template: {
-    type: 'string',
-    default: 'default',
-    allowsPresets: true
-  },
-  /* eslint-enable indent */
-  addEntryToHistoryFile: {
-    type: 'function',
-    default: 'yml-prepend',
-    allowsPresets: true
-  }
+	path: {
+		type: 'string',
+		default: process.cwd(),
+	},
+	changelogFile: {
+		type: 'string',
+		default: 'CHANGELOG.md',
+	},
+	historyFile: {
+		type: 'string',
+		default: path.join('.versionbot', 'CHANGELOG.yml'),
+	},
+	defaultInitialVersion: {
+		type: 'string',
+		default: '0.0.1',
+	},
+	gitDirectory: {
+		type: 'string',
+		default: '.git',
+	},
+	parseFooterTags: {
+		type: 'boolean',
+		default: true,
+	},
+	lowerCaseFooterTags: {
+		type: 'boolean',
+		default: true,
+	},
+	editChangelog: {
+		type: 'boolean',
+		default: true,
+	},
+	editVersion: {
+		type: 'boolean',
+		default: true,
+	},
+	subjectParser: {
+		type: 'function',
+		default: _.identity,
+		allowsPresets: true,
+	},
+	bodyParser: {
+		type: 'function',
+		default: _.identity,
+		allowsPresets: true,
+	},
+	includeCommitWhen: {
+		type: 'function',
+		default: 'has-changetype',
+		allowsPresets: true,
+	},
+	transformTemplateData: {
+		type: 'function',
+		default: 'changelog-entry',
+		allowsPresets: true,
+	},
+	transformTemplateDataAsync: {
+		type: 'function',
+		default: (data, cb) => {
+			return cb(null, data);
+		},
+		allowsPresets: true,
+	},
+	includeMergeCommits: {
+		type: 'boolean',
+		default: false,
+	},
+	getChangelogDocumentedVersions: {
+		type: 'function',
+		default: 'changelog-headers',
+		allowsPresets: true,
+	},
+	getCurrentBaseVersion: {
+		type: 'function',
+		default: 'latest-documented',
+		allowsPresets: true,
+	},
+	getIncrementLevelFromCommit: {
+		type: 'function',
+		default: 'change-type-or-subject',
+		allowsPresets: true,
+	},
+	incrementVersion: {
+		type: 'function',
+		default: 'semver',
+		allowsPresets: true,
+	},
+	getGitReferenceFromVersion: {
+		type: 'function',
+		default: 'v-prefix',
+		allowsPresets: true,
+	},
+	addEntryToChangelog: {
+		type: 'function',
+		default: {
+			preset: 'prepend',
+			fromLine: 6,
+		},
+		allowsPresets: true,
+	},
+	updateVersion: {
+		type: ['function', 'array'],
+		default: 'npm',
+		allowsPresets: true,
+	},
+	template: {
+		type: 'string',
+		default: 'default',
+		allowsPresets: true,
+	},
+	addEntryToHistoryFile: {
+		type: 'function',
+		default: 'yml-prepend',
+		allowsPresets: true,
+	},
 };
 
 /**
@@ -167,13 +165,13 @@ const DEFAULTS = {
  * }
  */
 exports.isPresetProperty = (presetsHash, propertyName, value) => {
-  if (_.isPlainObject(value) && _.isString(value.preset)) {
-    return Boolean(presetsHash[propertyName][value.preset]);
-  }
-  if (_.isString(value)) {
-    return Boolean(presetsHash[propertyName][value]);
-  }
-  return false;
+	if (_.isPlainObject(value) && _.isString(value.preset)) {
+		return Boolean(presetsHash[propertyName][value.preset]);
+	}
+	if (_.isString(value)) {
+		return Boolean(presetsHash[propertyName][value]);
+	}
+	return false;
 };
 
 /**
@@ -194,17 +192,17 @@ exports.isPresetProperty = (presetsHash, propertyName, value) => {
  * console.log(definition.options.myOption);
  */
 exports.parsePresetDefinition = (value) => {
-  if (_.isString(value)) {
-    return {
-      name: value,
-      options: {}
-    };
-  }
+	if (_.isString(value)) {
+		return {
+			name: value,
+			options: {},
+		};
+	}
 
-  return {
-    name: value.preset,
-    options: _.omit(value, 'preset')
-  };
+	return {
+		name: value.preset,
+		options: _.omit(value, 'preset'),
+	};
 };
 
 /**
@@ -227,13 +225,13 @@ exports.parsePresetDefinition = (value) => {
  * });
  */
 exports.getPropertyParsedValue = (propertyName, propertyDescription, data) => {
-  const currentValue = _.get(data, propertyName);
+	const currentValue = _.get(data, propertyName);
 
-  if (_.isUndefined(currentValue) || _.isNull(currentValue)) {
-    return propertyDescription.default;
-  }
+	if (_.isUndefined(currentValue) || _.isNull(currentValue)) {
+		return propertyDescription.default;
+	}
 
-  return currentValue;
+	return currentValue;
 };
 
 /**
@@ -254,40 +252,40 @@ exports.getPropertyParsedValue = (propertyName, propertyDescription, data) => {
  * }
  */
 exports.isPropertyValueValid = (propertyDescription, value) => {
-  const typeCheck = (v, d) => {
-    // differentiate between object & array.
-    if (d === 'array') {
-      return _.isArray(v);
-    }
+	const typeCheck = (v, d) => {
+		// differentiate between object & array.
+		if (d === 'array') {
+			return _.isArray(v);
+		}
 
-    if (d === 'object') {
-      return _.isObject(v);
-    }
+		if (d === 'object') {
+			return _.isObject(v);
+		}
 
-    return typeof v === d;
-  };
+		return typeof v === d;
+	};
 
-  if (_.isArray(value) && _.isArray(propertyDescription.type)) {
-    return _.every(value, (v) => {
-      return _.some(propertyDescription.type, (d) => {
-        return typeCheck(v, d);
-      });
-    });
-  }
+	if (_.isArray(value) && _.isArray(propertyDescription.type)) {
+		return _.every(value, (v) => {
+			return _.some(propertyDescription.type, (d) => {
+				return typeCheck(v, d);
+			});
+		});
+	}
 
-  if (_.isArray(propertyDescription.type)) {
-    return _.some(propertyDescription.type, (d) => {
-      return typeCheck(value, d);
-    });
-  }
+	if (_.isArray(propertyDescription.type)) {
+		return _.some(propertyDescription.type, (d) => {
+			return typeCheck(value, d);
+		});
+	}
 
-  if (_.isArray(value)) {
-    return _.every(value, (v) => {
-      return typeCheck(v, propertyDescription.type);
-    });
-  }
+	if (_.isArray(value)) {
+		return _.every(value, (v) => {
+			return typeCheck(v, propertyDescription.type);
+		});
+	}
 
-  return typeCheck(value, propertyDescription.type);
+	return typeCheck(value, propertyDescription.type);
 };
 
 /**
@@ -312,21 +310,31 @@ exports.isPropertyValueValid = (propertyDescription, value) => {
  *
  * preset('Juan');
  */
-exports.parsePreset = (propertyDescription, presetsHash, propertyName, value) => {
-  const propertyPresets = _.get(presetsHash, propertyName, {});
-  const presetDefinition = exports.parsePresetDefinition(value);
-  const matchedPreset = _.get(propertyPresets, presetDefinition.name);
+exports.parsePreset = (
+	propertyDescription,
+	presetsHash,
+	propertyName,
+	value,
+) => {
+	const propertyPresets = _.get(presetsHash, propertyName, {});
+	const presetDefinition = exports.parsePresetDefinition(value);
+	const matchedPreset = _.get(propertyPresets, presetDefinition.name);
 
-  if (!matchedPreset) {
-    throw new Error(`Invalid preset: ${propertyName} -> ${presetDefinition.name}`);
-  }
+	if (!matchedPreset) {
+		throw new Error(
+			`Invalid preset: ${propertyName} -> ${presetDefinition.name}`,
+		);
+	}
 
-  if (propertyDescription.type === 'function' || _.find(propertyDescription.type, (t) => {
-    return t === 'function';
-  })) {
-    return _.partial(matchedPreset, presetDefinition.options);
-  }
-  return matchedPreset;
+	if (
+		propertyDescription.type === 'function' ||
+		_.find(propertyDescription.type, (t) => {
+			return t === 'function';
+		})
+	) {
+		return _.partial(matchedPreset, presetDefinition.options);
+	}
+	return matchedPreset;
 };
 
 /**
@@ -344,33 +352,58 @@ exports.parsePreset = (propertyDescription, presetsHash, propertyName, value) =>
  * });
  */
 exports.parse = (data) => {
-  return _.mapValues(DEFAULTS, (propertyDescription, propertyName) => {
-    let value = exports.getPropertyParsedValue(propertyName, propertyDescription, data);
+	return _.mapValues(DEFAULTS, (propertyDescription, propertyName) => {
+		let value = exports.getPropertyParsedValue(
+			propertyName,
+			propertyDescription,
+			data,
+		);
 
-    if (propertyDescription.allowsPresets && exports.isPresetProperty(presets, propertyName, value)) {
-      return exports.parsePreset(propertyDescription, presets, propertyName, value);
-    }
+		if (
+			propertyDescription.allowsPresets &&
+			exports.isPresetProperty(presets, propertyName, value)
+		) {
+			return exports.parsePreset(
+				propertyDescription,
+				presets,
+				propertyName,
+				value,
+			);
+		}
 
-    if (_.isArray(value)) {
-      value = value.map((v) => {
-        if (propertyDescription.allowsPresets && exports.isPresetProperty(presets, propertyName, v)) {
-          return exports.parsePreset(propertyDescription, presets, propertyName, v);
-        }
-        return v;
-      });
-    }
+		if (_.isArray(value)) {
+			value = value.map((v) => {
+				if (
+					propertyDescription.allowsPresets &&
+					exports.isPresetProperty(presets, propertyName, v)
+				) {
+					return exports.parsePreset(
+						propertyDescription,
+						presets,
+						propertyName,
+						v,
+					);
+				}
+				return v;
+			});
+		}
 
-    if (!exports.isPropertyValueValid(propertyDescription, value)) {
-      throw new Error([
-        `Invalid option value: ${value}.`,
-        `The \`${propertyName}\` option expects a ${_.isArray(propertyDescription.type)
-           ? propertyDescription.type.join(' or ') : propertyDescription.type},`,
-        `but instead got a ${typeof value}.`
-      ].join(' '));
-    }
+		if (!exports.isPropertyValueValid(propertyDescription, value)) {
+			throw new Error(
+				[
+					`Invalid option value: ${value}.`,
+					`The \`${propertyName}\` option expects a ${
+						_.isArray(propertyDescription.type)
+							? propertyDescription.type.join(' or ')
+							: propertyDescription.type
+					},`,
+					`but instead got a ${typeof value}.`,
+				].join(' '),
+			);
+		}
 
-    return value;
-  });
+		return value;
+	});
 };
 
 /**
@@ -386,15 +419,15 @@ exports.parse = (data) => {
  * console.log(config);
  */
 exports.load = (file) => {
-  try {
-    return require(file);
-  } catch (error) {
-    if (error instanceof SyntaxError) {
-      throw new Error(`Syntax error in configuration file: ${file}`);
-    }
+	try {
+		return require(file);
+	} catch (error) {
+		if (error instanceof SyntaxError) {
+			throw new Error(`Syntax error in configuration file: ${file}`);
+		}
 
-    throw error;
-  }
+		throw error;
+	}
 };
 
 /**
@@ -410,8 +443,8 @@ exports.load = (file) => {
  * console.log(configPath);
  */
 exports.hasDefaultConfigFile = (defaultPath) => {
-  if (fs.existsSync(defaultPath)) {
-    return defaultPath;
-  }
-  return '__NO_CONFIG';
+	if (fs.existsSync(defaultPath)) {
+		return defaultPath;
+	}
+	return '__NO_CONFIG';
 };

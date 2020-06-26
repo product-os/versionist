@@ -20,342 +20,359 @@ const m = require('mochainon');
 const _ = require('lodash');
 const semver = require('../lib/semver');
 
-describe('Semver', function() {
+describe('Semver', function () {
+	describe('.isValidIncrementLevel()', function () {
+		it('should return true for valid increment levels', function () {
+			m.chai.expect(semver.isValidIncrementLevel('major')).to.be.true;
+			m.chai.expect(semver.isValidIncrementLevel('minor')).to.be.true;
+			m.chai.expect(semver.isValidIncrementLevel('patch')).to.be.true;
+		});
 
-  describe('.isValidIncrementLevel()', function() {
+		it('should return false for invalid increment levels', function () {
+			m.chai.expect(semver.isValidIncrementLevel('foo')).to.be.false;
+			m.chai.expect(semver.isValidIncrementLevel('bar')).to.be.false;
+			m.chai.expect(semver.isValidIncrementLevel('hello')).to.be.false;
+		});
+	});
 
-    it('should return true for valid increment levels', function() {
-      m.chai.expect(semver.isValidIncrementLevel('major')).to.be.true;
-      m.chai.expect(semver.isValidIncrementLevel('minor')).to.be.true;
-      m.chai.expect(semver.isValidIncrementLevel('patch')).to.be.true;
-    });
+	describe('.getHigherIncrementLevel()', function () {
+		it('should throw given an invalid increment level on the left side', function () {
+			m.chai
+				.expect(() => {
+					semver.getHigherIncrementLevel('foo', 'major');
+				})
+				.to.throw('Invalid increment level: foo');
+		});
 
-    it('should return false for invalid increment levels', function() {
-      m.chai.expect(semver.isValidIncrementLevel('foo')).to.be.false;
-      m.chai.expect(semver.isValidIncrementLevel('bar')).to.be.false;
-      m.chai.expect(semver.isValidIncrementLevel('hello')).to.be.false;
-    });
+		it('should throw given an invalid increment level on the right side', function () {
+			m.chai
+				.expect(() => {
+					semver.getHigherIncrementLevel('major', 'foo');
+				})
+				.to.throw('Invalid increment level: foo');
+		});
 
-  });
+		it('should return null given null/null', function () {
+			const level = semver.getHigherIncrementLevel(null, null);
+			m.chai.expect(level).to.be.null;
+		});
 
-  describe('.getHigherIncrementLevel()', function() {
+		it('should return null given undefined/null', function () {
+			const level = semver.getHigherIncrementLevel(undefined, null);
+			m.chai.expect(level).to.be.null;
+		});
 
-    it('should throw given an invalid increment level on the left side', function() {
-      m.chai.expect(() => {
-        semver.getHigherIncrementLevel('foo', 'major');
-      }).to.throw('Invalid increment level: foo');
-    });
+		it('should return null given null/undefined', function () {
+			const level = semver.getHigherIncrementLevel(null, undefined);
+			m.chai.expect(level).to.be.null;
+		});
 
-    it('should throw given an invalid increment level on the right side', function() {
-      m.chai.expect(() => {
-        semver.getHigherIncrementLevel('major', 'foo');
-      }).to.throw('Invalid increment level: foo');
-    });
+		it('should return null given undefined/undefined', function () {
+			const level = semver.getHigherIncrementLevel(undefined, undefined);
+			m.chai.expect(level).to.be.null;
+		});
 
-    it('should return null given null/null', function() {
-      const level = semver.getHigherIncrementLevel(null, null);
-      m.chai.expect(level).to.be.null;
-    });
+		it('should return major given major/major', function () {
+			const level = semver.getHigherIncrementLevel('major', 'major');
+			m.chai.expect(level).to.equal('major');
+		});
 
-    it('should return null given undefined/null', function() {
-      const level = semver.getHigherIncrementLevel(undefined, null);
-      m.chai.expect(level).to.be.null;
-    });
+		it('should return major given major/minor', function () {
+			const level = semver.getHigherIncrementLevel('major', 'minor');
+			m.chai.expect(level).to.equal('major');
+		});
 
-    it('should return null given null/undefined', function() {
-      const level = semver.getHigherIncrementLevel(null, undefined);
-      m.chai.expect(level).to.be.null;
-    });
+		it('should return major given major/patch', function () {
+			const level = semver.getHigherIncrementLevel('major', 'patch');
+			m.chai.expect(level).to.equal('major');
+		});
 
-    it('should return null given undefined/undefined', function() {
-      const level = semver.getHigherIncrementLevel(undefined, undefined);
-      m.chai.expect(level).to.be.null;
-    });
+		it('should return major given major/null', function () {
+			const level = semver.getHigherIncrementLevel('major', null);
+			m.chai.expect(level).to.equal('major');
+		});
 
-    it('should return major given major/major', function() {
-      const level = semver.getHigherIncrementLevel('major', 'major');
-      m.chai.expect(level).to.equal('major');
-    });
+		it('should return major given major/undefined', function () {
+			const level = semver.getHigherIncrementLevel('major', undefined);
+			m.chai.expect(level).to.equal('major');
+		});
 
-    it('should return major given major/minor', function() {
-      const level = semver.getHigherIncrementLevel('major', 'minor');
-      m.chai.expect(level).to.equal('major');
-    });
+		it('should return minor given minor/minor', function () {
+			const level = semver.getHigherIncrementLevel('minor', 'minor');
+			m.chai.expect(level).to.equal('minor');
+		});
 
-    it('should return major given major/patch', function() {
-      const level = semver.getHigherIncrementLevel('major', 'patch');
-      m.chai.expect(level).to.equal('major');
-    });
+		it('should return minor given minor/patch', function () {
+			const level = semver.getHigherIncrementLevel('minor', 'patch');
+			m.chai.expect(level).to.equal('minor');
+		});
 
-    it('should return major given major/null', function() {
-      const level = semver.getHigherIncrementLevel('major', null);
-      m.chai.expect(level).to.equal('major');
-    });
+		it('should return minor given minor/null', function () {
+			const level = semver.getHigherIncrementLevel('minor', null);
+			m.chai.expect(level).to.equal('minor');
+		});
 
-    it('should return major given major/undefined', function() {
-      const level = semver.getHigherIncrementLevel('major', undefined);
-      m.chai.expect(level).to.equal('major');
-    });
+		it('should return minor given minor/undefined', function () {
+			const level = semver.getHigherIncrementLevel('minor', undefined);
+			m.chai.expect(level).to.equal('minor');
+		});
 
-    it('should return minor given minor/minor', function() {
-      const level = semver.getHigherIncrementLevel('minor', 'minor');
-      m.chai.expect(level).to.equal('minor');
-    });
+		it('should return patch given patch/patch', function () {
+			const level = semver.getHigherIncrementLevel('patch', 'patch');
+			m.chai.expect(level).to.equal('patch');
+		});
 
-    it('should return minor given minor/patch', function() {
-      const level = semver.getHigherIncrementLevel('minor', 'patch');
-      m.chai.expect(level).to.equal('minor');
-    });
+		it('should return patch given patch/null', function () {
+			const level = semver.getHigherIncrementLevel('patch', null);
+			m.chai.expect(level).to.equal('patch');
+		});
 
-    it('should return minor given minor/null', function() {
-      const level = semver.getHigherIncrementLevel('minor', null);
-      m.chai.expect(level).to.equal('minor');
-    });
+		it('should return patch given patch/undefined', function () {
+			const level = semver.getHigherIncrementLevel('patch', undefined);
+			m.chai.expect(level).to.equal('patch');
+		});
+	});
 
-    it('should return minor given minor/undefined', function() {
-      const level = semver.getHigherIncrementLevel('minor', undefined);
-      m.chai.expect(level).to.equal('minor');
-    });
+	describe('.calculateNextIncrementLevel()', function () {
+		it('should throw if getIncrementLevelFromCommit returns an invalid level', function () {
+			m.chai
+				.expect(() => {
+					semver.calculateNextIncrementLevel(
+						[
+							{
+								subject: 'minor - foo bar',
+							},
+						],
+						{
+							getIncrementLevelFromCommit: _.constant('foo'),
+						},
+					);
+				})
+				.to.throw('Invalid increment level: foo');
+		});
 
-    it('should return patch given patch/patch', function() {
-      const level = semver.getHigherIncrementLevel('patch', 'patch');
-      m.chai.expect(level).to.equal('patch');
-    });
+		it('should throw if there are no commits', function () {
+			m.chai
+				.expect(() => {
+					semver.calculateNextIncrementLevel([], {
+						getIncrementLevelFromCommit: _.constant('major'),
+					});
+				})
+				.to.throw('No commits to calculate the next increment level from');
+		});
 
-    it('should return patch given patch/null', function() {
-      const level = semver.getHigherIncrementLevel('patch', null);
-      m.chai.expect(level).to.equal('patch');
-    });
+		it('should give precedence to major over minor', function () {
+			const level = semver.calculateNextIncrementLevel(
+				[
+					{
+						subject: 'minor - foo bar',
+					},
+					{
+						subject: 'major - hello world',
+					},
+					{
+						subject: 'minor - hey there',
+					},
+				],
+				{
+					getIncrementLevelFromCommit: (commit) => {
+						return _.first(_.split(commit.subject, ' '));
+					},
+				},
+			);
 
-    it('should return patch given patch/undefined', function() {
-      const level = semver.getHigherIncrementLevel('patch', undefined);
-      m.chai.expect(level).to.equal('patch');
-    });
+			m.chai.expect(level).to.equal('major');
+		});
 
-  });
+		it('should give precedence to major over patch', function () {
+			const level = semver.calculateNextIncrementLevel(
+				[
+					{
+						subject: 'patch - foo bar',
+					},
+					{
+						subject: 'major - hello world',
+					},
+					{
+						subject: 'patch - hey there',
+					},
+				],
+				{
+					getIncrementLevelFromCommit: (commit) => {
+						return _.first(_.split(commit.subject, ' '));
+					},
+				},
+			);
 
-  describe('.calculateNextIncrementLevel()', function() {
+			m.chai.expect(level).to.equal('major');
+		});
 
-    it('should throw if getIncrementLevelFromCommit returns an invalid level', function() {
-      m.chai.expect(() => {
-        semver.calculateNextIncrementLevel([
-          {
-            subject: 'minor - foo bar'
-          }
-        ], {
-          getIncrementLevelFromCommit: _.constant('foo')
-        });
-      }).to.throw('Invalid increment level: foo');
-    });
+		it('should give precedence to minor over patch', function () {
+			const level = semver.calculateNextIncrementLevel(
+				[
+					{
+						subject: 'patch - foo bar',
+					},
+					{
+						subject: 'minor - hello world',
+					},
+					{
+						subject: 'patch - hey there',
+					},
+				],
+				{
+					getIncrementLevelFromCommit: (commit) => {
+						return _.first(_.split(commit.subject, ' '));
+					},
+				},
+			);
 
-    it('should throw if there are no commits', function() {
-      m.chai.expect(() => {
-        semver.calculateNextIncrementLevel([], {
-          getIncrementLevelFromCommit: _.constant('major')
-        });
-      }).to.throw('No commits to calculate the next increment level from');
-    });
+			m.chai.expect(level).to.equal('minor');
+		});
 
-    it('should give precedence to major over minor', function() {
-      const level = semver.calculateNextIncrementLevel([
-        {
-          subject: 'minor - foo bar'
-        },
-        {
-          subject: 'major - hello world'
-        },
-        {
-          subject: 'minor - hey there'
-        }
-      ], {
-        getIncrementLevelFromCommit: (commit) => {
-          return _.first(_.split(commit.subject, ' '));
-        }
-      });
+		it('should return patch if there is no higher increment level', function () {
+			const level = semver.calculateNextIncrementLevel(
+				[
+					{
+						subject: 'patch - foo bar',
+					},
+					{
+						subject: 'patch - hello world',
+					},
+					{
+						subject: 'patch - hey there',
+					},
+				],
+				{
+					getIncrementLevelFromCommit: (commit) => {
+						return _.first(_.split(commit.subject, ' '));
+					},
+				},
+			);
 
-      m.chai.expect(level).to.equal('major');
-    });
+			m.chai.expect(level).to.equal('patch');
+		});
+	});
 
-    it('should give precedence to major over patch', function() {
-      const level = semver.calculateNextIncrementLevel([
-        {
-          subject: 'patch - foo bar'
-        },
-        {
-          subject: 'major - hello world'
-        },
-        {
-          subject: 'patch - hey there'
-        }
-      ], {
-        getIncrementLevelFromCommit: (commit) => {
-          return _.first(_.split(commit.subject, ' '));
-        }
-      });
+	describe('.checkValid()', function () {
+		it('should not throw given a valid string', function () {
+			m.chai
+				.expect(() => {
+					semver.checkValid('1.0.0');
+				})
+				.to.not.throw();
+		});
 
-      m.chai.expect(level).to.equal('major');
-    });
+		it('should not throw given a version with leading `v`', function () {
+			m.chai
+				.expect(() => {
+					semver.checkValid('v1.0.0');
+				})
+				.to.not.throw();
+		});
 
-    it('should give precedence to minor over patch', function() {
-      const level = semver.calculateNextIncrementLevel([
-        {
-          subject: 'patch - foo bar'
-        },
-        {
-          subject: 'minor - hello world'
-        },
-        {
-          subject: 'patch - hey there'
-        }
-      ], {
-        getIncrementLevelFromCommit: (commit) => {
-          return _.first(_.split(commit.subject, ' '));
-        }
-      });
+		it('should not throw given a version containing a release suffix', function () {
+			m.chai
+				.expect(() => {
+					semver.checkValid('v1.0.0+rev1');
+				})
+				.to.not.throw();
+		});
 
-      m.chai.expect(level).to.equal('minor');
-    });
+		it('should throw given an invalid version', function () {
+			m.chai
+				.expect(() => {
+					semver.checkValid('foo');
+				})
+				.to.throw('Invalid version: foo');
+		});
+	});
 
-    it('should return patch if there is no higher increment level', function() {
-      const level = semver.calculateNextIncrementLevel([
-        {
-          subject: 'patch - foo bar'
-        },
-        {
-          subject: 'patch - hello world'
-        },
-        {
-          subject: 'patch - hey there'
-        }
-      ], {
-        getIncrementLevelFromCommit: (commit) => {
-          return _.first(_.split(commit.subject, ' '));
-        }
-      });
+	describe('.getGreaterVersion()', function () {
+		it('should not throw even if there is an invalid version', function () {
+			const greater = semver.getGreaterVersion(['=====', '1.0.0']);
 
-      m.chai.expect(level).to.equal('patch');
-    });
+			m.chai.expect(greater).to.equal('1.0.0');
+		});
 
-  });
+		it('should return the greater version', function () {
+			const greater = semver.getGreaterVersion([
+				'2.0.0',
+				'1.1.1',
+				'1.9.0-beta.1',
+				'2.0.1',
+				'2.1.1',
+				'1.0.0',
+			]);
 
-  describe('.checkValid()', function() {
+			m.chai.expect(greater).to.equal('2.1.1');
+		});
 
-    it('should not throw given a valid string', function() {
-      m.chai.expect(() => {
-        semver.checkValid('1.0.0');
-      }).to.not.throw();
-    });
+		it('should deal with non-normalised versions', function () {
+			const greater = semver.getGreaterVersion([
+				'2.0.0',
+				'v1.1.1',
+				'1.9.0-beta.1',
+				'  2.0.1',
+				'2.1.1   ',
+				'v1.0.0',
+			]);
 
-    it('should not throw given a version with leading `v`', function() {
-      m.chai.expect(() => {
-        semver.checkValid('v1.0.0');
-      }).to.not.throw();
-    });
+			m.chai.expect(greater).to.equal('2.1.1');
+		});
 
-    it('should not throw given a version containing a release suffix', function() {
-      m.chai.expect(() => {
-        semver.checkValid('v1.0.0+rev1');
-      }).to.not.throw();
-    });
+		it('should return the greater version', function () {
+			const greater = semver.getGreaterVersion([
+				'2.14.3+rev3',
+				'2.14.3+rev2',
+				'2.14.3+rev1',
+			]);
 
-    it('should throw given an invalid version', function() {
-      m.chai.expect(() => {
-        semver.checkValid('foo');
-      }).to.throw('Invalid version: foo');
-    });
+			m.chai.expect(greater).to.equal('2.14.3+rev3');
+		});
 
-  });
+		it('should return the greater version', function () {
+			const greater = semver.getGreaterVersion([
+				'balenaOS 2019.04',
+				'balenaOS 2019.04.1',
+				'balenaOS 2019.04.2',
+				'balenaOS 2019.04.3',
+				'balenaOS 2019.4.2',
+				'balenaOS 2019.4.1',
+			]);
 
-  describe('.getGreaterVersion()', function() {
+			m.chai.expect(greater).to.equal('balenaOS 2019.04.3');
+		});
 
-    it('should not throw even if there is an invalid version', function() {
-      const greater = semver.getGreaterVersion([
-        '=====',
-        '1.0.0'
-      ]);
+		it('should correctly order versions with leading 0s', function () {
+			const greater = semver.getGreaterVersion([
+				'17.1.2',
+				'18.5.1',
+				'17.3.0',
+				'18.04.3',
+			]);
 
-      m.chai.expect(greater).to.equal('1.0.0');
-    });
+			m.chai.expect(greater).to.equal('18.5.1');
+		});
 
-    it('should return the greater version', function() {
-      const greater = semver.getGreaterVersion([
-        '2.0.0',
-        '1.1.1',
-        '1.9.0-beta.1',
-        '2.0.1',
-        '2.1.1',
-        '1.0.0'
-      ]);
+		it('should return the greater version', function () {
+			const greater = semver.getGreaterVersion([
+				'2.14.3+rev1',
+				'2.14.3+rev3',
+				'2.14.3+rev2',
+			]);
 
-      m.chai.expect(greater).to.equal('2.1.1');
-    });
+			m.chai.expect(greater).to.equal('2.14.3+rev3');
+		});
 
-    it('should deal with non-normalised versions', function() {
-      const greater = semver.getGreaterVersion([
-        '2.0.0',
-        'v1.1.1',
-        '1.9.0-beta.1',
-        '  2.0.1',
-        '2.1.1   ',
-        'v1.0.0'
-      ]);
+		it('should return the greater version', function () {
+			const greater = semver.getGreaterVersion([
+				'2.14.3+rev2',
+				'2.14.3',
+				'2.14.3+rev3',
+			]);
 
-      m.chai.expect(greater).to.equal('2.1.1');
-    });
-
-    it('should return the greater version', function() {
-      const greater = semver.getGreaterVersion([
-        '2.14.3+rev3',
-        '2.14.3+rev2',
-        '2.14.3+rev1'
-      ]);
-
-      m.chai.expect(greater).to.equal('2.14.3+rev3');
-    });
-
-    it('should return the greater version', function() {
-      const greater = semver.getGreaterVersion([
-        'balenaOS 2019.04',
-        'balenaOS 2019.04.1',
-        'balenaOS 2019.04.2',
-        'balenaOS 2019.04.3',
-        'balenaOS 2019.4.2',
-        'balenaOS 2019.4.1'
-      ]);
-
-      m.chai.expect(greater).to.equal('balenaOS 2019.04.3');
-    });
-
-    it('should correctly order versions with leading 0s', function() {
-      const greater = semver.getGreaterVersion([
-        '17.1.2',
-        '18.5.1',
-        '17.3.0',
-        '18.04.3'
-      ]);
-
-      m.chai.expect(greater).to.equal('18.5.1');
-    });
-
-    it('should return the greater version', function() {
-      const greater = semver.getGreaterVersion([
-        '2.14.3+rev1',
-        '2.14.3+rev3',
-        '2.14.3+rev2'
-      ]);
-
-      m.chai.expect(greater).to.equal('2.14.3+rev3');
-    });
-
-    it('should return the greater version', function() {
-      const greater = semver.getGreaterVersion([
-        '2.14.3+rev2',
-        '2.14.3',
-        '2.14.3+rev3'
-      ]);
-
-      m.chai.expect(greater).to.equal('2.14.3+rev3');
-    });
-  });
-
+			m.chai.expect(greater).to.equal('2.14.3+rev3');
+		});
+	});
 });

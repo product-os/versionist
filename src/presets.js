@@ -30,141 +30,167 @@ const replaceInFile = require('replace-in-file');
 const markdown = require('./markdown');
 const yaml = require('js-yaml');
 const execSync = require('child_process').execSync;
-const octokit = require('@octokit/rest')({
-  debug: Boolean(process.env.DEBUG)
+const { Octokit } = require('@octokit/rest');
+
+const octokit = new Octokit({
+	debug: Boolean(process.env.DEBUG),
 });
 
 const authenticate = () => {
-  octokit.authenticate({
-    type: 'token',
-    token: process.env.GITHUB_TOKEN
-  });
+	octokit.authenticate({
+		type: 'token',
+		token: process.env.GITHUB_TOKEN,
+	});
 };
 
-/* eslint-disable indent */
+// prettier-ignore
 const templateDefaults = [
-  '{{#*inline "commits"}}',
-  '{{> render-header }}',
-  '{{> block-newline}}',
-  '{{#each commits}}',
-    '{{> render-with-nesting nesting=../nesting block=../block ~}}',
-  '{{/each~}}',
-  '{{/inline~}}',
+	'{{#*inline "commits"}}',
+	'{{> render-header }}',
+	'{{> block-newline}}',
+	'{{#each commits}}',
+		'{{> render-with-nesting nesting=../nesting block=../block ~}}',
+	'{{/each~}}',
+	'{{/inline~}}',
 
-  '{{#*inline "render-with-nesting"}}',
-    '{{~#if this.nested ~}}',
-      '{{> block-newline}}',
-      '<details>',
-        '<summary> {{> render-with-author-inline}} </summary>',
-        '{{#each this.nested}}',
-          '{{> commits nesting=(append ../nesting "#") block=(append ../block ">") }}',
-        '{{/each}}',
-      '</details>',
-      '',
-      '{{> block-newline}}',
-    '{{~else~}}',
-      '{{> block-prefix}}* {{> render-with-author}}',
-    '{{~/if~}}',
-  '{{/inline}}',
+	'{{#*inline "render-with-nesting"}}',
+		'{{~#if this.nested ~}}',
+			'{{> block-newline}}',
+			'<details>',
+				'<summary> {{> render-with-author-inline}} </summary>',
+				'{{#each this.nested}}',
+					'{{> commits nesting=(append ../nesting "#") block=(append ../block ">") }}',
+				'{{/each}}',
+			'</details>',
+			'',
+			'{{> block-newline}}',
+		'{{~else~}}',
+			'{{> block-prefix}}* {{> render-with-author}}',
+		'{{~/if~}}',
+	'{{/inline}}',
 
-  '{{#*inline "render-with-author"}}',
-    '{{#if this.author}}',
-      '{{this.subject}} [{{this.author}}]',
-    '{{else}}',
-      '{{this.subject}}',
-    '{{/if}}',
-  '{{/inline}}',
+	'{{#*inline "render-with-author"}}',
+		'{{#if this.author}}',
+			'{{this.subject}} [{{this.author}}]',
+		'{{else}}',
+			'{{this.subject}}',
+		'{{/if}}',
+	'{{/inline}}',
 
-  '{{#*inline "render-with-author-inline"}}',
-    '{{#if this.author ~}}',
-      '{{this.subject}} [{{this.author}}] ',
-    '{{~else~}}',
-      '{{this.subject}} ',
-    '{{~/if~}}',
-  '{{/inline}}',
+	'{{#*inline "render-with-author-inline"}}',
+		'{{#if this.author ~}}',
+			'{{this.subject}} [{{this.author}}] ',
+		'{{~else~}}',
+			'{{this.subject}} ',
+		'{{~/if~}}',
+	'{{/inline}}',
 
-  '{{#*inline "block-prefix"}}',
-    '{{#isnt block "" ~}}{{block}} {{/isnt~}}',
-  '{{/inline}}',
+	'{{#*inline "block-prefix"}}',
+		'{{#isnt block "" ~}}{{block}} {{/isnt~}}',
+	'{{/inline}}',
 
-  '{{#*inline "block-newline"}}',
-    '{{#isnt block ""}}{{block}} {{else}}{{/isnt}}',
-  '{{/inline}}'
+	'{{#*inline "block-newline"}}',
+		'{{#isnt block ""}}{{block}} {{else}}{{/isnt}}',
+	'{{/inline}}'
 ].join('\n');
-/* eslint-enable indent */
 
 const isIncrementalCommit = (changeType) => {
-  return Boolean(changeType) && changeType.trim().toLowerCase() !== 'none';
+	return Boolean(changeType) && changeType.trim().toLowerCase() !== 'none';
 };
 
 const getAuthor = (commitHash) => {
-  if (commitHash) {
-    return execSync(`git show --quiet --format="%an" ${commitHash}`, {
-      encoding: 'utf8'
-    }).replace('\n', '');
-  }
-  return 'Unknown author';
+	if (commitHash) {
+		return execSync(`git show --quiet --format="%an" ${commitHash}`, {
+			encoding: 'utf8',
+		}).replace('\n', '');
+	}
+	return 'Unknown author';
 };
 
 const extractContentsBetween = (changelog, repo, start, end) => {
-  return _(changelog)
-  .filter((entry) => {
-    return semver.lt(start, entry.version) && semver.lte(entry.version, end);
-  })
-  .map((entry) => {
-    entry.version = `${repo}-${entry.version}`;
-    return entry;
-  })
-  .value();
+	return _(changelog)
+		.filter((entry) => {
+			return semver.lt(start, entry.version) && semver.lte(entry.version, end);
+		})
+		.map((entry) => {
+			entry.version = `${repo}-${entry.version}`;
+			return entry;
+		})
+		.value();
 };
 
-const getNestedChangeLog = (options, commit, startVersion, endVersion, callback) => {
-  const {
-    owner,
-    repo,
-    ref = 'master'
-  } = options;
+const getNestedChangeLog = (
+	options,
+	commit,
+	startVersion,
+	endVersion,
+	callback,
+) => {
+	const { owner, repo, ref = 'master' } = options;
 
-  authenticate();
+	authenticate();
 
-  octokit.repos.getContent({
-    owner: owner,
-    repo: repo,
-    ref: ref,
-    path: '.versionbot/CHANGELOG.yml'
-  }, (error, response) => {
-    if (error) {
-      return callback(new Error(`Could not find .versionbot/CHANGELOG.yml in ${repo}`));
-    }
+	octokit.repos.getContent(
+		{
+			owner: owner,
+			repo: repo,
+			ref: ref,
+			path: '.versionbot/CHANGELOG.yml',
+		},
+		(error, response) => {
+			if (error) {
+				return callback(
+					new Error(`Could not find .versionbot/CHANGELOG.yml in ${repo}`),
+				);
+			}
 
-    // content will be base64 encoded
-    const changelog = yaml.safeLoad(Buffer.from(response.data.content, 'base64').toString());
-    const nested = extractContentsBetween(changelog, repo, startVersion, endVersion);
-    return callback(null, nested);
-  });
+			// content will be base64 encoded
+			const changelog = yaml.safeLoad(
+				Buffer.from(response.data.content, 'base64').toString(),
+			);
+			const nested = extractContentsBetween(
+				changelog,
+				repo,
+				startVersion,
+				endVersion,
+			);
+			return callback(null, nested);
+		},
+	);
 };
 
 const attachNestedChangelog = (upstreams, commit, callback) => {
-  async.each(upstreams, (upstream, cb) => {
-    const regexp = new RegExp(`[Uu]pdate ${upstream.pattern} from (\\S+) to (\\S+)`);
-    const match = commit.body.match(regexp);
-    if (match) {
-
-      const currentVersion = match[1];
-      const targetVersion = match[2];
-      return getNestedChangeLog(upstream, commit, currentVersion, targetVersion, (err, nestedCommits) => {
-        if (err) {
-          return callback(err);
-        }
-        commit.nested = commit.nested || [];
-        commit.nested = commit.nested.concat(nestedCommits);
-        return cb(null);
-      });
-    }
-    return cb(null);
-  }, (err) => {
-    return callback(err, commit);
-  });
+	async.each(
+		upstreams,
+		(upstream, cb) => {
+			const regexp = new RegExp(
+				`[Uu]pdate ${upstream.pattern} from (\\S+) to (\\S+)`,
+			);
+			const match = commit.body.match(regexp);
+			if (match) {
+				const currentVersion = match[1];
+				const targetVersion = match[2];
+				return getNestedChangeLog(
+					upstream,
+					commit,
+					currentVersion,
+					targetVersion,
+					(err, nestedCommits) => {
+						if (err) {
+							return callback(err);
+						}
+						commit.nested = commit.nested || [];
+						commit.nested = commit.nested.concat(nestedCommits);
+						return cb(null);
+					},
+				);
+			}
+			return cb(null);
+		},
+		(err) => {
+			return callback(err, commit);
+		},
+	);
 };
 
 const INITIAL_CHANGELOG = `# Change Log
@@ -176,12 +202,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 `;
 
 const touchChangelog = (changelogPath, done) => {
-  if (fs.existsSync(changelogPath)) {
-    return done(null, changelogPath);
-  }
-  return fs.writeFile(changelogPath, INITIAL_CHANGELOG, (err) => {
-    return done(err, changelogPath);
-  });
+	if (fs.existsSync(changelogPath)) {
+		return done(null, changelogPath);
+	}
+	return fs.writeFile(changelogPath, INITIAL_CHANGELOG, (err) => {
+		return done(err, changelogPath);
+	});
 };
 
 /**
@@ -195,26 +221,29 @@ const touchChangelog = (changelogPath, done) => {
  * @param {Function} callback - callback (error)
  */
 const replace = (file, pattern, replacement, callback) => {
-  async.waterfall([
-    (done) => {
-      fs.readFile(file, 'utf8', done);
-    },
+	async.waterfall(
+		[
+			(done) => {
+				fs.readFile(file, 'utf8', done);
+			},
 
-    (contents, done) => {
-      if (pattern.test(contents)) {
-        done(null, contents);
-      } else {
-        done(new Error(`Pattern does not match ${file}`));
-      }
-    },
+			(contents, done) => {
+				if (pattern.test(contents)) {
+					done(null, contents);
+				} else {
+					done(new Error(`Pattern does not match ${file}`));
+				}
+			},
 
-    (contents, done) => {
-      const updated = contents.replace(pattern, replacement);
-      done(null, updated);
-    },
+			(contents, done) => {
+				const updated = contents.replace(pattern, replacement);
+				done(null, updated);
+			},
 
-    _.partial(fs.writeFile, file)
-  ], callback);
+			_.partial(fs.writeFile, file),
+		],
+		callback,
+	);
 };
 
 /**
@@ -229,885 +258,935 @@ const replace = (file, pattern, replacement, callback) => {
  * @returns {Function}
  */
 const getCleanFunction = (options) => {
-  _.defaults(options, {
-    clean: true
-  });
+	_.defaults(options, {
+		clean: true,
+	});
 
-  if (_.isRegExp(options.clean)) {
-    return (version) => {
-      return version.replace(options.clean, '');
-    };
-  }
-  return options.clean ? semver.valid : _.identity;
+	if (_.isRegExp(options.clean)) {
+		return (version) => {
+			return version.replace(options.clean, '');
+		};
+	}
+	return options.clean ? semver.valid : _.identity;
 };
 
 module.exports = {
-
-  subjectParser: {
-
-    /**
-     * @summary Angular's `subjectParser`
-     * @function
-     * @public
-     *
-     * @description
-     * Based on https://github.com/angular/angular.js/blob/master/CONTRIBUTING.md
-     *
-     * @param {Object} options - options
-     * @param {String} subject - commit subject
-     * @returns {Object} parsed subject
-     *
-     * @example
-     * const subject = presets.subjectParser.angular({}, 'feat($ngInclude): lorem ipsum');
-     *
-     * console.log(subject.type);
-     * > feat
-     * console.log(subject.scope);
-     * > $ngInclude
-     * console.log(subject.title);
-     * > lorem ipsum
-     */
-    angular: (options, subject) => {
-      const subjectParts = subject.match(/^(?:fixup!\s*)?(\w*)(\(([\w$.*/-]*)\))?: (.*)$/);
-
-      return {
-        type: _.nth(subjectParts, 1),
-        scope: _.nth(subjectParts, 3),
-        title: _.nth(subjectParts, 4) || subject
-      };
-    }
-
-  },
-
-  includeCommitWhen: {
-
-    /**
-     * @summary Angular's `includeCommitWhen`
-     * @function
-     * @public
-     *
-     * @description
-     * Based on https://github.com/angular/angular.js/blob/master/changelog.js
-     *
-     * @param {Object} options - options
-     * @param {Object} commit - commit
-     * @returns {Boolean} whether the commit should be included
-     *
-     * @example
-     * if (presets.includeCommitWhen.angular({}, {
-     *   subject: {
-     *     type: 'feat'
-     *   }
-     * })) {
-     *   console.log('The commit should be included');
-     * }
-     *
-     * @example
-     * if (presets.includeCommitWhen.angular({}, {
-     *   subject: 'feat(Scope): my commit'
-     * })) {
-     *   console.log('The commit should be included');
-     * }
-     */
-    angular: (options, commit) => {
-      if (_.isString(commit.subject)) {
-        return _.some([
-          _.startsWith(commit.subject, 'feat'),
-          _.startsWith(commit.subject, 'fix'),
-          _.startsWith(commit.subject, 'perf')
-        ]);
-      }
-
-      return _.includes([
-        'feat',
-        'fix',
-        'perf'
-      ], commit.subject.type);
-    },
-
-    /**
-     * @summary Include commit only if it contains a change-type, either in a footer or the subject
-     * @function
-     * @public
-     *
-     *
-     * @param {Object} options - options
-     * @param {Object} commit - commit
-     * @returns {Boolean} whether the commit should be included
-     *
-     * @example
-     * if (presets.includeCommitWhen['has-changetype']({}, {
-     *   subject: 'A change',
-     *   footer: {
-     *     'change-type': 'minor'
-     *   }
-     * })) {
-     *   console.log('The commit should be included');
-     * }
-     */
-    'has-changetype': (options, commit) => {
-      return isIncrementalCommit(commit.footer['change-type'])
-          || isIncrementalCommit(module.exports.getIncrementLevelFromCommit.subject({}, commit));
-    },
-
-    /**
-     * @summary Include commit only if it contains a changelog-entry footer
-     * @function
-     * @public
-     *
-     *
-     * @param {Object} options - options
-     * @param {Object} commit - commit
-     * @returns {Boolean} whether the commit should be included
-     *
-     * @example
-     * if (presets.includeCommitWhen['has-changelog-entry']({}, {
-     *   subject: 'A change',
-     *   footer: {
-     *     'changelog-entry': 'Longer explanation of the change'
-     *   }
-     * })) {
-     *   console.log('The commit should be included');
-     * }
-     */
-    'has-changelog-entry': (options, commit) => {
-      return Boolean(commit.footer['changelog-entry']);
-    }
-  },
-
-  getIncrementLevelFromCommit: {
-    /**
-     * @summary Calculate increment level from change-type
-     * @function
-     * @public
-     *
-     *
-     * @param {Object} options - options
-     * @param {Object} commit - commit
-     * @returns {String} Increment level
-     *
-     * @example
-     * if (presets.getIncrementLevelFromCommit['change-type']({}, {
-     *   subject: 'A change',
-     *   footer: {
-     *     'change-type': 'minor'
-     *   }
-     * })) {
-     *   console.log('minor');
-     * }
-     */
-    'change-type': (options, commit) => {
-      if (isIncrementalCommit(commit.footer['change-type'])) {
-        return commit.footer['change-type'].trim().toLowerCase();
-      }
-    },
-
-    /**
-     * @summary Calculate increment level from subject
-     * @function
-     * @public
-     *
-     *
-     * @param {Object} options - options
-     * @param {Object} commit - commit
-     * @returns {String} Increment level
-     *
-     * @example
-     * if (presets.getIncrementLevelFromCommit['title']({}, {
-     *   subject: 'patch: a change',
-     *   footer: {
-     *     'foo': 'bar'
-     *   }
-     * })) {
-     *   console.log('patch');
-     * }
-     */
-    subject: (options, commit) => {
-      if (!_.isString(commit.subject)) {
-        return null;
-      }
-      const match = commit.subject.match(/(patch|minor|major)/);
-      if (_.isArray(match) && isIncrementalCommit(match[1])) {
-        return match[1].trim().toLowerCase();
-      }
-    },
-
-    /**
-     * @summary Calculate increment level from footers or title if not change-type footer is present
-     * @function
-     * @public
-     *
-     *
-     * @param {Object} options - options
-     * @param {Object} commit - commit
-     * @returns {String} Increment level
-     *
-     * @example
-     * if (presets.getIncrementLevelFromCommit['change-type-or-subject']({}, {
-     *   subject: 'patch: a change',
-     *   footer: {
-     *     'change-type': 'minor'
-     *   }
-     * })) {
-     *   console.log('minor');
-     * }
-     */
-    'change-type-or-subject': (options, commit) => {
-      const ctIncrement = module.exports.getIncrementLevelFromCommit['change-type'](options, commit);
-      if (_.isString(ctIncrement)) {
-        return ctIncrement;
-      }
-      return module.exports.getIncrementLevelFromCommit.subject(options, commit);
-    }
-  },
-
-  getChangelogDocumentedVersions: {
-
-    /**
-     * @summary Get CHANGELOG documented versions from CHANGELOG titles
-     * @function
-     * @public
-     *
-     * @param {Object} options - options
-     * @param {String} file - changelog file
-     * @param {Function} callback - callback (error, versions)
-     *
-     * @example
-     * presets.getChangelogDocumentedVersions['changelog-headers']({}, 'CHANGELOG.md', (error, versions) => {
-     *   if (error) {
-     *     throw error;
-     *   }
-     *
-     *   console.log(versions);
-     * });
-     */
-    'changelog-headers': (options, file, callback) => {
-      const cleanFn = getCleanFunction(options);
-
-      fs.readFile(file, {
-        encoding: 'utf8'
-      }, (error, changelog) => {
-        if (error) {
-          if (error.code === 'ENOENT') {
-            return callback(null, []);
-          }
-
-          return callback(error);
-        }
-
-        const versions = _.chain(markdown.extractTitles(changelog))
-          .map((title) => {
-            return _.filter(_.split(title, ' '), semver.valid);
-          })
-          .flattenDeep()
-          .map(cleanFn)
-          .value();
-
-        return callback(null, versions);
-      });
-    }
-
-  },
-
-  getCurrentBaseVersion: {
-    /**
-     * @summary Get greater semantic version from documentedVersions
-     * @function
-     * @public
-     *
-     * @param {Object} options - options
-     * @param {String[]} documentedVersions - documented versions
-     * @param {Object[]} history - relevant commit history
-     * @param {Function} callback - callback
-     * @returns {String} version
-     *
-     * @example
-     * const version = presets.getCurrentBaseVersion['latest-documented']({}, [
-     *   '2.1.1',
-     *   '2.1.0',
-     *   '2.0.0'
-     * ], [], (version) => {
-     *  console.log(version)
-     *  > 2.1.1
-     * });
-     *
-     */
-    'latest-documented': (options, documentedVersions, history, callback) => {
-      return callback(null, semver.getGreaterVersion(documentedVersions));
-    }
-  },
-
-  addEntryToChangelog: {
-
-    /**
-     * @summary Prepend entry to CHANGELOG
-     * @function
-     * @public
-     *
-     * @param {Object} options - options
-     * @param {Number} [options.fromLine=0] - prepend from line
-     * @param {String} file - changelog file path
-     * @param {String} entry - changelog entry
-     * @param {Function} callback - callback
-     *
-     * @example
-     * presets.addEntryToChangelog.prepend({}, 'changelog.md', 'My Entry\n', (error) => {
-     *   if (error) {
-     *     throw error;
-     *   }
-     * });
-     */
-    prepend: (options, file, entry, callback) => {
-      _.defaults(options, {
-        fromLine: 6
-      });
-
-      async.waterfall([
-        _.partial(touchChangelog, file),
-
-        (touchedFiles, done) => {
-          fs.readFile(file, {
-            encoding: 'utf8'
-          }, done);
-        },
-
-        (contents, done) => {
-          const changelogLines = _.split(contents, '\n');
-
-          return done(null, _.join(_.reduce([
-            _.slice(changelogLines, 0, options.fromLine),
-            _.split(entry, '\n'),
-            _.slice(changelogLines, options.fromLine)
-          ], (accumulator, array) => {
-            const head = _.dropRightWhile(accumulator, _.isEmpty);
-            const body = _.dropWhile(array, _.isEmpty);
-
-            if (_.isEmpty(head)) {
-              return body;
-            }
-
-            return _.concat(head, [ '' ], body);
-          }, []), '\n'));
-        },
-
-        _.partial(fs.writeFile, file)
-      ], callback);
-    }
-  },
-
-  addEntryToHistoryFile: {
-    /**
-     * @summary Prepend entry to .versionbot/CHANGELOG.yml
-     * @function
-     * @public
-     *
-     * @param {Object} options - options
-     * @param {String} file - path to version file
-     * @param {String} raw - changelog raw entry
-     * @param {Function} callback - callback
-     * @returns {null}
-     *
-     * @example
-     * presets.addEntryToHistoryFile.ymlPrepend({},
-     * { commits:
-     *    [ { subject: 'Subject',
-     *      body: '',
-     *      footer: {},
-     *      author: 'test'
-     *    }
-     *  ],
-     *  version: '5.4.4',
-     *  date: 2019-12-26T16:53:28.111Z
-     * }, (error) => {
-     *   if (error) {
-     *     throw error;
-     *   }
-     * });
-     */
-    'yml-prepend': (options, file, raw, callback) => {
-      if (fs.existsSync(file)) {
-        let changelog = [];
-        try {
-          changelog = yaml.safeLoad(
-            fs.readFileSync(file, 'utf8')
-          );
-
-          // If the file was empty we explicitly set as empty array
-          if (_.isUndefined(changelog)) {
-            changelog = [];
-          }
-        } catch (e) {
-          if (e.code !== 'ENOENT') {
-            return callback(e);
-          }
-        }
-
-        changelog.unshift(raw);
-        fs.writeFile(file, yaml.safeDump(changelog), callback);
-      } else {
-        return callback(null);
-      }
-    }
-  },
-
-  transformTemplateDataAsync: {
-    'nested-changelogs': (options, data, callback) => {
-      async.map(data.commits,
-        _.partial(attachNestedChangelog, options.upstream),
-        (err, commits) => {
-          if (err) {
-            return callback(err);
-          }
-          data.commits = _.sortBy(commits, (commit) => {
-            return Boolean(commit.nested);
-          });
-
-          return callback(err, data);
-        }
-      );
-    }
-  },
-
-  transformTemplateData: {
-    /**
-     * @summary If a commit has a changelog-entry use that instead of the subject.
-     *          Throws if there are no commits in data
-     * @function
-     * @public
-     *
-     * @param {Object} options - options
-     * @param {Object} data - templateData
-     * @returns {Object} transformed template data
-     *
-     * @example
-     * const data = preset.transformTemplateData['changelog-entry']({}, {
-     *  commits: [{
-     *      subject: 'Commit subject',
-     *      footer: {
-     *        'changelog-entry': 'User facing message'
-     *      }
-     *    }]
-     *  })
-     * console.log(data.commits);
-     * > [{
-     *     subject: 'User facing message',
-     *     footer: {
-     *       'changelog-entry': 'User facing message'
-     *     }
-     *   }]
-     */
-    'changelog-entry': (options, data) => {
-      if (_.isEmpty(data.commits)) {
-        throw new Error('All commits were filtered out for this version');
-      }
-
-      data.commits.forEach((commit) => {
-        if (commit.footer) {
-          commit.subject = commit.footer['changelog-entry'] || commit.subject;
-        }
-        commit.author = getAuthor(commit.hash);
-      });
-
-      return data;
-    }
-  },
-
-  getGitReferenceFromVersion: {
-
-    /**
-     * @summary Add a `v` prefix to the version
-     * @function
-     * @public
-     *
-     * @param {Object} options - options
-     * @param {String} version - version
-     * @returns {String} git reference
-     *
-     * @example
-     * const reference = presets.getGitReferenceFromVersion['v-prefix']({}, '1.0.0');
-     * console.log(reference);
-     * > v1.0.0
-     */
-    'v-prefix': (options, version) => {
-      if (_.startsWith(version, 'v')) {
-        return version;
-      }
-
-      return `v${version}`;
-    }
-
-  },
-
-  updateVersion: {
-
-    /**
-     * @summary Update NPM version
-     * @function
-     * @public
-     *
-     * @param {Object} options - options
-     * @param {Boolean|RegExp} [options.clean=true] - determines how to sanitise the version
-     * @param {String} cwd - current working directory
-     * @param {String} version - version
-     * @param {Function} callback - callback (error)
-     * @returns {null}
-     *
-     * @example
-     * presets.updateVersion.npm({}, process.cwd(), '1.0.0', (error) => {
-     *   if (error) {
-     *     throw error;
-     *   }
-     * });
-     */
-    npm: (options, cwd, version, callback) => {
-      const cleanFn = getCleanFunction(options);
-      const packageJSON = path.join(cwd, 'package.json');
-      const packageLockJSON = path.join(cwd, 'package-lock.json');
-      const npmShrinkwrapJSON = path.join(cwd, 'npm-shrinkwrap.json');
-      const cleanedVersion = cleanFn(version);
-
-      if (!cleanedVersion) {
-        return callback(new Error(`Invalid version: ${version}`));
-      }
-
-      async.waterfall([
-        (done) => {
-          updateJSON(packageJSON, {
-            version: cleanedVersion
-          }, (error) => {
-            if (error && error.code === 'ENOENT') {
-              error.message = `No such file or directory: ${packageJSON}`;
-            }
-            return done(error);
-          });
-        },
-        (done) => {
-          updateJSON(packageLockJSON, {
-            version: cleanedVersion
-          }, (error) => {
-            if (error && error.code === 'ENOENT') {
-              return done(null);
-            }
-            return done(error);
-          });
-        },
-        (done) => {
-          updateJSON(npmShrinkwrapJSON, {
-            version: cleanedVersion
-          }, (error) => {
-            if (error && error.code === 'ENOENT') {
-              return done(null);
-            }
-            return done(error);
-          });
-        }
-      ], callback);
-    },
-
-    /**
-     * @summary Update Rust Cargo crate version
-     * @function
-     * @public
-     *
-     * @param {Object} options - options
-     * @param {Boolean|RegExp} [options.clean=true] - determines how to sanitise the version
-     * @param {String} cwd - current working directory
-     * @param {String} version - version
-     * @param {Function} callback - callback (error)
-     * @returns {null}
-     *
-     * @example
-     * presets.updateVersion.cargo({}, process.cwd(), '1.0.0', (error) => {
-     *   if (error) {
-     *     throw error;
-     *   }
-     * });
-     */
-    cargo: (options, cwd, version, callback) => {
-      const cleanFn = getCleanFunction(options);
-      const cargoToml = path.join(cwd, 'Cargo.toml');
-      const cargoLock = path.join(cwd, 'Cargo.lock');
-
-      const cleanedVersion = cleanFn(version);
-
-      if (!cleanedVersion) {
-        return callback(new Error(`Invalid version: ${version}`));
-      }
-
-      async.waterfall([
-        (done) => {
-          return fs.readFile(cargoToml, 'utf8', done);
-        },
-
-        (contents, done) => {
-          // Capture first `name = "..."` occurrence immediately after `[package]`
-          const matches = contents.match(/\[package\][^[]+?name\s*=\s*("|')(.+?)\1/m);
-          if (_.isNull(matches)) {
-            done(new Error(`Package name not found in ${cargoToml}`));
-          } else {
-            done(null, matches[2]);
-          }
-        },
-
-        (packageName, done) => {
-          if (fs.existsSync(cargoLock)) {
-            // Update first `version = "..."` occurrence immediately after `name = "${packageName}"`
-            replace(
-              cargoLock,
-              new RegExp(`(name\\s*=\\s*(?:"|')${packageName}(?:"|')[^[]+?version\\s*=\\s*)("|').*?\\2`, 'm'),
-              '$1$2' + cleanedVersion + '$2',
-              (err) => {
-                return done(err || null);
-              }
-            );
-          } else {
-            done(null);
-          }
-        },
-
-        (done) => {
-          // Update first `version = "..."` occurrence immediately after `[package]`
-          replace(
-            cargoToml,
-            /(\[package\][^[]+?version\s*=\s*)("|').*?\2/m,
-            '$1$2' + cleanedVersion + '$2',
-            done
-          );
-        }
-      ], callback);
-    },
-
-    /**
-     * @summary Update package version in Python Init file
-     * @function
-     * @public
-     *
-     * @param {Object} options - options
-     * @param {String} [options.targetFile] - path to target python file, defaults to `__init__.py`
-     * @param {Boolean|RegExp} [options.clean=true] - determines how to sanitise the version
-     * @param {String} cwd - current working directory
-     * @param {String} version - version
-     * @param {Function} callback - callback (error)
-     * @returns {null}
-     *
-     * @example
-     * presets.updateVersion.initPy({}, process.cwd(), '1.0.0', (error) => {
-     *   if (error) {
-     *     throw error;
-     *   }
-     * });
-     */
-    initPy: (options, cwd, version, callback) => {
-      _.defaults(options, {
-        targetFile: '__init__.py'
-      });
-
-      const cleanFn = getCleanFunction(options);
-      const initFile = path.join(cwd, options.targetFile);
-      const cleanedVersion = cleanFn(version);
-
-      if (!cleanedVersion) {
-        return callback(new Error(`Invalid version: ${version}`));
-      }
-
-      replaceInFile({
-        files: initFile,
-        from: /(__version__\s*=\s*)('|")(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\2/g,
-        to: '$1$2' + cleanedVersion + '$2'
-      }, (error) => {
-        if (error) {
-          return callback(error);
-        }
-      });
-    },
-
-    /**
-     * @summary Update quoted version immediately following a regex
-     * @function
-     * @public
-     *
-     * @param {Object} options - options
-     * @param {String} [options.baseDir] - relative directory to append to cwd
-     * @param {String} options.file - file to modify
-     * @param {String} options.regex - regex leading up to the quoted version string
-     * @param {String} [options.regexFlags] - any modifier flags as used in RegExp
-     * @param {Boolean|RegExp} [options.clean=true] - determines how to sanitise the version
-     * @param {String} cwd - current working directory
-     * @param {String} version - version
-     * @param {Function} callback - callback (error)
-     * @returns {null}
-     *
-     * @example
-     * presets.updateVersion.quoted({
-     *   file: 'myfile.h',
-     *   regex: /^VERSION\s+=\s+/,
-     *   regexFlags: 'm'
-     * }, process.cwd(), '1.0.0', (error) => {
-     *   if (error) {
-     *     throw error;
-     *   }
-     * });
-     */
-    quoted: (options, cwd, version, callback) => {
-      _.defaults(options, {
-        baseDir: '.',
-        regexFlags: ''
-      });
-
-      if (path.isAbsolute(options.baseDir)) {
-        return callback(new Error('baseDir option can\'t be an absolute path'));
-      }
-      if (_.isUndefined(options.file)) {
-        return callback(new Error('Missing file option'));
-      }
-      if (path.isAbsolute(options.file)) {
-        return callback(new Error('file option can\'t be an absolute path'));
-      }
-      if (_.isUndefined(options.regex)) {
-        return callback(new Error('Missing regex option'));
-      }
-
-      const updateFile = path.join(cwd, options.baseDir, options.file);
-      const cleanFn = getCleanFunction(options);
-
-      const cleanedVersion = cleanFn(version);
-
-      if (!cleanedVersion) {
-        return callback(new Error(`Invalid version: ${version}`));
-      }
-
-      const innerRegex = RegExp(options.regex);
-      const combinedRegexSource = '(' + innerRegex.source + ')("|\').*?\\2';
-      const combinedRegexFlags = _.join(_.uniqBy(innerRegex.flags + options.regexFlags), '');
-
-      replace(
-        updateFile,
-        new RegExp(combinedRegexSource, combinedRegexFlags),
-        '$1$2' + cleanedVersion + '$2',
-        callback
-      );
-    },
-
-    /**
-     * @summary Update version file
-     * @function
-     * @public
-     * @returns {null}
-     *
-     * @param {Object} options - options
-     * @param {Boolean|RegExp} [options.clean=true] - determines how to sanitise the version
-     * @param {String} cwd - current working directory
-     * @param {String} version - version
-     * @param {Function} callback - callback (error)
-     *
-     * @example
-     * presets.updateVersion["update-version-file"]({}, process.cwd(), '1.0.0', (error) => {
-     *   if (error) {
-     *     throw error;
-     *   }
-     * });
-     */
-    'update-version-file': (options, cwd, version, callback) => {
-      const versionFile = path.join(cwd, 'VERSION');
-
-      // Write with w+ mode, this will create the file if not preset
-      return fs.writeFile(versionFile, version, {
-        flag: 'w+'
-      }, callback);
-    },
-
-    /**
-     * @summary Will attempt to update several possible targets and ignore failures
-     * @function
-     * @public
-     * @returns {null}
-     *
-     * @param {Object} options - options
-     * @param {Boolean|RegExp} [options.clean=true] - determines how to sanitise the version
-     * @param {String} cwd - current working directory
-     * @param {String} version - version
-     * @param {Function} callback - callback (error)
-     *
-     * @example
-     * presets.updateVersion.mixed({}, process.cwd(), '1.0.0', (error) => {
-     *   if (error) {
-     *     throw error;
-     *   }
-     * });
-     */
-    mixed: (options, cwd, version, callback) => {
-      // Wrap update functions to ignore any errors
-      const wrapped = _.map([
-        module.exports.updateVersion.npm,
-        module.exports.updateVersion.cargo,
-        module.exports.updateVersion['update-version-file'],
-        module.exports.updateVersion.initPy
-      ], (updateFn) => {
-        // This will be used for async.parallel
-        return (cb) => {
-          return updateFn(options, cwd, version, () => {
-            // Ignoring errors will cause async.parallel to run through all
-            // possibilities without short-circuiting
-            return cb(null);
-          });
-        };
-      });
-      return async.parallel(wrapped, callback);
-    }
-
-  },
-
-  incrementVersion: {
-
-    /**
-     * @summary Increment a version following semver
-     * @function
-     * @public
-     *
-     * @param {Object} options - options
-     * @param {String} version - original version
-     * @param {String} incrementLevel - increment level
-     * @returns {String} incremented version
-     *
-     * @example
-     * const version = presets.incrementVersion.semver({}, '1.0.0', 'major');
-     * console.log(version);
-     * > 2.0.0
-     */
-    semver: (options, version, incrementLevel) => {
-      if (!semver.valid(version)) {
-        throw new Error(`Invalid version: ${version}`);
-      }
-
-      const incrementedVersion = semver.inc(version, incrementLevel);
-
-      if (!incrementedVersion) {
-        throw new Error(`Invalid increment level: ${incrementLevel}`);
-      }
-
-      return incrementedVersion;
-    }
-
-  },
-  /* eslint-disable indent */
-  template: {
-    oneline: templateDefaults.concat([
-      '{{#*inline "render-header"}}',
-        '{{> block-prefix}}{{nesting}} {{version}} - {{moment date "Y-MM-DD"}}',
-      '{{/inline}}',
-
-      '{{> commits nesting="##" block=""}}'
-    ].join('\n')),
-    default: templateDefaults.concat([
-      '{{#*inline "render-header"}}',
-        '{{> block-prefix}}{{nesting}} {{#eq nesting "#"}}v{{else}}{{/eq}}{{version}}',
-        '{{> block-prefix}}{{nesting}}# ({{moment date "Y-MM-DD"}})',
-      '{{/inline}}',
-
-      '{{> commits nesting="#" block=""}}'
-    ].join('\n'))
-  },
-
-  /* eslint-enable indent */
-  INITIAL_CHANGELOG: INITIAL_CHANGELOG
+	subjectParser: {
+		/**
+		 * @summary Angular's `subjectParser`
+		 * @function
+		 * @public
+		 *
+		 * @description
+		 * Based on https://github.com/angular/angular.js/blob/master/CONTRIBUTING.md
+		 *
+		 * @param {Object} options - options
+		 * @param {String} subject - commit subject
+		 * @returns {Object} parsed subject
+		 *
+		 * @example
+		 * const subject = presets.subjectParser.angular({}, 'feat($ngInclude): lorem ipsum');
+		 *
+		 * console.log(subject.type);
+		 * > feat
+		 * console.log(subject.scope);
+		 * > $ngInclude
+		 * console.log(subject.title);
+		 * > lorem ipsum
+		 */
+		angular: (options, subject) => {
+			const subjectParts = subject.match(
+				/^(?:fixup!\s*)?(\w*)(\(([\w$.*/-]*)\))?: (.*)$/,
+			);
+
+			return {
+				type: _.nth(subjectParts, 1),
+				scope: _.nth(subjectParts, 3),
+				title: _.nth(subjectParts, 4) || subject,
+			};
+		},
+	},
+
+	includeCommitWhen: {
+		/**
+		 * @summary Angular's `includeCommitWhen`
+		 * @function
+		 * @public
+		 *
+		 * @description
+		 * Based on https://github.com/angular/angular.js/blob/master/changelog.js
+		 *
+		 * @param {Object} options - options
+		 * @param {Object} commit - commit
+		 * @returns {Boolean} whether the commit should be included
+		 *
+		 * @example
+		 * if (presets.includeCommitWhen.angular({}, {
+		 *   subject: {
+		 *     type: 'feat'
+		 *   }
+		 * })) {
+		 *   console.log('The commit should be included');
+		 * }
+		 *
+		 * @example
+		 * if (presets.includeCommitWhen.angular({}, {
+		 *   subject: 'feat(Scope): my commit'
+		 * })) {
+		 *   console.log('The commit should be included');
+		 * }
+		 */
+		angular: (options, commit) => {
+			if (_.isString(commit.subject)) {
+				return _.some([
+					_.startsWith(commit.subject, 'feat'),
+					_.startsWith(commit.subject, 'fix'),
+					_.startsWith(commit.subject, 'perf'),
+				]);
+			}
+
+			return _.includes(['feat', 'fix', 'perf'], commit.subject.type);
+		},
+
+		/**
+		 * @summary Include commit only if it contains a change-type, either in a footer or the subject
+		 * @function
+		 * @public
+		 *
+		 *
+		 * @param {Object} options - options
+		 * @param {Object} commit - commit
+		 * @returns {Boolean} whether the commit should be included
+		 *
+		 * @example
+		 * if (presets.includeCommitWhen['has-changetype']({}, {
+		 *   subject: 'A change',
+		 *   footer: {
+		 *     'change-type': 'minor'
+		 *   }
+		 * })) {
+		 *   console.log('The commit should be included');
+		 * }
+		 */
+		'has-changetype': (options, commit) => {
+			return (
+				isIncrementalCommit(commit.footer['change-type']) ||
+				isIncrementalCommit(
+					module.exports.getIncrementLevelFromCommit.subject({}, commit),
+				)
+			);
+		},
+
+		/**
+		 * @summary Include commit only if it contains a changelog-entry footer
+		 * @function
+		 * @public
+		 *
+		 *
+		 * @param {Object} options - options
+		 * @param {Object} commit - commit
+		 * @returns {Boolean} whether the commit should be included
+		 *
+		 * @example
+		 * if (presets.includeCommitWhen['has-changelog-entry']({}, {
+		 *   subject: 'A change',
+		 *   footer: {
+		 *     'changelog-entry': 'Longer explanation of the change'
+		 *   }
+		 * })) {
+		 *   console.log('The commit should be included');
+		 * }
+		 */
+		'has-changelog-entry': (options, commit) => {
+			return Boolean(commit.footer['changelog-entry']);
+		},
+	},
+
+	getIncrementLevelFromCommit: {
+		/**
+		 * @summary Calculate increment level from change-type
+		 * @function
+		 * @public
+		 *
+		 *
+		 * @param {Object} options - options
+		 * @param {Object} commit - commit
+		 * @returns {String} Increment level
+		 *
+		 * @example
+		 * if (presets.getIncrementLevelFromCommit['change-type']({}, {
+		 *   subject: 'A change',
+		 *   footer: {
+		 *     'change-type': 'minor'
+		 *   }
+		 * })) {
+		 *   console.log('minor');
+		 * }
+		 */
+		'change-type': (options, commit) => {
+			if (isIncrementalCommit(commit.footer['change-type'])) {
+				return commit.footer['change-type'].trim().toLowerCase();
+			}
+		},
+
+		/**
+		 * @summary Calculate increment level from subject
+		 * @function
+		 * @public
+		 *
+		 *
+		 * @param {Object} options - options
+		 * @param {Object} commit - commit
+		 * @returns {String} Increment level
+		 *
+		 * @example
+		 * if (presets.getIncrementLevelFromCommit['title']({}, {
+		 *   subject: 'patch: a change',
+		 *   footer: {
+		 *     'foo': 'bar'
+		 *   }
+		 * })) {
+		 *   console.log('patch');
+		 * }
+		 */
+		subject: (options, commit) => {
+			if (!_.isString(commit.subject)) {
+				return null;
+			}
+			const match = commit.subject.match(/(patch|minor|major)/);
+			if (_.isArray(match) && isIncrementalCommit(match[1])) {
+				return match[1].trim().toLowerCase();
+			}
+		},
+
+		/**
+		 * @summary Calculate increment level from footers or title if not change-type footer is present
+		 * @function
+		 * @public
+		 *
+		 *
+		 * @param {Object} options - options
+		 * @param {Object} commit - commit
+		 * @returns {String} Increment level
+		 *
+		 * @example
+		 * if (presets.getIncrementLevelFromCommit['change-type-or-subject']({}, {
+		 *   subject: 'patch: a change',
+		 *   footer: {
+		 *     'change-type': 'minor'
+		 *   }
+		 * })) {
+		 *   console.log('minor');
+		 * }
+		 */
+		'change-type-or-subject': (options, commit) => {
+			const ctIncrement = module.exports.getIncrementLevelFromCommit[
+				'change-type'
+			](options, commit);
+			if (_.isString(ctIncrement)) {
+				return ctIncrement;
+			}
+			return module.exports.getIncrementLevelFromCommit.subject(
+				options,
+				commit,
+			);
+		},
+	},
+
+	getChangelogDocumentedVersions: {
+		/**
+		 * @summary Get CHANGELOG documented versions from CHANGELOG titles
+		 * @function
+		 * @public
+		 *
+		 * @param {Object} options - options
+		 * @param {String} file - changelog file
+		 * @param {Function} callback - callback (error, versions)
+		 *
+		 * @example
+		 * presets.getChangelogDocumentedVersions['changelog-headers']({}, 'CHANGELOG.md', (error, versions) => {
+		 *   if (error) {
+		 *     throw error;
+		 *   }
+		 *
+		 *   console.log(versions);
+		 * });
+		 */
+		'changelog-headers': (options, file, callback) => {
+			const cleanFn = getCleanFunction(options);
+
+			fs.readFile(
+				file,
+				{
+					encoding: 'utf8',
+				},
+				(error, changelog) => {
+					if (error) {
+						if (error.code === 'ENOENT') {
+							return callback(null, []);
+						}
+
+						return callback(error);
+					}
+
+					const versions = _.chain(markdown.extractTitles(changelog))
+						.map((title) => {
+							return _.filter(_.split(title, ' '), semver.valid);
+						})
+						.flattenDeep()
+						.map(cleanFn)
+						.value();
+
+					return callback(null, versions);
+				},
+			);
+		},
+	},
+
+	getCurrentBaseVersion: {
+		/**
+		 * @summary Get greater semantic version from documentedVersions
+		 * @function
+		 * @public
+		 *
+		 * @param {Object} options - options
+		 * @param {String[]} documentedVersions - documented versions
+		 * @param {Object[]} history - relevant commit history
+		 * @param {Function} callback - callback
+		 * @returns {String} version
+		 *
+		 * @example
+		 * const version = presets.getCurrentBaseVersion['latest-documented']({}, [
+		 *   '2.1.1',
+		 *   '2.1.0',
+		 *   '2.0.0'
+		 * ], [], (version) => {
+		 *  console.log(version)
+		 *  > 2.1.1
+		 * });
+		 *
+		 */
+		'latest-documented': (options, documentedVersions, history, callback) => {
+			return callback(null, semver.getGreaterVersion(documentedVersions));
+		},
+	},
+
+	addEntryToChangelog: {
+		/**
+		 * @summary Prepend entry to CHANGELOG
+		 * @function
+		 * @public
+		 *
+		 * @param {Object} options - options
+		 * @param {Number} [options.fromLine=0] - prepend from line
+		 * @param {String} file - changelog file path
+		 * @param {String} entry - changelog entry
+		 * @param {Function} callback - callback
+		 *
+		 * @example
+		 * presets.addEntryToChangelog.prepend({}, 'changelog.md', 'My Entry\n', (error) => {
+		 *   if (error) {
+		 *     throw error;
+		 *   }
+		 * });
+		 */
+		prepend: (options, file, entry, callback) => {
+			_.defaults(options, {
+				fromLine: 6,
+			});
+
+			async.waterfall(
+				[
+					_.partial(touchChangelog, file),
+
+					(touchedFiles, done) => {
+						fs.readFile(
+							file,
+							{
+								encoding: 'utf8',
+							},
+							done,
+						);
+					},
+
+					(contents, done) => {
+						const changelogLines = _.split(contents, '\n');
+
+						return done(
+							null,
+							_.join(
+								_.reduce(
+									[
+										_.slice(changelogLines, 0, options.fromLine),
+										_.split(entry, '\n'),
+										_.slice(changelogLines, options.fromLine),
+									],
+									(accumulator, array) => {
+										const head = _.dropRightWhile(accumulator, _.isEmpty);
+										const body = _.dropWhile(array, _.isEmpty);
+
+										if (_.isEmpty(head)) {
+											return body;
+										}
+
+										return _.concat(head, [''], body);
+									},
+									[],
+								),
+								'\n',
+							),
+						);
+					},
+
+					_.partial(fs.writeFile, file),
+				],
+				callback,
+			);
+		},
+	},
+
+	addEntryToHistoryFile: {
+		/**
+		 * @summary Prepend entry to .versionbot/CHANGELOG.yml
+		 * @function
+		 * @public
+		 *
+		 * @param {Object} options - options
+		 * @param {String} file - path to version file
+		 * @param {String} raw - changelog raw entry
+		 * @param {Function} callback - callback
+		 * @returns {null}
+		 *
+		 * @example
+		 * presets.addEntryToHistoryFile.ymlPrepend({},
+		 * { commits:
+		 *    [ { subject: 'Subject',
+		 *      body: '',
+		 *      footer: {},
+		 *      author: 'test'
+		 *    }
+		 *  ],
+		 *  version: '5.4.4',
+		 *  date: 2019-12-26T16:53:28.111Z
+		 * }, (error) => {
+		 *   if (error) {
+		 *     throw error;
+		 *   }
+		 * });
+		 */
+		'yml-prepend': (options, file, raw, callback) => {
+			if (fs.existsSync(file)) {
+				let changelog = [];
+				try {
+					changelog = yaml.safeLoad(fs.readFileSync(file, 'utf8'));
+
+					// If the file was empty we explicitly set as empty array
+					if (_.isUndefined(changelog)) {
+						changelog = [];
+					}
+				} catch (e) {
+					if (e.code !== 'ENOENT') {
+						return callback(e);
+					}
+				}
+
+				changelog.unshift(raw);
+				fs.writeFile(file, yaml.safeDump(changelog), callback);
+			} else {
+				return callback(null);
+			}
+		},
+	},
+
+	transformTemplateDataAsync: {
+		'nested-changelogs': (options, data, callback) => {
+			async.map(
+				data.commits,
+				_.partial(attachNestedChangelog, options.upstream),
+				(err, commits) => {
+					if (err) {
+						return callback(err);
+					}
+					data.commits = _.sortBy(commits, (commit) => {
+						return Boolean(commit.nested);
+					});
+
+					return callback(err, data);
+				},
+			);
+		},
+	},
+
+	transformTemplateData: {
+		/**
+		 * @summary If a commit has a changelog-entry use that instead of the subject.
+		 *          Throws if there are no commits in data
+		 * @function
+		 * @public
+		 *
+		 * @param {Object} options - options
+		 * @param {Object} data - templateData
+		 * @returns {Object} transformed template data
+		 *
+		 * @example
+		 * const data = preset.transformTemplateData['changelog-entry']({}, {
+		 *  commits: [{
+		 *      subject: 'Commit subject',
+		 *      footer: {
+		 *        'changelog-entry': 'User facing message'
+		 *      }
+		 *    }]
+		 *  })
+		 * console.log(data.commits);
+		 * > [{
+		 *     subject: 'User facing message',
+		 *     footer: {
+		 *       'changelog-entry': 'User facing message'
+		 *     }
+		 *   }]
+		 */
+		'changelog-entry': (options, data) => {
+			if (_.isEmpty(data.commits)) {
+				throw new Error('All commits were filtered out for this version');
+			}
+
+			data.commits.forEach((commit) => {
+				if (commit.footer) {
+					commit.subject = commit.footer['changelog-entry'] || commit.subject;
+				}
+				commit.author = getAuthor(commit.hash);
+			});
+
+			return data;
+		},
+	},
+
+	getGitReferenceFromVersion: {
+		/**
+		 * @summary Add a `v` prefix to the version
+		 * @function
+		 * @public
+		 *
+		 * @param {Object} options - options
+		 * @param {String} version - version
+		 * @returns {String} git reference
+		 *
+		 * @example
+		 * const reference = presets.getGitReferenceFromVersion['v-prefix']({}, '1.0.0');
+		 * console.log(reference);
+		 * > v1.0.0
+		 */
+		'v-prefix': (options, version) => {
+			if (_.startsWith(version, 'v')) {
+				return version;
+			}
+
+			return `v${version}`;
+		},
+	},
+
+	updateVersion: {
+		/**
+		 * @summary Update NPM version
+		 * @function
+		 * @public
+		 *
+		 * @param {Object} options - options
+		 * @param {Boolean|RegExp} [options.clean=true] - determines how to sanitise the version
+		 * @param {String} cwd - current working directory
+		 * @param {String} version - version
+		 * @param {Function} callback - callback (error)
+		 * @returns {null}
+		 *
+		 * @example
+		 * presets.updateVersion.npm({}, process.cwd(), '1.0.0', (error) => {
+		 *   if (error) {
+		 *     throw error;
+		 *   }
+		 * });
+		 */
+		npm: (options, cwd, version, callback) => {
+			const cleanFn = getCleanFunction(options);
+			const packageJSON = path.join(cwd, 'package.json');
+			const packageLockJSON = path.join(cwd, 'package-lock.json');
+			const npmShrinkwrapJSON = path.join(cwd, 'npm-shrinkwrap.json');
+			const cleanedVersion = cleanFn(version);
+
+			if (!cleanedVersion) {
+				return callback(new Error(`Invalid version: ${version}`));
+			}
+
+			async.waterfall(
+				[
+					(done) => {
+						updateJSON(
+							packageJSON,
+							{
+								version: cleanedVersion,
+							},
+							(error) => {
+								if (error && error.code === 'ENOENT') {
+									error.message = `No such file or directory: ${packageJSON}`;
+								}
+								return done(error);
+							},
+						);
+					},
+					(done) => {
+						updateJSON(
+							packageLockJSON,
+							{
+								version: cleanedVersion,
+							},
+							(error) => {
+								if (error && error.code === 'ENOENT') {
+									return done(null);
+								}
+								return done(error);
+							},
+						);
+					},
+					(done) => {
+						updateJSON(
+							npmShrinkwrapJSON,
+							{
+								version: cleanedVersion,
+							},
+							(error) => {
+								if (error && error.code === 'ENOENT') {
+									return done(null);
+								}
+								return done(error);
+							},
+						);
+					},
+				],
+				callback,
+			);
+		},
+
+		/**
+		 * @summary Update Rust Cargo crate version
+		 * @function
+		 * @public
+		 *
+		 * @param {Object} options - options
+		 * @param {Boolean|RegExp} [options.clean=true] - determines how to sanitise the version
+		 * @param {String} cwd - current working directory
+		 * @param {String} version - version
+		 * @param {Function} callback - callback (error)
+		 * @returns {null}
+		 *
+		 * @example
+		 * presets.updateVersion.cargo({}, process.cwd(), '1.0.0', (error) => {
+		 *   if (error) {
+		 *     throw error;
+		 *   }
+		 * });
+		 */
+		cargo: (options, cwd, version, callback) => {
+			const cleanFn = getCleanFunction(options);
+			const cargoToml = path.join(cwd, 'Cargo.toml');
+			const cargoLock = path.join(cwd, 'Cargo.lock');
+
+			const cleanedVersion = cleanFn(version);
+
+			if (!cleanedVersion) {
+				return callback(new Error(`Invalid version: ${version}`));
+			}
+
+			async.waterfall(
+				[
+					(done) => {
+						return fs.readFile(cargoToml, 'utf8', done);
+					},
+
+					(contents, done) => {
+						// Capture first `name = "..."` occurrence immediately after `[package]`
+						const matches = contents.match(
+							/\[package\][^[]+?name\s*=\s*("|')(.+?)\1/m,
+						);
+						if (_.isNull(matches)) {
+							done(new Error(`Package name not found in ${cargoToml}`));
+						} else {
+							done(null, matches[2]);
+						}
+					},
+
+					(packageName, done) => {
+						if (fs.existsSync(cargoLock)) {
+							// Update first `version = "..."` occurrence immediately after `name = "${packageName}"`
+							replace(
+								cargoLock,
+								new RegExp(
+									`(name\\s*=\\s*(?:"|')${packageName}(?:"|')[^[]+?version\\s*=\\s*)("|').*?\\2`,
+									'm',
+								),
+								'$1$2' + cleanedVersion + '$2',
+								(err) => {
+									return done(err || null);
+								},
+							);
+						} else {
+							done(null);
+						}
+					},
+
+					(done) => {
+						// Update first `version = "..."` occurrence immediately after `[package]`
+						replace(
+							cargoToml,
+							/(\[package\][^[]+?version\s*=\s*)("|').*?\2/m,
+							'$1$2' + cleanedVersion + '$2',
+							done,
+						);
+					},
+				],
+				callback,
+			);
+		},
+
+		/**
+		 * @summary Update package version in Python Init file
+		 * @function
+		 * @public
+		 *
+		 * @param {Object} options - options
+		 * @param {String} [options.targetFile] - path to target python file, defaults to `__init__.py`
+		 * @param {Boolean|RegExp} [options.clean=true] - determines how to sanitise the version
+		 * @param {String} cwd - current working directory
+		 * @param {String} version - version
+		 * @param {Function} callback - callback (error)
+		 * @returns {null}
+		 *
+		 * @example
+		 * presets.updateVersion.initPy({}, process.cwd(), '1.0.0', (error) => {
+		 *   if (error) {
+		 *     throw error;
+		 *   }
+		 * });
+		 */
+		initPy: (options, cwd, version, callback) => {
+			_.defaults(options, {
+				targetFile: '__init__.py',
+			});
+
+			const cleanFn = getCleanFunction(options);
+			const initFile = path.join(cwd, options.targetFile);
+			const cleanedVersion = cleanFn(version);
+
+			if (!cleanedVersion) {
+				return callback(new Error(`Invalid version: ${version}`));
+			}
+
+			replaceInFile(
+				{
+					files: initFile,
+					from: /(__version__\s*=\s*)('|")(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\2/g,
+					to: '$1$2' + cleanedVersion + '$2',
+				},
+				(error) => {
+					if (error) {
+						return callback(error);
+					}
+				},
+			);
+		},
+
+		/**
+		 * @summary Update quoted version immediately following a regex
+		 * @function
+		 * @public
+		 *
+		 * @param {Object} options - options
+		 * @param {String} [options.baseDir] - relative directory to append to cwd
+		 * @param {String} options.file - file to modify
+		 * @param {String} options.regex - regex leading up to the quoted version string
+		 * @param {String} [options.regexFlags] - any modifier flags as used in RegExp
+		 * @param {Boolean|RegExp} [options.clean=true] - determines how to sanitise the version
+		 * @param {String} cwd - current working directory
+		 * @param {String} version - version
+		 * @param {Function} callback - callback (error)
+		 * @returns {null}
+		 *
+		 * @example
+		 * presets.updateVersion.quoted({
+		 *   file: 'myfile.h',
+		 *   regex: /^VERSION\s+=\s+/,
+		 *   regexFlags: 'm'
+		 * }, process.cwd(), '1.0.0', (error) => {
+		 *   if (error) {
+		 *     throw error;
+		 *   }
+		 * });
+		 */
+		quoted: (options, cwd, version, callback) => {
+			_.defaults(options, {
+				baseDir: '.',
+				regexFlags: '',
+			});
+
+			if (path.isAbsolute(options.baseDir)) {
+				return callback(new Error("baseDir option can't be an absolute path"));
+			}
+			if (_.isUndefined(options.file)) {
+				return callback(new Error('Missing file option'));
+			}
+			if (path.isAbsolute(options.file)) {
+				return callback(new Error("file option can't be an absolute path"));
+			}
+			if (_.isUndefined(options.regex)) {
+				return callback(new Error('Missing regex option'));
+			}
+
+			const updateFile = path.join(cwd, options.baseDir, options.file);
+			const cleanFn = getCleanFunction(options);
+
+			const cleanedVersion = cleanFn(version);
+
+			if (!cleanedVersion) {
+				return callback(new Error(`Invalid version: ${version}`));
+			}
+
+			const innerRegex = RegExp(options.regex);
+			const combinedRegexSource = '(' + innerRegex.source + ')("|\').*?\\2';
+			const combinedRegexFlags = _.join(
+				_.uniqBy(innerRegex.flags + options.regexFlags),
+				'',
+			);
+
+			replace(
+				updateFile,
+				new RegExp(combinedRegexSource, combinedRegexFlags),
+				'$1$2' + cleanedVersion + '$2',
+				callback,
+			);
+		},
+
+		/**
+		 * @summary Update version file
+		 * @function
+		 * @public
+		 * @returns {null}
+		 *
+		 * @param {Object} options - options
+		 * @param {Boolean|RegExp} [options.clean=true] - determines how to sanitise the version
+		 * @param {String} cwd - current working directory
+		 * @param {String} version - version
+		 * @param {Function} callback - callback (error)
+		 *
+		 * @example
+		 * presets.updateVersion["update-version-file"]({}, process.cwd(), '1.0.0', (error) => {
+		 *   if (error) {
+		 *     throw error;
+		 *   }
+		 * });
+		 */
+		'update-version-file': (options, cwd, version, callback) => {
+			const versionFile = path.join(cwd, 'VERSION');
+
+			// Write with w+ mode, this will create the file if not preset
+			return fs.writeFile(
+				versionFile,
+				version,
+				{
+					flag: 'w+',
+				},
+				callback,
+			);
+		},
+
+		/**
+		 * @summary Will attempt to update several possible targets and ignore failures
+		 * @function
+		 * @public
+		 * @returns {null}
+		 *
+		 * @param {Object} options - options
+		 * @param {Boolean|RegExp} [options.clean=true] - determines how to sanitise the version
+		 * @param {String} cwd - current working directory
+		 * @param {String} version - version
+		 * @param {Function} callback - callback (error)
+		 *
+		 * @example
+		 * presets.updateVersion.mixed({}, process.cwd(), '1.0.0', (error) => {
+		 *   if (error) {
+		 *     throw error;
+		 *   }
+		 * });
+		 */
+		mixed: (options, cwd, version, callback) => {
+			// Wrap update functions to ignore any errors
+			const wrapped = _.map(
+				[
+					module.exports.updateVersion.npm,
+					module.exports.updateVersion.cargo,
+					module.exports.updateVersion['update-version-file'],
+					module.exports.updateVersion.initPy,
+				],
+				(updateFn) => {
+					// This will be used for async.parallel
+					return (cb) => {
+						return updateFn(options, cwd, version, () => {
+							// Ignoring errors will cause async.parallel to run through all
+							// possibilities without short-circuiting
+							return cb(null);
+						});
+					};
+				},
+			);
+			return async.parallel(wrapped, callback);
+		},
+	},
+
+	incrementVersion: {
+		/**
+		 * @summary Increment a version following semver
+		 * @function
+		 * @public
+		 *
+		 * @param {Object} options - options
+		 * @param {String} version - original version
+		 * @param {String} incrementLevel - increment level
+		 * @returns {String} incremented version
+		 *
+		 * @example
+		 * const version = presets.incrementVersion.semver({}, '1.0.0', 'major');
+		 * console.log(version);
+		 * > 2.0.0
+		 */
+		semver: (options, version, incrementLevel) => {
+			if (!semver.valid(version)) {
+				throw new Error(`Invalid version: ${version}`);
+			}
+
+			const incrementedVersion = semver.inc(version, incrementLevel);
+
+			if (!incrementedVersion) {
+				throw new Error(`Invalid increment level: ${incrementLevel}`);
+			}
+
+			return incrementedVersion;
+		},
+	},
+	// prettier-ignore
+	template: {
+		oneline: templateDefaults.concat([
+			'{{#*inline "render-header"}}',
+				'{{> block-prefix}}{{nesting}} {{version}} - {{moment date "Y-MM-DD"}}',
+			'{{/inline}}',
+
+			'{{> commits nesting="##" block=""}}'
+		].join('\n')),
+		default: templateDefaults.concat([
+			'{{#*inline "render-header"}}',
+				'{{> block-prefix}}{{nesting}} {{#eq nesting "#"}}v{{else}}{{/eq}}{{version}}',
+				'{{> block-prefix}}{{nesting}}# ({{moment date "Y-MM-DD"}})',
+			'{{/inline}}',
+
+			'{{> commits nesting="#" block=""}}'
+		].join('\n'))
+	},
+
+	INITIAL_CHANGELOG: INITIAL_CHANGELOG,
 };

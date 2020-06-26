@@ -26,51 +26,57 @@ shelljs.rm('-rf', TEST_DIRECTORY);
 shelljs.mkdir('-p', TEST_DIRECTORY);
 shelljs.cd(TEST_DIRECTORY);
 
-utils.createVersionistConfiguration([
-  '\'use strict\';',
-  'module.exports = {',
-  '  subjectParser: \'angular\',',
-  '  updateVersion: "update-version-file",',
-  '  addEntryToChangelog: \'prepend\',',
-  '  template: [',
-  '    \'## {{version}}\',',
-  '    \'\',',
-  '    \'{{#each commits}}\',',
-  '    \'{{#with footer}}\',',
-  '    \'- {{capitalize Changelog-Entry}}\',',
-  '    \'{{/with}}\',',
-  '    \'{{/each}}\'',
-  '  ].join(\'\\n\')',
-  '};',
-  ''
-].join('\n'));
+utils.createVersionistConfiguration(
+	[
+		"'use strict';",
+		'module.exports = {',
+		"  subjectParser: 'angular',",
+		'  updateVersion: "update-version-file",',
+		"  addEntryToChangelog: 'prepend',",
+		'  template: [',
+		"    '## {{version}}',",
+		"    '',",
+		"    '{{#each commits}}',",
+		"    '{{#with footer}}',",
+		"    '- {{capitalize Changelog-Entry}}',",
+		"    '{{/with}}',",
+		"    '{{/each}}'",
+		"  ].join('\\n')",
+		'};',
+		'',
+	].join('\n'),
+);
 
 shelljs.exec('git init');
 
 utils.createCommit('feat: implement x', {
-  'Changelog-Entry': 'Implement x',
-  'Change-Type': 'patch'
+	'Changelog-Entry': 'Implement x',
+	'Change-Type': 'patch',
 });
 
 utils.createCommit('fix: fix y', {
-  'Changelog-Entry': 'Fix y',
-  'Change-Type': 'patch'
+	'Changelog-Entry': 'Fix y',
+	'Change-Type': 'patch',
 });
 
 utils.createCommit('fix: fix z', {
-  'Changelog-Entry': 'Fix z',
-  'Change-Type': 'minor'
+	'Changelog-Entry': 'Fix z',
+	'Change-Type': 'minor',
 });
 
 utils.callVersionist();
 
-m.chai.expect(shelljs.cat('CHANGELOG.md').stdout).to.deep.equal([
-  `${presets.INITIAL_CHANGELOG}## 0.1.0`,
-  '',
-  '- Fix z',
-  '- Fix y',
-  '- Implement x',
-  ''
-].join('\n'));
+m.chai
+	.expect(shelljs.cat('CHANGELOG.md').stdout)
+	.to.deep.equal(
+		[
+			`${presets.INITIAL_CHANGELOG}## 0.1.0`,
+			'',
+			'- Fix z',
+			'- Fix y',
+			'- Implement x',
+			'',
+		].join('\n'),
+	);
 
 m.chai.expect(shelljs.cat('VERSION').stdout).to.equal('0.1.0');

@@ -91,21 +91,21 @@ export const readCommitHistory = (
 	const child = childProcess.spawn('git', command);
 	let stdout = '';
 
-	child.stdout.on('data', data => {
+	child.stdout.on('data', (data) => {
 		stdout += data;
 	});
 
-	child.stderr.on('data', data => {
+	child.stderr.on('data', (data) => {
 		child.kill();
 		return callback(new Error(data.toString()));
 	});
 
-	child.on('error', error => {
+	child.on('error', (error) => {
 		child.kill();
 		return callback(error);
 	});
 
-	child.on('close', code => {
+	child.on('close', (code) => {
 		if (code !== 0) {
 			return callback(
 				new Error(`Child process exitted with error code: ${code}`),
@@ -179,9 +179,7 @@ export const calculateNextVersion = (
 
 	if (!_.isFunction(options.getIncrementLevelFromCommit)) {
 		throw new Error(
-			`Invalid getIncrementLevelFromCommit option: ${
-				options.getIncrementLevelFromCommit
-			}`,
+			`Invalid getIncrementLevelFromCommit option: ${options.getIncrementLevelFromCommit}`,
 		);
 	}
 
