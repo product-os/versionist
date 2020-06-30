@@ -1,4 +1,14 @@
 - commits:
+    - subject: Fix calling removed function
+      hash: beff2d8d0e1646ac662a26bce6b245e0c043c83d
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+  version: 6.1.4
+  date: 2020-06-30T15:58:37.256Z
+- commits:
     - subject: Fix authentication
       hash: 4510da2539519ff6c64b9a506b38330b60317468
       body: ''
