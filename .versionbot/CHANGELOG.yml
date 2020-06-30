@@ -1,4 +1,16 @@
 - commits:
+    - subject: Fix a call to octokit that was not updated to the new verison
+      hash: 5718f2bf6451c07a85ec2aa9f40fa2e405215517
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Giovanni Garufi <giovanni@balena.io>
+        signed-off-by: Giovanni Garufi <giovanni@balena.io>
+      author: nazrhom
+  version: 6.1.5
+  date: 2020-06-30T17:33:05.565Z
+- commits:
     - subject: Fix calling removed function
       hash: beff2d8d0e1646ac662a26bce6b245e0c043c83d
       body: ''
