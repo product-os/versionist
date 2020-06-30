@@ -34,14 +34,8 @@ const { Octokit } = require('@octokit/rest');
 
 const octokit = new Octokit({
 	debug: Boolean(process.env.DEBUG),
+	auth: process.env.GITHUB_TOKEN,
 });
-
-const authenticate = () => {
-	octokit.authenticate({
-		type: 'token',
-		token: process.env.GITHUB_TOKEN,
-	});
-};
 
 // prettier-ignore
 const templateDefaults = [
