@@ -1,4 +1,14 @@
 - commits:
+    - subject: Fix authentication
+      hash: 4510da2539519ff6c64b9a506b38330b60317468
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+  version: 6.1.3
+  date: 2020-06-29T23:33:15.768Z
+- commits:
     - subject: 'Update dependencies, fixing some warnings'
       hash: d9fa17f7c3ee3063c49e93bbe3b997032f75e6ad
       body: ''
