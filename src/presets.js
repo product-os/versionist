@@ -122,20 +122,14 @@ const getNestedChangeLog = (
 ) => {
 	const { owner, repo, ref = 'master' } = options;
 
-	octokit.repos.getContent(
-		{
+	octokit.repos
+		.getContent({
 			owner: owner,
 			repo: repo,
 			ref: ref,
 			path: '.versionbot/CHANGELOG.yml',
-		},
-		(error, response) => {
-			if (error) {
-				return callback(
-					new Error(`Could not find .versionbot/CHANGELOG.yml in ${repo}`),
-				);
-			}
-
+		})
+		.then((response) => {
 			// content will be base64 encoded
 			const changelog = yaml.safeLoad(
 				Buffer.from(response.data.content, 'base64').toString(),
@@ -147,8 +141,12 @@ const getNestedChangeLog = (
 				endVersion,
 			);
 			return callback(null, nested);
-		},
-	);
+		})
+		.catch((error) => {
+			return callback(
+				new Error(`Could not find .versionbot/CHANGELOG.yml in ${repo}`),
+			);
+		});
 };
 
 const attachNestedChangelog = (upstreams, commit, callback) => {
