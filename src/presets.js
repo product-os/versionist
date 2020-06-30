@@ -122,8 +122,6 @@ const getNestedChangeLog = (
 ) => {
 	const { owner, repo, ref = 'master' } = options;
 
-	authenticate();
-
 	octokit.repos.getContent(
 		{
 			owner: owner,
