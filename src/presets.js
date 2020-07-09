@@ -44,19 +44,20 @@ const templateDefaults = [
 	'{{> block-newline}}',
 	'{{#each commits}}',
 		'{{> render-with-nesting nesting=../nesting block=../block ~}}',
-	'{{/each~}}',
+	'{{/each}}',
+	'{{> block-newline}}',
 	'{{/inline~}}',
 
 	'{{#*inline "render-with-nesting"}}',
 		'{{~#if this.nested ~}}',
 			'{{> block-newline}}',
-			'<details>',
-				'<summary> {{> render-with-author-inline}} </summary>',
+			'{{> block-prefix}}<details>',
+			'{{> block-prefix}}<summary> {{> render-with-author-inline}} </summary>',
+			'{{> block-newline}}',
 				'{{#each this.nested}}',
 					'{{> commits nesting=(append ../nesting "#") block=(append ../block ">") }}',
 				'{{/each}}',
-			'</details>',
-			'',
+			'{{> block-prefix}}</details>',
 			'{{> block-newline}}',
 		'{{~else~}}',
 			'{{> block-prefix}}* {{> render-with-author}}',
@@ -85,7 +86,8 @@ const templateDefaults = [
 
 	'{{#*inline "block-newline"}}',
 		'{{#isnt block ""}}{{block}} {{else}}{{/isnt}}',
-	'{{/inline}}'
+	'{{/inline}}',
+	''
 ].join('\n');
 
 const isIncrementalCommit = (changeType) => {
@@ -1169,7 +1171,7 @@ module.exports = {
 			'{{> commits nesting="##" block=""}}'
 		].join('\n')),
 		default: templateDefaults.concat([
-			'{{#*inline "render-header"}}',
+			'{{~#*inline "render-header"}}',
 				'{{> block-prefix}}{{nesting}} {{#eq nesting "#"}}v{{else}}{{/eq}}{{version}}',
 				'{{> block-prefix}}{{nesting}}# ({{moment date "Y-MM-DD"}})',
 			'{{/inline}}',
