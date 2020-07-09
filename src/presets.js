@@ -152,7 +152,7 @@ const getNestedChangeLog = (
 };
 
 const attachNestedChangelog = (upstreams, commit, callback) => {
-	async.each(
+	async.map(
 		upstreams,
 		(upstream, cb) => {
 			const regexp = new RegExp(
@@ -167,19 +167,13 @@ const attachNestedChangelog = (upstreams, commit, callback) => {
 					commit,
 					currentVersion,
 					targetVersion,
-					(err, nestedCommits) => {
-						if (err) {
-							return callback(err);
-						}
-						commit.nested = commit.nested || [];
-						commit.nested = commit.nested.concat(nestedCommits);
-						return cb(null);
-					},
+					cb,
 				);
 			}
 			return cb(null);
 		},
-		(err) => {
+		(err, nestedCommits) => {
+			commit.nested = _(nestedCommits).compact().flatten().value();
 			return callback(err, commit);
 		},
 	);
