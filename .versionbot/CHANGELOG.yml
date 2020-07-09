@@ -1,4 +1,17 @@
 - commits:
+    - subject: Guarantee the order of nested changelogs
+      hash: c3ac5390fef1b50baa4607152174b0da8bb60a4e
+      body: |
+        Previously the order of nested changelogs was dependent on a race
+        condition, now it will always be consistent regardless of how long
+        fetching the nested entries takes
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+  version: 6.1.7
+  date: 2020-07-09T12:45:01.914Z
+- commits:
     - subject: Improve rendering of nested changelogs
       hash: 5a5a4459b64a07bcb1f8bf28eda8ad6a52ef8f67
       body: |
