@@ -1,4 +1,17 @@
 - commits:
+    - subject: Improve rendering of nested changelogs
+      hash: 5a5a4459b64a07bcb1f8bf28eda8ad6a52ef8f67
+      body: |
+        This causes the generated changelog to be rendered with consistent
+        blockquote nesting, making it much easier to see the nesting level for
+        each entry
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+  version: 6.1.6
+  date: 2020-07-09T11:51:35.582Z
+- commits:
     - subject: Fix a call to octokit that was not updated to the new verison
       hash: 5718f2bf6451c07a85ec2aa9f40fa2e405215517
       body: ''
