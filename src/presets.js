@@ -1159,7 +1159,7 @@ module.exports = {
 			}
 
 			const content = yaml.safeLoad(fs.readFileSync(contract, 'utf8'));
-			content['version'] = cleanedVersion;
+			content.version = cleanedVersion;
 			fs.writeFile(contract, yaml.safeDump(content), callback);
 		},
 	},
