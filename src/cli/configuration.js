@@ -132,6 +132,11 @@ const DEFAULTS = {
 		},
 		allowsPresets: true,
 	},
+	updateContract: {
+		type: 'function',
+		default: 'version',
+		allowsPresets: true,
+	},
 	updateVersion: {
 		type: ['function', 'array'],
 		default: 'npm',

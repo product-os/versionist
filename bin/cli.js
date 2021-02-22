@@ -327,17 +327,31 @@ async.waterfall(
 		(version, callback) => {
 			if (argv.configuration.editVersion && !argv.dry) {
 				if (_.isFunction(argv.configuration.updateVersion)) {
-					argv.configuration.updateVersion(process.cwd(), version, callback);
+					argv.configuration.updateVersion(process.cwd(), version, (err) => {
+						return callback(err, version);
+					});
 				} else {
 					async.applyEachSeries(
 						argv.configuration.updateVersion,
 						process.cwd(),
 						version,
-						callback,
+						(err) => {
+							return callback(err, version);
+						},
 					);
 				}
 			} else {
-				return callback();
+				return callback(null, version);
+			}
+		},
+
+		(version, callback) => {
+			if (argv.dry) {
+				return callback(null, version);
+			} else {
+				argv.configuration.updateContract(process.cwd(), version, (err) => {
+					return callback(err, version);
+				});
 			}
 		},
 	],

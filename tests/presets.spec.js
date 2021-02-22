@@ -21,6 +21,7 @@ const path = require('path');
 const fs = require('fs');
 const os = require('os');
 const tmp = require('tmp');
+const yaml = require('js-yaml');
 const presets = require('../lib/presets');
 
 describe('Presets', function () {
@@ -3000,6 +3001,102 @@ describe('Presets', function () {
 
 						m.chai.expect(versionedFile).to.equal('1.1.0');
 
+						done();
+					});
+				});
+			});
+		});
+	});
+
+	describe('.updateContract', function () {
+		describe('.version', function () {
+			describe('balena.yml does not exist', function () {
+				beforeEach(function () {
+					this.cwd = tmp.dirSync();
+				});
+
+				afterEach(function () {
+					this.cwd.removeCallback();
+				});
+
+				it('should not yield an error', function (done) {
+					presets.updateContract.version(
+						{},
+						this.cwd.name,
+						'1.0.0',
+						(error) => {
+							done();
+						},
+					);
+				});
+			});
+			describe('balena.yml exists', function () {
+				beforeEach(function () {
+					this.cwd = tmp.dirSync();
+					this.contract = path.join(this.cwd.name, 'balena.yml');
+
+					fs.writeFileSync(
+						this.contract,
+						yaml.safeDump({
+							name: 'foo',
+							version: '1.0.0',
+						}),
+					);
+				});
+
+				afterEach(function () {
+					fs.unlinkSync(this.contract);
+					this.cwd.removeCallback();
+				});
+
+				it('should be able to update the version', function (done) {
+					presets.updateContract.version(
+						{},
+						this.cwd.name,
+						'1.1.0',
+						(error) => {
+							m.chai.expect(error).to.not.exist;
+
+							const contract = yaml.safeLoad(
+								fs.readFileSync(this.contract, 'utf8'),
+							);
+
+							m.chai.expect(contract).to.deep.equal({
+								name: 'foo',
+								version: '1.1.0',
+							});
+
+							done();
+						},
+					);
+				});
+
+				it('should normalize the version', function (done) {
+					presets.updateContract.version(
+						{},
+						this.cwd.name,
+						'  v1.1.0  ',
+						(error) => {
+							m.chai.expect(error).to.not.exist;
+
+							const contract = yaml.safeLoad(
+								fs.readFileSync(this.contract, 'utf8'),
+							);
+
+							m.chai.expect(contract).to.deep.equal({
+								name: 'foo',
+								version: '1.1.0',
+							});
+
+							done();
+						},
+					);
+				});
+
+				it('should reject an invalid version', function (done) {
+					presets.updateContract.version({}, this.cwd.name, 'foo', (error) => {
+						m.chai.expect(error).to.be.an.instanceof(Error);
+						m.chai.expect(error.message).to.equal('Invalid version: foo');
 						done();
 					});
 				});

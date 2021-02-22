@@ -39,55 +39,55 @@ const octokit = new Octokit({
 
 // prettier-ignore
 const templateDefaults = [
-	'{{#*inline "commits"}}',
-	'{{> render-header }}',
-	'{{> block-newline}}',
-	'{{#each commits}}',
-		'{{> render-with-nesting nesting=../nesting block=../block ~}}',
-	'{{/each}}',
-	'{{> block-newline}}',
-	'{{/inline~}}',
+  '{{#*inline "commits"}}',
+  '{{> render-header }}',
+  '{{> block-newline}}',
+  '{{#each commits}}',
+    '{{> render-with-nesting nesting=../nesting block=../block ~}}',
+  '{{/each}}',
+  '{{> block-newline}}',
+  '{{/inline~}}',
 
-	'{{#*inline "render-with-nesting"}}',
-		'{{~#if this.nested ~}}',
-			'{{> block-newline}}',
-			'{{> block-prefix}}<details>',
-			'{{> block-prefix}}<summary> {{> render-with-author-inline}} </summary>',
-			'{{> block-newline}}',
-				'{{#each this.nested}}',
-					'{{> commits nesting=(append ../nesting "#") block=(append ../block ">") }}',
-				'{{/each}}',
-			'{{> block-prefix}}</details>',
-			'{{> block-newline}}',
-		'{{~else~}}',
-			'{{> block-prefix}}* {{> render-with-author}}',
-		'{{~/if~}}',
-	'{{/inline}}',
+  '{{#*inline "render-with-nesting"}}',
+    '{{~#if this.nested ~}}',
+      '{{> block-newline}}',
+      '{{> block-prefix}}<details>',
+      '{{> block-prefix}}<summary> {{> render-with-author-inline}} </summary>',
+      '{{> block-newline}}',
+        '{{#each this.nested}}',
+          '{{> commits nesting=(append ../nesting "#") block=(append ../block ">") }}',
+        '{{/each}}',
+      '{{> block-prefix}}</details>',
+      '{{> block-newline}}',
+    '{{~else~}}',
+      '{{> block-prefix}}* {{> render-with-author}}',
+    '{{~/if~}}',
+  '{{/inline}}',
 
-	'{{#*inline "render-with-author"}}',
-		'{{#if this.author}}',
-			'{{this.subject}} [{{this.author}}]',
-		'{{else}}',
-			'{{this.subject}}',
-		'{{/if}}',
-	'{{/inline}}',
+  '{{#*inline "render-with-author"}}',
+    '{{#if this.author}}',
+      '{{this.subject}} [{{this.author}}]',
+    '{{else}}',
+      '{{this.subject}}',
+    '{{/if}}',
+  '{{/inline}}',
 
-	'{{#*inline "render-with-author-inline"}}',
-		'{{#if this.author ~}}',
-			'{{this.subject}} [{{this.author}}] ',
-		'{{~else~}}',
-			'{{this.subject}} ',
-		'{{~/if~}}',
-	'{{/inline}}',
+  '{{#*inline "render-with-author-inline"}}',
+    '{{#if this.author ~}}',
+      '{{this.subject}} [{{this.author}}] ',
+    '{{~else~}}',
+      '{{this.subject}} ',
+    '{{~/if~}}',
+  '{{/inline}}',
 
-	'{{#*inline "block-prefix"}}',
-		'{{#isnt block "" ~}}{{block}} {{/isnt~}}',
-	'{{/inline}}',
+  '{{#*inline "block-prefix"}}',
+    '{{#isnt block "" ~}}{{block}} {{/isnt~}}',
+  '{{/inline}}',
 
-	'{{#*inline "block-newline"}}',
-		'{{#isnt block ""}}{{block}} {{else}}{{/isnt}}',
-	'{{/inline}}',
-	''
+  '{{#*inline "block-newline"}}',
+    '{{#isnt block ""}}{{block}} {{else}}{{/isnt}}',
+  '{{/inline}}',
+  ''
 ].join('\n');
 
 const isIncrementalCommit = (changeType) => {
@@ -1125,6 +1125,45 @@ module.exports = {
 		},
 	},
 
+	updateContract: {
+		/**
+		 * @summary Update contract version
+		 * @function
+		 * @public
+		 *
+		 * @param {Object} options - options
+		 * @param {Boolean|RegExp} [options.clean=true] - determines how to sanitise the version
+		 * @param {String} cwd - current working directory
+		 * @param {String} version - version
+		 * @param {Function} callback - callback (error)
+		 * @returns {null}
+		 *
+		 * @example
+		 * presets.updateContract.version({}, process.cwd(), '1.0.0', (error) => {
+		 *   if (error) {
+		 *     throw error;
+		 *   }
+		 * });
+		 */
+		version: (options, cwd, version, callback) => {
+			const cleanFn = getCleanFunction(options);
+			const cleanedVersion = cleanFn(version);
+
+			if (!cleanedVersion) {
+				return callback(new Error(`Invalid version: ${version}`));
+			}
+
+			const contract = path.join(cwd, 'balena.yml');
+			if (!fs.existsSync(contract)) {
+				return callback(null, version);
+			}
+
+			const content = yaml.safeLoad(fs.readFileSync(contract, 'utf8'));
+			content['version'] = cleanedVersion;
+			fs.writeFile(contract, yaml.safeDump(content), callback);
+		},
+	},
+
 	incrementVersion: {
 		/**
 		 * @summary Increment a version following semver
@@ -1157,22 +1196,22 @@ module.exports = {
 	},
 	// prettier-ignore
 	template: {
-		oneline: templateDefaults.concat([
-			'{{#*inline "render-header"}}',
-				'{{> block-prefix}}{{nesting}} {{version}} - {{moment date "Y-MM-DD"}}',
-			'{{/inline}}',
+    oneline: templateDefaults.concat([
+      '{{#*inline "render-header"}}',
+        '{{> block-prefix}}{{nesting}} {{version}} - {{moment date "Y-MM-DD"}}',
+      '{{/inline}}',
 
-			'{{> commits nesting="##" block=""}}'
-		].join('\n')),
-		default: templateDefaults.concat([
-			'{{~#*inline "render-header"}}',
-				'{{> block-prefix}}{{nesting}} {{#eq nesting "#"}}v{{else}}{{/eq}}{{version}}',
-				'{{> block-prefix}}{{nesting}}# ({{moment date "Y-MM-DD"}})',
-			'{{/inline}}',
+      '{{> commits nesting="##" block=""}}'
+    ].join('\n')),
+    default: templateDefaults.concat([
+      '{{~#*inline "render-header"}}',
+        '{{> block-prefix}}{{nesting}} {{#eq nesting "#"}}v{{else}}{{/eq}}{{version}}',
+        '{{> block-prefix}}{{nesting}}# ({{moment date "Y-MM-DD"}})',
+      '{{/inline}}',
 
-			'{{> commits nesting="#" block=""}}'
-		].join('\n'))
-	},
+      '{{> commits nesting="#" block=""}}'
+    ].join('\n'))
+  },
 
 	INITIAL_CHANGELOG: INITIAL_CHANGELOG,
 };
