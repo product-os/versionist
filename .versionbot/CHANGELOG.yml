@@ -1,4 +1,16 @@
 - commits:
+    - subject: Update balena.yml version
+      hash: 2c890f6bfc02e019ebbed55e432aab47528d5042
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Stathis Moraitidis <stathis@balena.io>
+        signed-off-by: Stathis Moraitidis <stathis@balena.io>
+      author: Stathis
+  version: 6.2.0
+  date: 2021-02-22T14:14:55.231Z
+- commits:
     - subject: Guarantee the order of nested changelogs
       hash: c3ac5390fef1b50baa4607152174b0da8bb60a4e
       body: |
