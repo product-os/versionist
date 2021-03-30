@@ -302,6 +302,41 @@ describe('Presets', function () {
 				).to.be.false;
 			});
 		});
+
+		describe('.has-changetype', function () {
+			it('should return true if has has change-type lower case', function () {
+				const data = {
+					subject: 'subject',
+					footer: {
+						'change-type': 'patch',
+					},
+				};
+				m.chai.expect(presets.includeCommitWhen['has-changetype']({}, data)).to
+					.be.true;
+			});
+
+			it('should return true if has has change-type titled', function () {
+				const data = {
+					subject: 'subject',
+					footer: {
+						'Change-Type': 'patch',
+					},
+				};
+				m.chai.expect(presets.includeCommitWhen['has-changetype']({}, data)).to
+					.be.true;
+			});
+
+			it('should return fase if has has no change-type', function () {
+				const data = {
+					subject: 'subject',
+					footer: {
+						'missing-change-type': 'patch',
+					},
+				};
+				m.chai.expect(presets.includeCommitWhen['has-changetype']({}, data)).to
+					.be.false;
+			});
+		});
 	});
 
 	describe('.getChangelogDocumentedVersions', function () {
@@ -3161,11 +3196,24 @@ describe('Presets', function () {
 		});
 
 		describe('.change-type', () => {
-			it('should extract increment level from commit footers', () => {
+			it('should extract increment level from commit footers lower case', () => {
 				const data = {
 					subject: 'subject',
 					footer: {
 						'change-type': 'patch',
+					},
+				};
+				const incrementLevel = presets.getIncrementLevelFromCommit[
+					'change-type'
+				]({}, data);
+				m.chai.expect(incrementLevel).to.equal('patch');
+			});
+
+			it('should extract increment level from commit footers titled', () => {
+				const data = {
+					subject: 'subject',
+					footer: {
+						'Change-Type': 'patch',
 					},
 				};
 				const incrementLevel = presets.getIncrementLevelFromCommit[

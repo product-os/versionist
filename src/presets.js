@@ -103,6 +103,12 @@ const getAuthor = (commitHash) => {
 	return 'Unknown author';
 };
 
+const getChangeType = (footer) => {
+	const changeType =
+		footer[Object.keys(footer).find((k) => k.toLowerCase() === 'change-type')];
+	return changeType;
+};
+
 const extractContentsBetween = (changelog, repo, start, end) => {
 	return _(changelog)
 		.filter((entry) => {
@@ -355,8 +361,9 @@ module.exports = {
 		 * }
 		 */
 		'has-changetype': (options, commit) => {
+			const changeType = getChangeType(commit.footer);
 			return (
-				isIncrementalCommit(commit.footer['change-type']) ||
+				isIncrementalCommit(changeType) ||
 				isIncrementalCommit(
 					module.exports.getIncrementLevelFromCommit.subject({}, commit),
 				)
@@ -410,8 +417,10 @@ module.exports = {
 		 * }
 		 */
 		'change-type': (options, commit) => {
-			if (isIncrementalCommit(commit.footer['change-type'])) {
-				return commit.footer['change-type'].trim().toLowerCase();
+			const changeType = getChangeType(commit.footer);
+
+			if (isIncrementalCommit(changeType)) {
+				return changeType.trim().toLowerCase();
 			}
 		},
 
