@@ -104,9 +104,9 @@ const getAuthor = (commitHash) => {
 };
 
 const getChangeType = (footer) => {
-	const changeType =
-		footer[Object.keys(footer).find((k) => k.toLowerCase() === 'change-type')];
-	return changeType;
+	return footer[
+		Object.keys(footer).find((k) => k.toLowerCase() === 'change-type')
+	];
 };
 
 const extractContentsBetween = (changelog, repo, start, end) => {
