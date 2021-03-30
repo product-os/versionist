@@ -1,4 +1,18 @@
 - commits:
+    - subject: >-
+        Make commit footer change-type checks case insensitive, to remove
+        contribution friction.
+      hash: 27278ce3bcf32cf4332f7fb7cd8c7ee703aec66f
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Stathis Moraitidis <stathis@balena.io>
+        signed-off-by: Stathis Moraitidis <stathis@balena.io>
+      author: Stathis
+  version: 6.3.0
+  date: 2021-03-30T13:27:10.401Z
+- commits:
     - subject: Update balena.yml version
       hash: 2c890f6bfc02e019ebbed55e432aab47528d5042
       body: ''
