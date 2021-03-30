@@ -448,7 +448,7 @@ module.exports = {
 			if (!_.isString(commit.subject)) {
 				return null;
 			}
-			const match = commit.subject.match(/(patch|minor|major)/);
+			const match = commit.subject.match(/(patch|minor|major)/i);
 			if (_.isArray(match) && isIncrementalCommit(match[1])) {
 				return match[1].trim().toLowerCase();
 			}
