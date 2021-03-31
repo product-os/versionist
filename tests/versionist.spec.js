@@ -322,11 +322,30 @@ describe('Versionist', function () {
 				.to.throw('No commits to calculate the next increment level from');
 		});
 
-		it('should calculate the next version', function () {
+		it('should calculate the next version lower case', function () {
 			const nextVersion = versionist.calculateNextVersion(
 				[
 					{
 						subject: 'major foo bar',
+					},
+				],
+				{
+					currentVersion: '1.0.0',
+					incrementVersion: _.partial(presets.incrementVersion.semver, {}),
+					getIncrementLevelFromCommit: (commit) => {
+						return _.first(_.split(commit.subject, ' '));
+					},
+				},
+			);
+
+			m.chai.expect(nextVersion).to.equal('2.0.0');
+		});
+
+		it('should calculate the next version titled', function () {
+			const nextVersion = versionist.calculateNextVersion(
+				[
+					{
+						subject: 'Major foo bar',
 					},
 				],
 				{

@@ -52,7 +52,7 @@ export type ValidIncrementLevel = typeof VALID_INCREMENT_LEVELS[number];
 export const isValidIncrementLevel = (
 	level: string,
 ): level is ValidIncrementLevel => {
-	return _.includes(VALID_INCREMENT_LEVELS, level);
+	return _.includes(VALID_INCREMENT_LEVELS, level.toLowerCase());
 };
 
 /**
@@ -83,8 +83,14 @@ export const getHigherIncrementLevel = (
 		return null;
 	}
 
-	const firstLevelIndex = _.indexOf(VALID_INCREMENT_LEVELS, firstLevel);
-	const secondLevelIndex = _.indexOf(VALID_INCREMENT_LEVELS, secondLevel);
+	const firstLevelIndex = _.indexOf(
+		VALID_INCREMENT_LEVELS,
+		firstLevel?.toLowerCase(),
+	);
+	const secondLevelIndex = _.indexOf(
+		VALID_INCREMENT_LEVELS,
+		secondLevel?.toLowerCase(),
+	);
 
 	return VALID_INCREMENT_LEVELS[Math.max(firstLevelIndex, secondLevelIndex)];
 };
