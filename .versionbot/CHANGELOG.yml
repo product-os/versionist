@@ -1,4 +1,16 @@
 - commits:
+    - subject: Make subject change-type check stricter
+      hash: a73863bde6192a1cfb78e2408faddf431e09b100
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Stathis Moraitidis <stathis@balena.io>
+        signed-off-by: Stathis Moraitidis <stathis@balena.io>
+      author: Stathis
+  version: 6.4.1
+  date: 2021-04-01T15:16:20.539Z
+- commits:
     - subject: Update semserver to do a case-insensitive change-type check
       hash: 7510c459ca11856b7f6afb25274d83397d3925a4
       body: ''
