@@ -1,4 +1,16 @@
 - commits:
+    - subject: Update semserver to do a case-insensitive change-type check
+      hash: 7510c459ca11856b7f6afb25274d83397d3925a4
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Stathis Moraitidis <stathis@balena.io>
+        signed-off-by: Stathis Moraitidis <stathis@balena.io>
+      author: Stathis
+  version: 6.4.0
+  date: 2021-03-31T15:08:21.878Z
+- commits:
     - subject: >-
         Make commit footer change-type checks case insensitive, to remove
         contribution friction.
