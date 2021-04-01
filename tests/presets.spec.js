@@ -3237,9 +3237,22 @@ describe('Presets', function () {
 				m.chai.expect(incrementLevel).to.equal('patch');
 			});
 
-			it('should extract increment level from commit subject', () => {
+			it('should extract increment level from commit subject lower case', () => {
 				const data = {
 					subject: 'patch: subject',
+					footer: {
+						foo: 'bar',
+					},
+				};
+				const incrementLevel = presets.getIncrementLevelFromCommit[
+					'change-type-or-subject'
+				]({}, data);
+				m.chai.expect(incrementLevel).to.equal('patch');
+			});
+
+			it('should extract increment level from commit subject titled', () => {
+				const data = {
+					subject: 'Patch: subject',
 					footer: {
 						foo: 'bar',
 					},
