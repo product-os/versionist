@@ -3263,6 +3263,32 @@ describe('Presets', function () {
 				m.chai.expect(incrementLevel).to.equal('patch');
 			});
 
+			it('should not extract increment level from commit subject if not at start', () => {
+				const data = {
+					subject: 'subject patching',
+					footer: {
+						foo: 'bar',
+					},
+				};
+				const incrementLevel = presets.getIncrementLevelFromCommit[
+					'change-type-or-subject'
+				]({}, data);
+				m.chai.expect(incrementLevel).to.not.equal('patch');
+			});
+
+			it('should not extract increment level from commit subject if missing colon', () => {
+				const data = {
+					subject: 'Patch subject',
+					footer: {
+						foo: 'bar',
+					},
+				};
+				const incrementLevel = presets.getIncrementLevelFromCommit[
+					'change-type-or-subject'
+				]({}, data);
+				m.chai.expect(incrementLevel).to.not.equal('patch');
+			});
+
 			it('should prefer increment level from footers over the one in the title', () => {
 				const data = {
 					subject: 'minor: subject',

@@ -181,13 +181,13 @@ describe('Versionist', function () {
 					versionist.calculateNextVersion(
 						[
 							{
-								subject: 'major foo bar',
+								subject: 'major: foo bar',
 							},
 						],
 						{
 							incrementVersion: _.partial(presets.incrementVersion.semver, {}),
 							getIncrementLevelFromCommit: (commit) => {
-								return _.first(_.split(commit.subject, ' '));
+								return presets.getIncrementLevelFromCommit.subject({}, commit);
 							},
 						},
 					);
@@ -326,14 +326,14 @@ describe('Versionist', function () {
 			const nextVersion = versionist.calculateNextVersion(
 				[
 					{
-						subject: 'major foo bar',
+						subject: 'major: foo bar',
 					},
 				],
 				{
 					currentVersion: '1.0.0',
 					incrementVersion: _.partial(presets.incrementVersion.semver, {}),
 					getIncrementLevelFromCommit: (commit) => {
-						return _.first(_.split(commit.subject, ' '));
+						return presets.getIncrementLevelFromCommit.subject({}, commit);
 					},
 				},
 			);
@@ -345,14 +345,14 @@ describe('Versionist', function () {
 			const nextVersion = versionist.calculateNextVersion(
 				[
 					{
-						subject: 'Major foo bar',
+						subject: 'Major: foo bar',
 					},
 				],
 				{
 					currentVersion: '1.0.0',
 					incrementVersion: _.partial(presets.incrementVersion.semver, {}),
 					getIncrementLevelFromCommit: (commit) => {
-						return _.first(_.split(commit.subject, ' '));
+						return presets.getIncrementLevelFromCommit.subject({}, commit);
 					},
 				},
 			);
