@@ -16,7 +16,7 @@ for dep in jq yq; do
 done
 
 yq_min_version="2.4.0"
-yq_version="$(yq --version | awk '{print $3}')"
+yq_version="$(yq --version 2>&1 | awk '{print $3}')"
 if [ "${yq_version}" != "${yq_min_version}" ] && [ "${yq_version}" = "$(echo -e "${yq_version}\n${yq_min_version}" | sort -V | head -1)" ]; then
   echo "ERROR: yq version >= ${yq_min_version} is required" >&2
   exit 1
