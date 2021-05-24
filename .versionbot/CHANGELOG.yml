@@ -1,4 +1,21 @@
 - commits:
+    - subject: 'generate-changelog: Fix yq version check'
+      hash: 2b1ac5a2701158a5160ec5d211a571adebbee97e
+      body: |
+        yq versions before 3.4.0 output the version information to stderr
+
+        https://github.com/mikefarah/yq/issues/537
+
+        This patch redirects stderr to stdout.
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Alex Gonzalez <alexg@balena.io>
+        signed-off-by: Alex Gonzalez <alexg@balena.io>
+      author: Alex Gonzalez
+  version: 6.4.2
+  date: 2021-05-24T09:55:22.316Z
+- commits:
     - subject: Make subject change-type check stricter
       hash: a73863bde6192a1cfb78e2408faddf431e09b100
       body: ''
