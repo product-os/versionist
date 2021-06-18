@@ -262,6 +262,32 @@ const getCleanFunction = (options) => {
 	return options.clean ? semver.valid : _.identity;
 };
 
+/**
+ * @summary Read the given file and return its contents parsed as JSON
+ * @function
+ * @private
+ *
+ * @param {string} filePath - Path of file to be read and parsed
+ * @param {Function} callback - Error-first callback
+ */
+function readJSON(filePath, callback) {
+	fs.readFile(filePath, 'utf8', (error, data) => {
+		let pjObj;
+		if (error) {
+			if (error.code === 'ENOENT') {
+				error.message = `No such file or directory: ${filePath}`;
+			}
+		} else {
+			try {
+				pjObj = JSON.parse(data);
+			} catch (err) {
+				error = err;
+			}
+		}
+		callback(error, pjObj);
+	});
+}
+
 module.exports = {
 	subjectParser: {
 		/**
@@ -813,18 +839,16 @@ module.exports = {
 
 			async.waterfall(
 				[
-					(done) => {
+					(done) => readJSON(packageJSON, done),
+					(pjObj, done) => {
+						const publishedAt = new Date().toISOString();
 						updateJSON(
 							packageJSON,
 							{
 								version: cleanedVersion,
+								versionist: { ...pjObj.versionist, publishedAt },
 							},
-							(error) => {
-								if (error && error.code === 'ENOENT') {
-									error.message = `No such file or directory: ${packageJSON}`;
-								}
-								return done(error);
-							},
+							done,
 						);
 					},
 					(done) => {
