@@ -1,4 +1,16 @@
 - commits:
+    - subject: >-
+        Add versionist.publishedAt field to package.json when updating the
+        version
+      hash: f1d01ab77a51dc596621f8b4a0a36081ea075a72
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Paulo Castro
+  version: 6.5.0
+  date: 2021-06-24T20:59:36.756Z
+- commits:
     - subject: 'generate-changelog: Fix yq version check'
       hash: 2b1ac5a2701158a5160ec5d211a571adebbee97e
       body: |
