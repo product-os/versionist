@@ -25,6 +25,9 @@ const yaml = require('js-yaml');
 const presets = require('../lib/presets');
 
 describe('Presets', function () {
+	const fakeTimeISO = '2021-06-16T12:54:52.000Z';
+	const fakeTimeMs = new Date(fakeTimeISO).getTime();
+
 	describe('.subjectParser', function () {
 		describe('.angular', function () {
 			it('should pass the whole commit as a title when parsing non-angular commits', function () {
@@ -829,12 +832,23 @@ describe('Presets', function () {
 					presets.updateVersion.npm({}, this.cwd.name, '1.0.0', (error) => {
 						m.chai.expect(error).to.be.an.instanceof(Error);
 						m.chai.expect(error.code).to.equal('ENOENT');
+						m.chai
+							.expect(error.message)
+							.to.startWith('No such file or directory: ');
 						done();
 					});
 				});
 			});
 
 			describe('given package.json exists', function () {
+				before(function () {
+					this.clock = m.sinon.useFakeTimers(fakeTimeMs);
+				});
+
+				after(function () {
+					this.clock.restore();
+				});
+
 				beforeEach(function () {
 					this.cwd = tmp.dirSync();
 					this.packageJSON = path.join(this.cwd.name, 'package.json');
@@ -870,6 +884,7 @@ describe('Presets', function () {
 						m.chai.expect(packageJSON).to.deep.equal({
 							name: 'foo',
 							version: '1.1.0',
+							versionist: { publishedAt: fakeTimeISO },
 						});
 
 						done();
@@ -884,13 +899,15 @@ describe('Presets', function () {
 							encoding: 'utf8',
 						});
 
-						m.chai
-							.expect(contents)
-							.to.equal(
-								['{', '  "name": "foo",', '  "version": "1.1.0"', '}'].join(
-									'\n',
-								) + os.EOL,
-							);
+						m.chai.expect(contents).to.equal(`\
+{
+  "name": "foo",
+  "version": "1.1.0",
+  "versionist": {
+    "publishedAt": "${fakeTimeISO}"
+  }
+}
+`);
 
 						done();
 					});
@@ -913,6 +930,7 @@ describe('Presets', function () {
 							m.chai.expect(packageJSON).to.deep.equal({
 								name: 'foo',
 								version: '1.1.0',
+								versionist: { publishedAt: fakeTimeISO },
 							});
 
 							done();
@@ -924,6 +942,15 @@ describe('Presets', function () {
 					presets.updateVersion.npm({}, this.cwd.name, 'foo', (error) => {
 						m.chai.expect(error).to.be.an.instanceof(Error);
 						m.chai.expect(error.message).to.equal('Invalid version: foo');
+						done();
+					});
+				});
+
+				it('should reject an invalid package.json file', function (done) {
+					fs.writeFileSync(this.packageJSON, '[}');
+					presets.updateVersion.npm({}, this.cwd.name, '1.1.0', (error) => {
+						m.chai.expect(error).to.be.an.instanceof(Error);
+						m.chai.expect(error.message).to.startWith('Unexpected token');
 						done();
 					});
 				});
@@ -2989,6 +3016,14 @@ describe('Presets', function () {
 			});
 
 			describe('given existing package.json and VERSION file', function () {
+				before(function () {
+					this.clock = m.sinon.useFakeTimers(fakeTimeMs);
+				});
+
+				after(function () {
+					this.clock.restore();
+				});
+
 				beforeEach(function () {
 					this.cwd = tmp.dirSync();
 					this.packageJSON = path.join(this.cwd.name, 'package.json');
@@ -3032,6 +3067,7 @@ describe('Presets', function () {
 						m.chai.expect(packageJSON).to.deep.equal({
 							name: 'foo',
 							version: '1.1.0',
+							versionist: { publishedAt: fakeTimeISO },
 						});
 
 						m.chai.expect(versionedFile).to.equal('1.1.0');
