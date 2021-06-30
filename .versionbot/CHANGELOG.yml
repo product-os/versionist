@@ -1,4 +1,18 @@
 - commits:
+    - subject: Delete CODEOWNERS
+      hash: 9bcf8096d3cc398d4cefa38a8e437a81cc77d656
+      body: >
+        See
+        https://www.flowdock.com/app/rulemotion/pub/threads/trLcZFnSX9fLZn4LiaIv4xuBbah
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Lucian Buzzo <lucian.buzzo@gmail.com>
+        signed-off-by: Lucian Buzzo <lucian.buzzo@gmail.com>
+      author: Lucian Buzzo
+  version: 6.5.1
+  date: 2021-06-30T16:45:00.190Z
+- commits:
     - subject: >-
         Add versionist.publishedAt field to package.json when updating the
         version
