@@ -43,6 +43,7 @@
     "@types/lodash": "^4.14.157",
     "@types/semver": "^6.2.1",
     "async": "^2.6.3",
+    "balena-semver": "^2.3.0",
     "chalk": "^4.1.0",
     "debug": "2.5.1",
     "handlebars": "^4.7.6",
@@ -51,7 +52,6 @@
     "lodash": "^4.17.15",
     "markdown": "^0.5.0",
     "replace-in-file": "^2.5.0",
-    "resin-semver": "^1.6.0",
     "update-json": "git+https://github.com/balena-io-modules/update-json.git",
     "yargs": "^11.1.1"
   },
