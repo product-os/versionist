@@ -1,4 +1,14 @@
 - commits:
+    - subject: 'fix: use balena-semver instead of resin-semver'
+      hash: 432902a03e2579a5650866c9c37d76ea70b9a91c
+      body: ''
+      footer:
+        Change-Type: patch
+        change-type: patch
+      author: Bart Versluijs
+  version: 6.5.2
+  date: 2021-10-25T17:35:17.884Z
+- commits:
     - subject: Delete CODEOWNERS
       hash: 9bcf8096d3cc398d4cefa38a8e437a81cc77d656
       body: >
