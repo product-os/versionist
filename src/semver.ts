@@ -19,7 +19,7 @@
  */
 
 import * as _ from 'lodash';
-import * as semver from 'resin-semver';
+import * as semver from 'balena-semver';
 import { Commit } from './git-log';
 
 /**
@@ -200,4 +200,4 @@ export const getGreaterVersion = (versions: string[]): string | undefined => {
 	);
 };
 
-export * from 'resin-semver';
+export * from 'balena-semver';
