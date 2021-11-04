@@ -865,6 +865,36 @@ module.exports = {
 							},
 						);
 					},
+					(done) =>
+						readJSON(packageLockJSON, (readError, pljObj) => {
+							if (readError && readError.code === 'ENOENT') {
+								return done(null);
+							}
+
+							if (
+								pljObj.lockfileVersion >= 2 &&
+								pljObj.packages &&
+								pljObj.packages[''] &&
+								pljObj.packages[''].version
+							) {
+								pljObj.packages[''].version = cleanedVersion;
+								updateJSON(
+									packageLockJSON,
+									{
+										packages: pljObj.packages,
+									},
+									(updateError) => {
+										if (updateError && updateError.code === 'ENOENT') {
+											return done(null);
+										}
+										return done(updateError);
+									},
+								);
+							} else {
+								return done(null);
+							}
+						}),
+
 					(done) => {
 						updateJSON(
 							npmShrinkwrapJSON,
