@@ -1095,6 +1095,74 @@ describe('Presets', function () {
 				});
 			});
 
+			describe('given package-lock.json of lockfileVersion: 2 exists', function () {
+				beforeEach(function () {
+					this.cwd = tmp.dirSync();
+					this.packageJSON = path.join(this.cwd.name, 'package.json');
+					this.packageLockJSON = path.join(this.cwd.name, 'package-lock.json');
+
+					fs.writeFileSync(
+						this.packageJSON,
+						JSON.stringify(
+							{
+								name: 'foo',
+								version: '1.0.0',
+							},
+							null,
+							2,
+						),
+					);
+					fs.writeFileSync(
+						this.packageLockJSON,
+						JSON.stringify(
+							{
+								name: 'foo',
+								version: '1.0.0',
+								lockfileVersion: 2,
+								packages: {
+									'': {
+										version: '1.0.0',
+									},
+								},
+							},
+							null,
+							2,
+						),
+					);
+				});
+
+				afterEach(function () {
+					fs.unlinkSync(this.packageJSON);
+					fs.unlinkSync(this.packageLockJSON);
+					this.cwd.removeCallback();
+				});
+
+				it('should be able to update the nested version', function (done) {
+					presets.updateVersion.npm({}, this.cwd.name, '1.1.0', (error) => {
+						m.chai.expect(error).to.not.exist;
+
+						const packageLockJSON = JSON.parse(
+							fs.readFileSync(this.packageLockJSON, {
+								encoding: 'utf8',
+							}),
+						);
+
+						m.chai.expect(packageLockJSON).to.deep.equal({
+							name: 'foo',
+							version: '1.1.0',
+							lockfileVersion: 2,
+							packages: {
+								'': {
+									version: '1.1.0',
+								},
+							},
+						});
+
+						done();
+					});
+				});
+			});
+
 			describe('given npm-shrinkwrap.json does not exist', function () {
 				beforeEach(function () {
 					this.cwd = tmp.dirSync();
