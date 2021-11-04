@@ -1,4 +1,16 @@
 - commits:
+    - subject: Update nested package-lock version
+      hash: b2a6275c5a9e591d1d7276d81cd5dbdab69a137f
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Stathis Moraitidis <stathis@balena.io>
+        signed-off-by: Stathis Moraitidis <stathis@balena.io>
+      author: stathismor
+  version: 6.6.0
+  date: 2021-11-04T17:04:31.679Z
+- commits:
     - subject: Delete CODEOWNERS
       hash: 9bcf8096d3cc398d4cefa38a8e437a81cc77d656
       body: >
