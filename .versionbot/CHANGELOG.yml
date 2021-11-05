@@ -1,4 +1,16 @@
 - commits:
+    - subject: Replace resin-semver 1.6.0 with balena-semver 2.3.0
+      hash: 0aa182f0a1ec5a18164fc773ed35c74f60b8e357
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Kyle Harding <kyle@balena.io>
+        signed-off-by: Kyle Harding <kyle@balena.io>
+      author: Kyle Harding
+  version: 6.6.1
+  date: 2021-11-04T18:24:09.578Z
+- commits:
     - subject: Update nested package-lock version
       hash: b2a6275c5a9e591d1d7276d81cd5dbdab69a137f
       body: ''
