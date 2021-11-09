@@ -1,4 +1,16 @@
 - commits:
+    - subject: Log versionist
+      hash: 1fae49f3c7923d61f39952ed588cd30344fa3bb0
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Stathis Moraitidis <stathis@balena.io>
+        signed-off-by: Stathis Moraitidis <stathis@balena.io>
+      author: stathismor
+  version: 6.6.2
+  date: 2021-11-09T15:35:19.302Z
+- commits:
     - subject: Replace resin-semver 1.6.0 with balena-semver 2.3.0
       hash: 0aa182f0a1ec5a18164fc773ed35c74f60b8e357
       body: ''
