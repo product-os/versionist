@@ -20,7 +20,7 @@ const m = require('mochainon');
 const shelljs = require('shelljs');
 const utils = require('../utils');
 const presets = require('../../../lib/presets');
-const yaml = require('js-yaml');
+const yaml = require('yaml');
 const _ = require('lodash');
 const TEST_DIRECTORY = utils.getTestTemporalPathFromFilename(__filename);
 
@@ -75,7 +75,7 @@ m.chai
 	);
 
 const parsableChangelog = _.map(
-	yaml.safeLoad(shelljs.cat('.versionbot/CHANGELOG.yml').stdout),
+	yaml.parse(shelljs.cat('.versionbot/CHANGELOG.yml').stdout),
 	(entry) => {
 		entry.commits = _.map(entry.commits, (commit) => {
 			return _.omit(commit, 'hash');

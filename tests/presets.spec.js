@@ -21,7 +21,7 @@ const path = require('path');
 const fs = require('fs');
 const os = require('os');
 const tmp = require('tmp');
-const yaml = require('js-yaml');
+const yaml = require('yaml');
 const presets = require('../lib/presets');
 
 describe('Presets', function () {
@@ -3176,7 +3176,7 @@ describe('Presets', function () {
 
 					fs.writeFileSync(
 						this.contract,
-						yaml.safeDump({
+						yaml.stringify({
 							name: 'foo',
 							version: '1.0.0',
 						}),
@@ -3196,7 +3196,7 @@ describe('Presets', function () {
 						(error) => {
 							m.chai.expect(error).to.not.exist;
 
-							const contract = yaml.safeLoad(
+							const contract = yaml.parse(
 								fs.readFileSync(this.contract, 'utf8'),
 							);
 
@@ -3218,7 +3218,7 @@ describe('Presets', function () {
 						(error) => {
 							m.chai.expect(error).to.not.exist;
 
-							const contract = yaml.safeLoad(
+							const contract = yaml.parse(
 								fs.readFileSync(this.contract, 'utf8'),
 							);
 

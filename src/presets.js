@@ -28,7 +28,7 @@ const fs = require('fs');
 const semver = require('./semver');
 const replaceInFile = require('replace-in-file');
 const markdown = require('./markdown');
-const yaml = require('js-yaml');
+const yaml = require('yaml');
 const execSync = require('child_process').execSync;
 const { Octokit } = require('@octokit/rest');
 
@@ -139,7 +139,7 @@ const getNestedChangeLog = (
 		})
 		.then((response) => {
 			// content will be base64 encoded
-			const changelog = yaml.safeLoad(
+			const changelog = yaml.parse(
 				Buffer.from(response.data.content, 'base64').toString(),
 			);
 			const nested = extractContentsBetween(
@@ -699,10 +699,10 @@ module.exports = {
 			if (fs.existsSync(file)) {
 				let changelog = [];
 				try {
-					changelog = yaml.safeLoad(fs.readFileSync(file, 'utf8'));
+					changelog = yaml.parse(fs.readFileSync(file, 'utf8'));
 
 					// If the file was empty we explicitly set as empty array
-					if (_.isUndefined(changelog)) {
+					if (!changelog) {
 						changelog = [];
 					}
 				} catch (e) {
@@ -712,7 +712,7 @@ module.exports = {
 				}
 
 				changelog.unshift(raw);
-				fs.writeFile(file, yaml.safeDump(changelog), callback);
+				fs.writeFile(file, yaml.stringify(changelog), callback);
 			} else {
 				return callback(null);
 			}
@@ -1221,9 +1221,9 @@ module.exports = {
 				return callback(null, version);
 			}
 
-			const content = yaml.safeLoad(fs.readFileSync(contract, 'utf8'));
-			content.version = cleanedVersion;
-			fs.writeFile(contract, yaml.safeDump(content), callback);
+			const content = yaml.parseDocument(fs.readFileSync(contract, 'utf8'));
+			content.set('version', cleanedVersion);
+			fs.writeFile(contract, content.toString(), callback);
 		},
 	},
 
