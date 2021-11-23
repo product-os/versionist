@@ -18,7 +18,7 @@
  * @module Versionist.GitLog
  */
 
-import * as yaml from 'js-yaml';
+import * as yaml from 'yaml';
 import * as _ from 'lodash';
 import * as tags from './tags';
 
@@ -201,7 +201,7 @@ export const parseGitLogYAMLOutput = (
 	} = {},
 ): Commit[] => {
 	return _.map(
-		yaml.safeLoad(output) as Commit[],
+		yaml.parse(output) as Commit[],
 		(commit): Commit => {
 			if (_.isUndefined(commit.subject)) {
 				throw new Error('Invalid commit: no subject');
