@@ -1,4 +1,16 @@
 - commits:
+    - subject: drop update-json dependency
+      hash: fded8ee1d542bdbeecf7cdc3626d5aa62bcb0809
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Martin Rauscher <martin@balena.io>
+        signed-off-by: Martin Rauscher <martin@balena.io>
+      author: Martin Rauscher
+  version: 6.6.3
+  date: 2021-11-24T17:06:58.387Z
+- commits:
     - subject: preserve YAML document when writing version
       hash: f64b337421abbd5742c0ac39cb251ae29f3331fd
       body: |
