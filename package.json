@@ -50,7 +50,6 @@
     "lodash": "^4.17.15",
     "markdown": "^0.5.0",
     "replace-in-file": "^2.5.0",
-    "update-json": "git+https://github.com/balena-io-modules/update-json.git",
     "yaml": "^1.10.2",
     "yargs": "^11.1.1"
   },
