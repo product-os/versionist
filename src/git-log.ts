@@ -202,71 +202,125 @@ export const parseGitLogYAMLOutput = (
 ): Commit[] => {
 	return _.map(
 		yaml.parse(output) as Commit[],
-		(commit): Commit => {
-			if (_.isUndefined(commit.subject)) {
-				throw new Error('Invalid commit: no subject');
-			}
-
-			if (_.isUndefined(commit.body)) {
-				throw new Error('Invalid commit: no body');
-			}
-
-			// Omit the first line in the body
-			commit.body = _.chain(commit.body).split('\n').tail().join('\n').value();
-
-			// The commit object to be returned
-			const commitObj: OptionalField<Commit, 'body'> = {
-				subject: subjectParser(commit.subject),
-				hash: commit.hash,
-			};
-
-			if (!parseFooterTags) {
-				return {
-					...commitObj,
-					body: bodyParser(commit.body),
-				};
-			}
-
-			// We iterate on the commit body lines in reverse, and
-			// start considering footer tags. Footer tags are parsed
-			// until a blank line or an invalid footer tag is
-			// encountered, in which case the remaining of the
-			// commit is considered to be the body.
-
-			const commitDescription = _.chain(commit.body)
-				.split('\n')
-				.reduceRight(
-					(accumulator, commitLine) => {
-						const isTag = tags.isTagLine(commitLine);
-
-						if (_.isEmpty(commitLine.trim()) || !isTag) {
-							accumulator.considerTags = false;
-						}
-
-						if (accumulator.considerTags && isTag) {
-							accumulator.footer.unshift(commitLine);
-						} else {
-							accumulator.body.unshift(commitLine);
-						}
-
-						return accumulator;
-					},
-					{
-						considerTags: true,
-						body: [] as string[],
-						footer: [] as string[],
-					},
-				)
-				.value();
-
-			// Assign the formatted body and footer tags
-			return {
-				...commitObj,
-				body: bodyParser(commitDescription.body.join('\n')),
-				footer: tags.parseFooterTagLines(commitDescription.footer, {
+		(commit) => {
+			return parseGitCommit(
+				commit,
+				{
+					subjectParser,
+					bodyParser,
+					parseFooterTags,
 					lowerCaseFooterTags,
-				}),
-			};
+				},
+			)
 		},
 	);
+};
+
+/**
+ * @summary Parse a git commit
+ * @function
+ * @private
+ *
+ * @description
+ * This function allows to inject project-specific extra
+ * parsing logic by the use of hooks.
+ *
+ * @param {String} commit - unparsed commit
+ * @param {Object} [options={}] - options
+ * @param {Function} [options.subjectParser] - subject parser hook
+ * @param {Function} [options.bodyParser] - body parser hook
+ * @param {Boolean} [options.parseFooterTags=true] - parse footer tags
+ * @param {Boolean} [options.lowerCaseFooterTags] - lowercase footer tag keys
+ * @returns {Object[]} parsed commit
+ *
+ * @example
+ * const commits = gitLog.parseGitCommit(
+ *   {
+ *     subject: 'SUBJECT',
+ *     body: 'BODY',
+ *   },
+ *   {
+ *     parseFooterTags: true,
+ *     subjectParser: (subject) => {
+ *       return subject.toUpperCase();
+ *     },
+ *     bodyParser: (body) => {
+ *       return body.split('\n');
+ *     },
+*    }
+ * );
+ */
+export const parseGitCommit = (
+	commit: Commit,
+	{
+		subjectParser = _.identity,
+		bodyParser = _.identity,
+		parseFooterTags = true,
+		lowerCaseFooterTags = false,
+	} = {},
+): Commit => {
+	if (_.isUndefined(commit.subject)) {
+		throw new Error('Invalid commit: no subject');
+	}
+
+	if (_.isUndefined(commit.body)) {
+		throw new Error('Invalid commit: no body');
+	}
+
+	// Omit the first line in the body
+	commit.body = _.chain(commit.body).split('\n').tail().join('\n').value();
+
+	// The commit object to be returned
+	const commitObj: OptionalField<Commit, 'body'> = {
+		subject: subjectParser(commit.subject),
+		hash: commit.hash,
+	};
+
+	if (!parseFooterTags) {
+		return {
+			...commitObj,
+			body: bodyParser(commit.body),
+		};
+	}
+
+	// We iterate on the commit body lines in reverse, and
+	// start considering footer tags. Footer tags are parsed
+	// until a blank line or an invalid footer tag is
+	// encountered, in which case the remaining of the
+	// commit is considered to be the body.
+
+	const commitDescription = _.chain(commit.body)
+		.split('\n')
+		.reduceRight(
+			(accumulator, commitLine) => {
+				const isTag = tags.isTagLine(commitLine);
+
+				if (_.isEmpty(commitLine.trim()) || !isTag) {
+					accumulator.considerTags = false;
+				}
+
+				if (accumulator.considerTags && isTag) {
+					accumulator.footer.unshift(commitLine);
+				} else {
+					accumulator.body.unshift(commitLine);
+				}
+
+				return accumulator;
+			},
+			{
+				considerTags: true,
+				body: [] as string[],
+				footer: [] as string[],
+			},
+		)
+		.value();
+
+	// Assign the formatted body and footer tags
+	return {
+		...commitObj,
+		body: bodyParser(commitDescription.body.join('\n')),
+		footer: tags.parseFooterTagLines(commitDescription.footer, {
+			lowerCaseFooterTags,
+		}),
+	};
 };
