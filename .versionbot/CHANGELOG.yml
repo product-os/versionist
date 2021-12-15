@@ -1,4 +1,16 @@
 - commits:
+    - subject: Export git commit parser
+      hash: db02b4d6347315485511aa49cc339b3dc8a82016
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Robert Günzler <robertg@balena.io>
+        signed-off-by: Robert Günzler <robertg@balena.io>
+      author: Robert Günzler
+  version: 6.7.0
+  date: 2021-12-15T17:31:28.480Z
+- commits:
     - subject: drop update-json dependency
       hash: fded8ee1d542bdbeecf7cdc3626d5aa62bcb0809
       body: ''
