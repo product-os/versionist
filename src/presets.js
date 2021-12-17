@@ -26,6 +26,7 @@ const path = require('path');
 const updateJSON = require('./update-json');
 const fs = require('fs');
 const semver = require('./semver');
+const github = require('./github');
 const replaceInFile = require('replace-in-file');
 const markdown = require('./markdown');
 const yaml = require('yaml');
@@ -130,18 +131,10 @@ const getNestedChangeLog = (
 ) => {
 	const { owner, repo, ref = 'master' } = options;
 
-	octokit.repos
-		.getContent({
-			owner: owner,
-			repo: repo,
-			ref: ref,
-			path: '.versionbot/CHANGELOG.yml',
-		})
+	const blob = github
+		.getChangelogYML(owner, repo, ref, octokit)
 		.then((response) => {
-			// content will be base64 encoded
-			const changelog = yaml.parse(
-				Buffer.from(response.data.content, 'base64').toString(),
-			);
+			const changelog = yaml.parse(Buffer.from(response, 'base64').toString());
 			const nested = extractContentsBetween(
 				changelog,
 				repo,
