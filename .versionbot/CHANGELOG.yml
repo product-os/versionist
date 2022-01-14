@@ -1,4 +1,25 @@
 - commits:
+    - subject: Pass PR data to changelog
+      hash: eed413fd00151296805c39aa34cef41f455112e5
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Stathis Moraitidis <stathis@balena.io>
+        signed-off-by: Stathis Moraitidis <stathis@balena.io>
+      author: stathismor
+    - subject: Get changelog.yml blob
+      hash: ec61490ac3879f00326163fe35ecd0103fad6e10
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Stathis Moraitidis <stathis@balena.io>
+        signed-off-by: Stathis Moraitidis <stathis@balena.io>
+      author: stathismor
+  version: 6.6.4
+  date: 2022-01-14T12:24:35.415Z
+- commits:
     - subject: drop update-json dependency
       hash: fded8ee1d542bdbeecf7cdc3626d5aa62bcb0809
       body: ''
