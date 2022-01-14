@@ -313,3 +313,44 @@ export const generateChangelog = (
 		);
 	});
 };
+
+export const readRepoData = (
+	gitDirectory: string,
+	callback: Callback<{ repo: string; owner: string }>,
+) => {
+	if (!gitDirectory) {
+		throw new Error('Missing gitDirectory');
+	}
+
+	const child = childProcess.spawn('git', ['remote', 'get-url', 'origin']);
+	let repo = '';
+	let owner = '';
+
+	child.stdout.on('data', (data) => {
+		const tokens = data.toString().split('/');
+		repo = tokens.pop();
+		repo = repo.substring(0, repo.length - 5);
+		owner = tokens.pop();
+		owner = owner.substring(15, owner.length);
+	});
+
+	child.stderr.on('data', (data) => {
+		child.kill();
+		return callback(new Error(data.toString()));
+	});
+
+	child.on('error', (error) => {
+		child.kill();
+		return callback(error);
+	});
+
+	child.on('close', (code) => {
+		if (code !== 0) {
+			return callback(
+				new Error(`Child process exitted with error code: ${code}`),
+			);
+		}
+
+		return callback(undefined, { repo, owner });
+	});
+};

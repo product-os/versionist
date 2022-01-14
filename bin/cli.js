@@ -245,6 +245,16 @@ async.waterfall(
 		},
 
 		(documentedVersions, history, callback) => {
+			versionist.readRepoData(
+				path.join(argv.configuration.path, argv.configuration.gitDirectory),
+				(error, repoData) => {
+					return callback(error, documentedVersions, history, repoData);
+				},
+			);
+		},
+
+		(documentedVersions, history, repoData, callback) => {
+			console.log('!!! REPO DATA !!!', repoData);
 			if (argv.current) {
 				return callback(null, argv.current, documentedVersions, history);
 			}
