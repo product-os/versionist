@@ -243,6 +243,7 @@ export const calculateNextVersion = (
 export interface TemplateData {
 	commits: gitLog.Commit[];
 	version: string;
+	title: string;
 	date: Date;
 }
 export const generateChangelog = (
@@ -250,6 +251,7 @@ export const generateChangelog = (
 	options: {
 		template: string;
 		version: string;
+		title: string | undefined;
 		date?: Date;
 		transformTemplateData?: (template: TemplateData) => TemplateData;
 		transformTemplateDataAsync?: (
@@ -287,6 +289,7 @@ export const generateChangelog = (
 		) => {
 			return cb(undefined, data);
 		},
+		title = '',
 	} = options;
 
 	if (!(date instanceof Date)) {
@@ -298,6 +301,7 @@ export const generateChangelog = (
 	const templateData = transformTemplateData({
 		commits: _.filter(commits, includeCommitWhen),
 		version: options.version,
+		title,
 		date,
 	});
 

@@ -65,6 +65,7 @@ Commands:
 Options:
   --help, -h     show help
   --version, -v  show version number
+  --title, -t    set changelog title
   --config, -c   configuration file
   --current, -u  current version
   --dry, -d      Dry run
@@ -89,6 +90,11 @@ hook, but can be configured for advanced behaviour.
 ### `--config`
 
 You can use this option to pass a custom location to `versionist.conf.js`.
+
+
+### `--title`
+
+Custom title information can be passed. It will then be accessible in the template through `versionist.conf.js`.
 
 ### `--dry`
 

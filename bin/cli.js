@@ -134,6 +134,11 @@ const argv = yargs
 			boolean: true,
 			alias: 'v',
 		},
+		title: {
+			describe: 'set changelog title',
+			string: true,
+			alias: 't',
+		},
 	})
 	.command(
 		'get <target>',
@@ -288,6 +293,7 @@ async.waterfall(
 					transformTemplateDataAsync:
 						argv.configuration.transformTemplateDataAsync,
 					version: version,
+					title: argv.title,
 				},
 				(error, rendered, raw) => {
 					if (error) {
