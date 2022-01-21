@@ -100,5 +100,6 @@ m.chai.expect(parsableChangelog).to.deep.equal([
 			},
 		],
 		version: '0.1.0',
+		title: '',
 	},
 ]);

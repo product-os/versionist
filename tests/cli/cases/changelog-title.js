@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Balena.io
+ * Copyright 2016 Resin.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,6 @@ const m = require('mochainon');
 const shelljs = require('shelljs');
 const utils = require('../utils');
 const presets = require('../../../lib/presets');
-const yaml = require('yaml');
-const _ = require('lodash');
 const TEST_DIRECTORY = utils.getTestTemporalPathFromFilename(__filename);
 
 shelljs.rm('-rf', TEST_DIRECTORY);
@@ -42,7 +40,7 @@ utils.createVersionistConfiguration(
 		"    return commit.footer['Change-Type'];",
 		'  },',
 		'  template: [',
-		"    '## {{version}}',",
+		"    '## {{version}} {{title}}',",
 		"    '',",
 		"    '{{#each commits}}',",
 		"    '{{#with footer}}',",
@@ -56,50 +54,21 @@ utils.createVersionistConfiguration(
 );
 
 shelljs.exec('git init');
-shelljs.mkdir('-p', '.versionbot');
-shelljs.touch('.versionbot/CHANGELOG.yml');
 
 utils.createCommit('feat: implement x', {
 	'Changelog-Entry': 'Implement x',
 	'Change-Type': 'minor',
 });
 
-utils.callVersionist();
+const execResult = utils.callVersionist({ title: 'TEST_TITLE' });
 
 m.chai
 	.expect(shelljs.cat('CHANGELOG.md').stdout)
 	.to.deep.equal(
-		[`${presets.INITIAL_CHANGELOG}## 0.1.0`, '', '- Implement x', ''].join(
-			'\n',
-		),
+		[
+			`${presets.INITIAL_CHANGELOG}## 0.1.0 TEST_TITLE`,
+			'',
+			'- Implement x',
+			'',
+		].join('\n'),
 	);
-
-const parsableChangelog = _.map(
-	yaml.parse(shelljs.cat('.versionbot/CHANGELOG.yml').stdout),
-	(entry) => {
-		entry.commits = _.map(entry.commits, (commit) => {
-			return _.omit(commit, 'hash');
-		});
-		return _.omit(entry, 'date');
-	},
-);
-
-m.chai.expect(parsableChangelog).to.deep.equal([
-	{
-		commits: [
-			{
-				subject: 'Implement x',
-				body: '',
-				footer: {
-					'Changelog-Entry': 'Implement x',
-					'changelog-entry': 'Implement x',
-					'Change-Type': 'minor',
-					'change-type': 'minor',
-				},
-				author: 'Versionist',
-			},
-		],
-		version: '0.1.0',
-		title: '',
-	},
-]);
