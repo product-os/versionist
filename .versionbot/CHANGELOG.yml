@@ -1,4 +1,17 @@
 - commits:
+    - subject: Add changelog title support
+      hash: e2ef829416f1f805d5b6feed7c727ab7bfbf246b
+      body: |
+        versionist can accept a title (--title, -t)
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Stathis Moraitidis <stathis@balena.io>
+        signed-off-by: Stathis Moraitidis <stathis@balena.io>
+      author: stathismor
+  version: 6.7.0
+  date: 2022-01-17T11:59:26.761Z
+- commits:
     - subject: Get changelog.yml blob
       hash: ec61490ac3879f00326163fe35ecd0103fad6e10
       body: ''
