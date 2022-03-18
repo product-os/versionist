@@ -1,4 +1,35 @@
 - commits:
+    - subject: Deduce submodule update versions automatically
+      hash: 996fe604f48b6af47d9af04fa8e9cb5501711248
+      body: >
+        The nested changelog support currently needs to be provided with the
+
+        version range on the commit body, similarly to:
+
+          Update <submodule> from <initialVersion> to <targetVersion>
+
+        This is cumbersome and does not work well with tools that automatically
+
+        update submodule dependencies like renovatebot.
+
+
+        This commit keeps the legacy behaviour but will extract the version range
+
+        from git metadata when not provided. This new behaviour can be used by
+
+        specifyng a commit body similar to:
+
+          Update <submodule>
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Alex Gonzalez <alexg@balena.io>
+        signed-off-by: Alex Gonzalez <alexg@balena.io>
+      author: Alex Gonzalez
+  version: 6.7.1
+  title: "'Deduce submodule update versions automatically'"
+  date: 2022-03-17T11:12:59.753Z
+- commits:
     - subject: Add changelog title support
       hash: e2ef829416f1f805d5b6feed7c727ab7bfbf246b
       body: |
@@ -14,7 +45,7 @@
 - commits:
     - subject: Get changelog.yml blob
       hash: ec61490ac3879f00326163fe35ecd0103fad6e10
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -26,7 +57,7 @@
 - commits:
     - subject: drop update-json dependency
       hash: fded8ee1d542bdbeecf7cdc3626d5aa62bcb0809
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -51,7 +82,7 @@
 - commits:
     - subject: Replace resin-semver 1.6.0 with balena-semver 2.3.0
       hash: 0aa182f0a1ec5a18164fc773ed35c74f60b8e357
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -63,7 +94,7 @@
 - commits:
     - subject: Update nested package-lock version
       hash: b2a6275c5a9e591d1d7276d81cd5dbdab69a137f
-      body: ''
+      body: ""
       footer:
         Change-type: minor
         change-type: minor
@@ -87,11 +118,10 @@
   version: 6.5.1
   date: 2021-06-30T16:45:00.190Z
 - commits:
-    - subject: >-
-        Add versionist.publishedAt field to package.json when updating the
+    - subject: Add versionist.publishedAt field to package.json when updating the
         version
       hash: f1d01ab77a51dc596621f8b4a0a36081ea075a72
-      body: ''
+      body: ""
       footer:
         Change-type: minor
         change-type: minor
@@ -99,7 +129,7 @@
   version: 6.5.0
   date: 2021-06-24T20:59:36.756Z
 - commits:
-    - subject: 'generate-changelog: Fix yq version check'
+    - subject: "generate-changelog: Fix yq version check"
       hash: 2b1ac5a2701158a5160ec5d211a571adebbee97e
       body: |
         yq versions before 3.4.0 output the version information to stderr
@@ -118,7 +148,7 @@
 - commits:
     - subject: Make subject change-type check stricter
       hash: a73863bde6192a1cfb78e2408faddf431e09b100
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -130,7 +160,7 @@
 - commits:
     - subject: Update semserver to do a case-insensitive change-type check
       hash: 7510c459ca11856b7f6afb25274d83397d3925a4
-      body: ''
+      body: ""
       footer:
         Change-type: minor
         change-type: minor
@@ -140,11 +170,10 @@
   version: 6.4.0
   date: 2021-03-31T15:08:21.878Z
 - commits:
-    - subject: >-
-        Make commit footer change-type checks case insensitive, to remove
+    - subject: Make commit footer change-type checks case insensitive, to remove
         contribution friction.
       hash: 27278ce3bcf32cf4332f7fb7cd8c7ee703aec66f
-      body: ''
+      body: ""
       footer:
         Change-type: minor
         change-type: minor
@@ -156,7 +185,7 @@
 - commits:
     - subject: Update balena.yml version
       hash: 2c890f6bfc02e019ebbed55e432aab47528d5042
-      body: ''
+      body: ""
       footer:
         Change-type: minor
         change-type: minor
@@ -194,7 +223,7 @@
 - commits:
     - subject: Fix a call to octokit that was not updated to the new verison
       hash: 5718f2bf6451c07a85ec2aa9f40fa2e405215517
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -206,7 +235,7 @@
 - commits:
     - subject: Fix calling removed function
       hash: beff2d8d0e1646ac662a26bce6b245e0c043c83d
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -216,7 +245,7 @@
 - commits:
     - subject: Fix authentication
       hash: 4510da2539519ff6c64b9a506b38330b60317468
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -224,9 +253,9 @@
   version: 6.1.3
   date: 2020-06-29T23:33:15.768Z
 - commits:
-    - subject: 'Update dependencies, fixing some warnings'
+    - subject: Update dependencies, fixing some warnings
       hash: d9fa17f7c3ee3063c49e93bbe3b997032f75e6ad
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -236,7 +265,7 @@
 - commits:
     - subject: Remove issues call to action
       hash: f92c8f0b53c0173b177539c34efb727c61308e47
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -254,14 +283,14 @@
 
         - [Commits](https://github.com/lodash/lodash/compare/4.17.11...4.17.13)
       footer:
-        Signed-off-by: 'dependabot[bot] <support@github.com>'
-        signed-off-by: 'dependabot[bot] <support@github.com>'
+        Signed-off-by: dependabot[bot] <support@github.com>
+        signed-off-by: dependabot[bot] <support@github.com>
         Change-type: patch
         change-type: patch
-      author: 'dependabot[bot]'
+      author: dependabot[bot]
     - subject: Extend has-changetype so subject changes are also considered
       hash: b8d28db674934ca0002d2eb9b6e1ebb3c1691632
-      body: ''
+      body: ""
       footer:
         Change-type: minor
         change-type: minor
@@ -273,7 +302,7 @@
 - commits:
     - subject: Fix presets to have proper casing
       hash: f4956edc9269fe08539b9c7f9d623c3f0a69e5b2
-      body: ''
+      body: ""
       footer:
         Change-type: major
         change-type: major
@@ -303,7 +332,7 @@
 - commits:
     - subject: Move editing of CHANGELOG.yml after dry checks
       hash: c09de0699dfb2c002ed5c62d5bf296b43a099845
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -315,7 +344,7 @@
 - commits:
     - subject: Create VERSION file if not preset
       hash: 37c5454851d44255060ae17ec79edd2d069c77e8
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -325,11 +354,10 @@
   version: 5.4.3
   date: 2019-12-17T09:27:02.835Z
 - commits:
-    - subject: >-
-        Add extra space after details to prevent layout from breaking with
+    - subject: Add extra space after details to prevent layout from breaking with
         nesting > 2
       hash: 5caff989c42ef0a8e8df1223cf5ae4782448f5d1
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -359,8 +387,8 @@
         Currently commits that result from running `git cherry-pick -x COMMIT`
         are not allowed by versionist.
       footer:
-        Connects-to: 'https://github.com/balena-io/versionist/issues/133'
-        connects-to: 'https://github.com/balena-io/versionist/issues/133'
+        Connects-to: https://github.com/balena-io/versionist/issues/133
+        connects-to: https://github.com/balena-io/versionist/issues/133
         Change-type: minor
         change-type: minor
         Signed-off-by: Robert Günzler <robertg@balena.io>
@@ -369,9 +397,9 @@
   version: 5.4.0
   date: 2019-08-30T18:07:53.336Z
 - commits:
-    - subject: 'meta: update resin references to balena, remove dead gitter'
+    - subject: "meta: update resin references to balena, remove dead gitter"
       hash: 474def0256cf4e5fc9b3e958e8d57aa867453e4e
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -383,7 +411,7 @@
 - commits:
     - subject: add script for generating structured changelogs from git history
       hash: 10b9bdeb1efcc57ef024eb42da06d168d3f02cac
-      body: ''
+      body: ""
       footer:
         Change-type: minor
         change-type: minor
@@ -395,7 +423,7 @@
 - commits:
     - subject: Remove extra newline between nested changelog entries
       hash: 65aef73dc8b9965d23567b3b0136f330e81cce4e
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -404,7 +432,7 @@
       author: Giovanni Garufi
     - subject: Add set command
       hash: b82595ce7e9a4b3a90ec5c46eea764d948af0630
-      body: ''
+      body: ""
       footer:
         Change-type: minor
         change-type: minor
@@ -416,7 +444,7 @@
 - commits:
     - subject: Add blockquotes in nested changelogs
       hash: d57ded3fab78d83aaee29afc554370186878adac
-      body: ''
+      body: ""
       footer:
         Change-type: minor
         change-type: minor
@@ -425,7 +453,7 @@
       author: Giovanni Garufi
     - subject: Prettify nested-changelogs output
       hash: a790a88a9f8f9d7a21f01a008631003ecf16beab
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -437,7 +465,7 @@
 - commits:
     - subject: Update dependencies to fix vulnerabilities
       hash: 9b8a20396367baf959108192e57bbbcb51fc6560
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -447,9 +475,9 @@
   version: 5.0.3
   date: 2019-06-24T08:21:07.138Z
 - commits:
-    - subject: 'versionbot: add structured CHANGELOG.yml'
+    - subject: "versionbot: add structured CHANGELOG.yml"
       hash: 4ee63a31703827606fb249b4855f90f5f68f3754
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -459,126 +487,126 @@
   version: 5.0.2
   date: 2019-06-17T14:56:18.367Z
 - version: 5.0.0
-  date: '2019-05-24T00:00:00Z'
+  date: 2019-05-24T00:00:00Z
   commits:
     - author: Giovanni Garufi
       subject: Use resin-semver instead of semver
-      body: ''
+      body: ""
       footers:
         change-type: patch
     - author: Giovanni Garufi
       subject: Fix cargo tests
-      body: ''
+      body: ""
       footers:
         change-type: major
 - version: 4.2.4
-  date: '2019-05-13T00:00:00Z'
+  date: 2019-05-13T00:00:00Z
   commits:
     - author: Pagan Gazzard
       subject: Convert src/versionist to typescript
-      body: ''
+      body: ""
       footers:
         change-type: patch
 - version: 4.2.3
-  date: '2019-05-13T00:00:00Z'
+  date: 2019-05-13T00:00:00Z
   commits:
     - author: Giovanni Garufi
       subject: Add mixed preset for updateVersion
-      body: ''
+      body: ""
       footers:
         change-type: patch
 - version: 4.2.2
-  date: '2019-05-02T00:00:00Z'
+  date: 2019-05-02T00:00:00Z
   commits:
     - author: Pagan Gazzard
       subject: Convert git-log to typescript
-      body: ''
+      body: ""
       footers:
         change-type: patch
     - author: Pagan Gazzard
       subject: Convert markdown to typescript
-      body: ''
+      body: ""
       footers:
         change-type: patch
     - author: Pagan Gazzard
       subject: Convert template to typescript
-      body: ''
+      body: ""
       footers:
         change-type: patch
     - author: Pagan Gazzard
       subject: Convert semver to typescript
-      body: ''
+      body: ""
       footers:
         change-type: patch
 - version: 4.2.1
-  date: '2019-05-01T00:00:00Z'
+  date: 2019-05-01T00:00:00Z
   commits:
     - author: Pagan Gazzard
       subject: Set up project for typescript and convert tags module to typescript
-      body: ''
+      body: ""
       footers:
         change-type: patch
 - version: 4.2.0
-  date: '2019-04-17T00:00:00Z'
+  date: 2019-04-17T00:00:00Z
   commits:
     - author: Giovanni Garufi
       subject: Add support for multiple upstream updates in a single commit
-      body: ''
+      body: ""
       footers:
         change-type: patch
 - commits:
     - author: Will Boyce
-      body: ''
+      body: ""
       footers:
         change-type: patch
         signed-off-by: Will Boyce <will@balena.io>
       hash: 39bfcdb801e6ff4abe4c2c2d7adb2dfbe61000e9
       subject: do not require "Update" to be title-case in commit body
-  date: '2019-04-17T14:49:51Z'
+  date: 2019-04-17T14:49:51Z
   version: 4.1.2
 - commits:
     - author: Matthew McGinn
-      body: ''
+      body: ""
       footers:
         change-type: patch
         signed-off-by: Matthew McGinn <mamcgi@gmail.com>
       hash: 924a9b21253ad7b737dc05067f4e97a062e16505
       subject: Update README.md resin references to balena
-  date: '2019-03-13T11:35:01Z'
+  date: 2019-03-13T11:35:01Z
   version: 4.1.1
 - commits:
     - author: Giovanni Garufi
-      body: ''
+      body: ""
       footers:
         change-type: minor
         signed-off-by: Giovanni Garufi <giovanni@balena.io>
       hash: 756d4778b6198733157031dc868eacae12b0f11b
       subject: Throw if all commits have been filtered out in changelog-entry preset
-  date: '2019-03-12T15:02:20Z'
+  date: 2019-03-12T15:02:20Z
   version: 4.1.0
 - commits:
     - author: Lorenzo Alberto Maria Ambrosi
-      body: ''
+      body: ""
       footers:
         change-type: patch
         signed-off-by: Lorenzo Alberto Maria Ambrosi <lorenzothunder.ambrosi@gmail.com>
       hash: 56c9e0996c324793fdd9f4742af1c109fa0487cc
       subject: Check package-lock.json and npm-shrinkwrap.json
-  date: '2019-02-27T11:19:31Z'
+  date: 2019-02-27T11:19:31Z
   version: 4.0.2
 - commits:
     - author: Alexis Svinartchouk
-      body: ''
+      body: ""
       footers:
         change-type: patch
       hash: 88fe1a72b11828ded765858bf0d035118ccdce29
       subject: Fix package-lock.json
     - author: Alexis Svinartchouk
-      body: ''
+      body: ""
       footers:
         change-type: patch
       hash: 311669005da4f1f9abd1a28a4c08b540bd80572a
-      subject: 'Fix tests/cli/run.js, run only .js files'
+      subject: Fix tests/cli/run.js, run only .js files
     - author: Alexis Svinartchouk
       body: |-
         In 1.0.0 it was called touch and was shadowing the regular touch
@@ -587,11 +615,11 @@
         change-type: patch
       hash: 1d48213a1cf537a040cde7f190cc26af706a34b1
       subject: Move nodetouch to devDependencies and update to ^3.1.0
-  date: '2018-12-04T21:56:45Z'
+  date: 2018-12-04T21:56:45Z
   version: 4.0.1
 - commits:
     - author: Giovanni Garufi
-      body: ''
+      body: ""
       footers:
         change-type: patch
         signed-off-by: Giovanni Garufi <giovanni@balena.io>
@@ -607,17 +635,17 @@
         signed-off-by: Giovanni Garufi <giovanni@balena.io>
       hash: 0d51bb427b493fdd4051f6c9ec449b7c0006a0c6
       subject: Fallback when no reference is found
-  date: '2018-11-30T15:14:21Z'
+  date: 2018-11-30T15:14:21Z
   version: 4.0.0
 - commits:
     - author: nazrhom
-      body: ''
+      body: ""
       footers:
         change-type: patch
         signed-off-by: Giovanni Garufi <giovanni@resin.io>
       hash: ec0bd84f2cc501354068302a4a06b5201d1e7024
-      subject: 'presets: Remove extra semicolon from version'
-  date: '2018-11-05T14:33:47Z'
+      subject: "presets: Remove extra semicolon from version"
+  date: 2018-11-05T14:33:47Z
   version: 3.0.2
 - commits:
     - author: nazrhom
@@ -626,52 +654,52 @@
         change-type: patch
         signed-off-by: Giovanni Garufi <giovanni@resin.io>
       hash: 898b56ef6546d6da276782c465e489372c00434d
-      subject: 'lib/presets: fix nested changelog'
-  date: '2018-11-05T11:33:50Z'
+      subject: "lib/presets: fix nested changelog"
+  date: 2018-11-05T11:33:50Z
   version: 3.0.1
 - commits:
     - author: Giovanni Garufi
-      body: ''
+      body: ""
       footers:
         change-type: major
         signed-off-by: Giovanni Garufi <giovanni@resin.io>
       hash: 9f39c55267cd6932690eef5a61dacbc1096c6834
-      subject: 'presets: Change presets to match default config'
+      subject: "presets: Change presets to match default config"
     - author: Giovanni Garufi
-      body: ''
+      body: ""
       footers:
         change-type: patch
         signed-off-by: Giovanni Garufi <giovanni@resin.io>
       hash: 5749eae0da8f9a96a2557af8fb9ae06178e03008
       subject: Refactored loading and determining default configuration
     - author: Giovanni Garufi
-      body: ''
+      body: ""
       footers:
         change-type: minor
         signed-off-by: Giovanni Garufi <giovanni@resin.io>
       hash: 404e652ff8c4b5e7135dafed9e4a5fc77afe57a9
       subject: Add more template presets and default empty changelog
-  date: '2018-10-31T15:27:15Z'
+  date: 2018-10-31T15:27:15Z
   version: 3.0.0
 - commits:
     - author: Giovanni Garufi
-      body: ''
+      body: ""
       footers:
         change-type: minor
         signed-off-by: Giovanni Garufi <giovanni@resin.io>
       hash: 92202b8cc2895e0d0615fac14b924afa710652ba
-      subject: 'lib/presets: Accept multiple upstreams in nested-changelogs'
-  date: '2018-10-16T10:36:05Z'
+      subject: "lib/presets: Accept multiple upstreams in nested-changelogs"
+  date: 2018-10-16T10:36:05Z
   version: 2.18.0
 - commits:
     - author: Giovanni Garufi
-      body: ''
+      body: ""
       footers:
         change-type: minor
         signed-off-by: Giovanni Garufi <giovanni@resin.io>
       hash: b6eb14233e730dff00adeeb53148e6089608bab0
-      subject: 'nested-changelogs: Add support for nested changelogs'
-  date: '2018-09-07T12:04:17Z'
+      subject: "nested-changelogs: Add support for nested changelogs"
+  date: 2018-09-07T12:04:17Z
   version: 2.17.0
 - commits:
     - author: Giovanni Garufi
@@ -680,8 +708,8 @@
         change-type: minor
         signed-off-by: Giovanni Garufi <giovanni@resin.io>
       hash: 37e9616dc5c341bbdaad994eb811ad87fa010b56
-      subject: 'lib/semver: Modify getGreaterVersion'
-  date: '2018-08-24T10:25:33Z'
+      subject: "lib/semver: Modify getGreaterVersion"
+  date: 2018-08-24T10:25:33Z
   version: 2.16.0
 - commits:
     - author: Giovanni Garufi
@@ -696,15 +724,15 @@
         change-type: minor
         signed-off-by: Giovanni Garufi <giovanni@resin.io>
       hash: 92ca33a7dd4aadec3711c70224808dc5660c3f96
-      subject: 'cli: Add getCurrentBaseVersion'
+      subject: "cli: Add getCurrentBaseVersion"
     - author: Giovanni Garufi
-      body: ''
+      body: ""
       footers:
         change-type: patch
         signed-off-by: Giovanni Garufi <giovanni@resin.io>
       hash: 115191a9a28d098f9527df27a10a2fd88280408f
-      subject: 'tests: Set tmp git identity in tests'
-  date: '2018-08-22T14:58:20Z'
+      subject: "tests: Set tmp git identity in tests"
+  date: 2018-08-22T14:58:20Z
   version: 2.15.0
 - commits:
     - author: Giovanni Garufi
@@ -717,8 +745,8 @@
         change-type: minor
         signed-off-by: nazrhom <giovanni@resin.io>
       hash: 9fc36c33491a49bb1bcd68a9c760b89c9319c5fe
-      subject: 'cli: Add get command'
-  date: '2018-07-06T13:24:57Z'
+      subject: "cli: Add get command"
+  date: 2018-07-06T13:24:57Z
   version: 2.14.0
 - commits:
     - author: Andrew Scheller
@@ -726,65 +754,58 @@
       footers:
         change-type: minor
       hash: ae9e189e013002ce0cac791b14184e662c61f3e0
-      subject: 'Add a `quoted` updateVersion preset, which uses a regex to update'
-  date: '2018-02-09T16:35:15Z'
+      subject: Add a `quoted` updateVersion preset, which uses a regex to update
+  date: 2018-02-09T16:35:15Z
   version: 2.13.0
 - commits:
     - author: majorz
       body: >-
         We are doing more heavy regex processing now.
 
-        First the package name is extracted from Cargo.toml. It is located in
-        the  `[package]` section of Cargo.toml. The package name is used for
-        detecting the proper `version = "..."` definition in Cargo.lock.
-        Cargo.lock is generated automatically, so `version` always follows
-        `name`, and the code takes advantage of that fact for simplification
-        purposes.
+        First the package name is extracted from Cargo.toml. It is located in the  `[package]` section of Cargo.toml. The package name is used for detecting the proper `version = "..."` definition in Cargo.lock. Cargo.lock is generated automatically, so `version` always follows `name`, and the code takes advantage of that fact for simplification purposes.
 
-        The proper `version = "..."` definition in Cargo.toml is inside the
-        `[package]` section, so the regex looks for first occurrence after
-        `[package]`.
+        The proper `version = "..."` definition in Cargo.toml is inside the `[package]` section, so the regex looks for first occurrence after `[package]`.
       footers:
         change-type: patch
-        connects-to: '#101'
+        connects-to: "#101"
       hash: 641aaecc36b86e4e39db6f0073dcd5fbd54869cf
       subject: Update the proper version definition of Rust Cargo manifests
-  date: '2018-01-31T13:56:05Z'
+  date: 2018-01-31T13:56:05Z
   version: 2.12.1
 - commits:
     - author: Andrew Scheller
-      body: ''
+      body: ""
       footers:
         change-type: patch
       hash: 3820b307261376e702a51e00283aa04c1ad72b0e
       subject: Clarify the `updateVersion` presets documentation
     - author: Trong Nghia Nguyen
-      body: ''
+      body: ""
       footers:
         change-type: minor
-        connects-to: '#99'
+        connects-to: "#99"
       hash: 900db381dfcdbd69024ab67aed41766553a7f843
       subject: Python __init__ file support
-  date: '2018-01-24T16:20:14Z'
+  date: 2018-01-24T16:20:14Z
   version: 2.12.0
 - commits:
     - author: Gergely Imreh
-      body: ''
+      body: ""
       footers:
         change-type: patch
       hash: 8e436e9c2e3f29e189751b6b4ae014518dfefa8d
       subject: update support links and info
-  date: '2017-12-12T15:49:28Z'
+  date: 2017-12-12T15:49:28Z
   version: 2.11.4
 - commits:
     - author: majorz
-      body: ''
+      body: ""
       footers:
         change-type: patch
-        connects-to: '#96'
+        connects-to: "#96"
       hash: b4dc80cc46650f702d5089ed42c68836dde112ba
       subject: Update Cargo.lock if exists side by side with Cargo.toml
-  date: '2017-11-01T17:19:48Z'
+  date: 2017-11-01T17:19:48Z
   version: 2.11.3
 - commits:
     - author: Heds Simons
@@ -798,10 +819,9 @@
       footers:
         change-type: patch
       hash: cf874c5ff328823881499e4b9c3d0869c0ea69e0
-      subject: >-
-        Use modified version of 'update-json' to preserve newline at end of JSON
-        files (ie. `package.json`).
-  date: '2017-09-21T15:30:57Z'
+      subject: Use modified version of 'update-json' to preserve newline at end of
+        JSON files (ie. `package.json`).
+  date: 2017-09-21T15:30:57Z
   version: 2.11.2
 - commits:
     - author: Andrew Scheller
@@ -814,7 +834,7 @@
         change-type: patch
       hash: c1ba68ef1d461c3b464e0a84535f715274a34c7d
       subject: README updates
-  date: '2017-07-07T11:26:18Z'
+  date: 2017-07-07T11:26:18Z
   version: 2.11.1
 - commits:
     - author: craig-mulligan
@@ -826,50 +846,49 @@
         change-type: minor
       hash: f4b1865730560ffe85ca6f3e6bdeee4ba5cac738
       subject: Mixed types parameters for updateVersionHook
-  date: '2017-06-16T10:12:17Z'
+  date: 2017-06-16T10:12:17Z
   version: 2.11.0
 - commits:
     - author: majorz
-      body: ''
+      body: ""
       footers:
         change-type: minor
       hash: d8d74022fe5ea72ad2bf2b09de480aff99b6ffc6
       subject: First class Rust Cargo support
-  date: '2017-06-01T09:18:44Z'
+  date: 2017-06-01T09:18:44Z
   version: 2.10.0
 - commits:
     - author: craig-mulligan
-      body: 'Connects to #80 and #76'
+      body: "Connects to #80 and #76"
       footers:
         change-type: patch
       hash: 9874f609dd91008ffdf421444089f2889a4ef00c
       subject: Make change-type insensitive & add change-type none
     - author: craig-mulligan
-      body: 'Connects to #62'
+      body: "Connects to #62"
       footers:
         change-type: minor
       hash: 622b01dbe6a680541b8c6185db5fc46b2ece45af
       subject: Add dry mode
     - author: craig-mulligan
-      body: ''
+      body: ""
       hash: c62de5fbb592fd877227ebe4962618f08a2b5e0d
       subject: add tests
-  date: '2017-04-21T12:22:45Z'
+  date: 2017-04-21T12:22:45Z
   version: 2.9.0
 - commits:
     - author: Kostas Lekkas
-      body: ''
+      body: ""
       footers:
         change-type: patch
       hash: 648ed6bb47ec0ac0bedcb82af2a1ce3d3195464d
-      subject: >-
-        Show nice error message instead of crashing if version incrementing
+      subject: Show nice error message instead of crashing if version incrementing
         commits are missing
     - author: Ștefan Daniel Mihăilă
-      body: ''
+      body: ""
       hash: e75b7c04f6055dc260ef0a7c16d1f4673d7f7400
-      subject: 'style: fix typo in README.md'
-  date: '2017-02-11T18:35:46Z'
+      subject: "style: fix typo in README.md"
+  date: 2017-02-11T18:35:46Z
   version: 2.8.1
 - commits:
     - author: Andrew Scheller
@@ -885,61 +904,56 @@
       body: >-
         Connects to #42.
 
-        Added debug module so stack trace will only be output when running with
-        DEBUG=* or DEBUG=versionist.
+        Added debug module so stack trace will only be output when running with DEBUG=* or DEBUG=versionist.
       footers:
         change-type: patch
       hash: 56ed543a1c6824d408692f6b1efa0d3f9beb4aab
       subject: Only output stack trace in debug mode. (#63)
-  date: '2017-01-03T20:14:20Z'
+  date: 2017-01-03T20:14:20Z
   version: 2.8.0
 - commits:
     - author: gaudi
-      body: 'Connects to #58.'
+      body: "Connects to #58."
       hash: 617248703d07650b710481a50b0cdef4f71005b6
       subject: Default to internal versionist.conf.js if none is passed (#58)
-  date: '2016-12-20T09:50:38Z'
+  date: 2016-12-20T09:50:38Z
   version: 2.7.0
 - commits:
     - author: Heds Simons
-      body: 'Connects to #56.'
+      body: "Connects to #56."
       footers:
         change-type: patch
       hash: 05bcf8f8ba4700448ec717edc8a83cd1bed3f98b
-      subject: >-
-        Remove `lodash` completely, removing dependencies on non-standard
+      subject: Remove `lodash` completely, removing dependencies on non-standard
         library.
-  date: '2016-12-09T12:24:42Z'
+  date: 2016-12-09T12:24:42Z
   version: 2.6.2
 - commits:
     - author: Heds Simons
-      body: ''
+      body: ""
       footers:
         change-type: patch
       hash: 9a86a4ef317d88f00aa4963eb154966c2612c50b
-      subject: >-
-        Ensure that referencing lodash occurs via the versionist base directory
+      subject: Ensure that referencing lodash occurs via the versionist base directory
         and not the CWD.
-  date: '2016-12-09T11:46:26Z'
+  date: 2016-12-09T11:46:26Z
   version: 2.6.1
 - commits:
     - author: Heds Simons
-      body: ''
+      body: ""
       footers:
         change-type: minor
       hash: 6e5283c5878c35886bc6f941df63d9e6c9056d86
-      subject: >-
-        Add a default resin.io `versionist` configuration file, for use in
+      subject: Add a default resin.io `versionist` configuration file, for use in
         future project.
-  date: '2016-12-09T10:05:28Z'
+  date: 2016-12-09T10:05:28Z
   version: 2.6.0
 - commits:
     - author: Cameron Diver
       body: >-
         The hash of the commit is retrieved by git, and parsed from the yaml,
 
-        and passed through as part of the commit object to the configuration
-        file.
+        and passed through as part of the commit object to the configuration file.
 
         Tests have also been changed to reflect the new output, and some
 
@@ -949,7 +963,7 @@
         connects-to: 50
       hash: 39764b4870820276f69f6f93e23187166e1adaf7
       subject: Add the passing of commit hash to the config file.
-  date: '2016-12-07T15:41:29Z'
+  date: 2016-12-07T15:41:29Z
   version: 2.5.0
 - commits:
     - author: Heds Simons
@@ -963,29 +977,25 @@
       footers:
         change-type: minor
       hash: acff340d79709ad35235daa1b5d0a9b5c51935eb
-      subject: >-
-        Add a `lowerCaseFooterTags` option (default is `true`) which lowercases
+      subject: Add a `lowerCaseFooterTags` option (default is `true`) which lowercases
         all footer tags keys.
     - author: Heds Simons
-      body: >-
-        This ensures that strict case testing is backwards compatible, and
-        offers more open options for configuration files.
+      body: This ensures that strict case testing is backwards compatible, and offers
+        more open options for configuration files.
       hash: d4071b0f94fe2d07210d71231c29ca0e7eca43f5
-      subject: >-
-        Update the `lowerCaseFooterTags` option to produce lowercase versions of
-        footer tags alongside originals.
+      subject: Update the `lowerCaseFooterTags` option to produce lowercase versions
+        of footer tags alongside originals.
     - author: Heds Simons
-      body: ''
+      body: ""
       hash: b6bea5ee28adf6421e8866266a2dc9bee35b5418
-      subject: >-
-        Optimise parseFooterTagLines() function, add unit tests for it with the
+      subject: Optimise parseFooterTagLines() function, add unit tests for it with the
         'lowerCaseFooterTags' option and replace single option parameter with
         options object.
     - author: Heds Simons
-      body: ''
+      body: ""
       hash: 4d5e729235b0c4918f137a07e7b434300e1712e4
       subject: Ensure default value into `parseFooterTagLines()` is false.
-  date: '2016-12-06T19:41:59Z'
+  date: 2016-12-06T19:41:59Z
   version: 2.4.0
 - commits:
     - author: Heds Simons
@@ -1000,20 +1010,20 @@
         change-type: minor
         changelog-entry: Ensure a specified config file is parsed correctly.
       hash: 0fdbf38dd064b0dc3e1fb32e4d00b887d5f815b1
-      subject: 'fix: ensure a specified config file is parsed correctly'
-  date: '2016-11-30T22:44:49Z'
+      subject: "fix: ensure a specified config file is parsed correctly"
+  date: 2016-11-30T22:44:49Z
   version: 2.3.0
 - commits:
     - author: Juan Cruz Viotti
-      body: ''
+      body: ""
       footers:
         signed-off-by: Juan Cruz Viotti <jviotti@openmailbox.org>
       hash: 8d4acd92173fb36478ae2316bc824342a039fab2
-      subject: 'chore: fix lint warnings introduced in new ESLint versions'
+      subject: "chore: fix lint warnings introduced in new ESLint versions"
     - author: Andrew Scheller
-      body: ''
+      body: ""
       hash: 080c0fca584638022ad106ba3a41157e43cd6dc0
-      subject: 'style: fix typo in README.md'
+      subject: "style: fix typo in README.md"
     - author: Juan Cruz Viotti
       body: |-
         The CLI configuration file loading/parsing logic is moved to
@@ -1022,7 +1032,7 @@
       footers:
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: 706483bd3f1edfe66ed59ae4566dbf7dc38338b7
-      subject: 'refactor: extract CLI configuration logic to a new module'
+      subject: "refactor: extract CLI configuration logic to a new module"
     - author: Juan Cruz Viotti
       body: |-
         If we repeatedly call Versionist from the beginning of a project, all
@@ -1038,7 +1048,7 @@
         changelog-entry: Reject non-existent git references if there are documented versions.
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: 196d6531addd173a6a1a671968d8bb9f2294d5e0
-      subject: 'fix: reject non-existent git refs if there are documented versions'
+      subject: "fix: reject non-existent git refs if there are documented versions"
     - author: Juan Cruz Viotti
       body: |-
         The linter complained that the `commit` parameter was not used in the
@@ -1046,7 +1056,7 @@
       footers:
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: 110d497c4d92ebcfd62c7ec9dc4041ca23728683
-      subject: 'style: fix lint warning in `no-parse-footer-tags.js` test case'
+      subject: "style: fix lint warning in `no-parse-footer-tags.js` test case"
     - author: Juan Cruz Viotti
       body: |-
         Turns out non-zero exit codes are swallowed by `shelljs.exec`.
@@ -1057,10 +1067,10 @@
         re-use it with `-F` on `git commit` given that Windows gets confused by
         line breaks in `-m`.
       footers:
-        see: 'http://stackoverflow.com/a/20438380/1641422'
+        see: http://stackoverflow.com/a/20438380/1641422
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: 0ec4c9dd4801987c367905310353089e76929602
-      subject: 'minifix: make sure CLI tests exit with exit code 1 on failure'
+      subject: "minifix: make sure CLI tests exit with exit code 1 on failure"
     - author: Juan Cruz Viotti
       body: |-
         The `parseFooterTags` config value was not propagated to
@@ -1070,7 +1080,7 @@
         changelog-entry: Fix `parseFooterTags` not taking effect.
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: 86acfc764bc2e6742e48f6cc2f164bb8a73cb049
-      subject: 'fix: `parseFooterTags` not taking effect'
+      subject: "fix: `parseFooterTags` not taking effect"
     - author: Juan Cruz Viotti
       body: |-
         Making sense about how all the available options play together to
@@ -1080,7 +1090,7 @@
       footers:
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: 87ad8e2ca883e6c2d06ebf0540368d42115df315
-      subject: 'doc: document how all options fit together'
+      subject: "doc: document how all options fit together"
     - author: Juan Cruz Viotti
       body: |-
         This test suite creates real repositories with real commits and performs
@@ -1091,7 +1101,7 @@
       footers:
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: d14e2e11bf638d777498cddbc8ff92331ff9ed6c
-      subject: 'test: create a basic CLI end to end test suite'
+      subject: "test: create a basic CLI end to end test suite"
     - author: Juan Cruz Viotti
       body: |-
         Presets should take an option object as the first argument. Such object
@@ -1100,7 +1110,7 @@
       footers:
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: a81bfe82ae559d77f3d90dafa86b1414d5b6a425
-      subject: 'minifix: invalid version when using `semver` `incrementVersion` preset'
+      subject: "minifix: invalid version when using `semver` `incrementVersion` preset"
     - author: Juan Cruz Viotti
       body: |-
         Currently, the `.getChangelogDocumentedVersions()` `changelog-headers`
@@ -1110,12 +1120,11 @@
         A better behaviour is to yield an empty array.
       footers:
         change-type: patch
-        changelog-entry: >-
-          Don't throw ENOENT in `changelog-headers` preset if the changelog file
-          doesn't exist.
+        changelog-entry: Don't throw ENOENT in `changelog-headers` preset if the
+          changelog file doesn't exist.
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: cc71f566d199928ccd27df1880ad90b026336e06
-      subject: 'fix: `changelog-headers` ENOENT when no changelog file'
+      subject: "fix: `changelog-headers` ENOENT when no changelog file"
     - author: Juan Cruz Viotti
       body: |-
         This option, which defaults to `0.0.1`, can be used to configure the
@@ -1128,7 +1137,7 @@
         changelog-entry: Add `defaultInitialVersion` option.
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: 31124634ed353e8f340e84de24e50581f527dc05
-      subject: 'feat: add `defaultInitialVersion` option'
+      subject: "feat: add `defaultInitialVersion` option"
     - author: Juan Cruz Viotti
       body: |-
         This hook can be declared to customise how a version is incremented
@@ -1139,8 +1148,8 @@
         changelog-entry: Add `incrementVersion` option hook.
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: 509cab78c53ae8761155271489d1793cd6b4a47e
-      subject: 'feat: add `incrementVersion` option hook'
-  date: '2016-11-12T13:13:40Z'
+      subject: "feat: add `incrementVersion` option hook"
+  date: 2016-11-12T13:13:40Z
   version: 2.2.0
 - commits:
     - author: Juan Cruz Viotti
@@ -1156,7 +1165,7 @@
         changelog-entry: Fix uncaught exception if current version is omitted.
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: 1a7bd89172afc52441ac78eb33352323bf70956e
-      subject: 'fix: uncaught exception if current version is omitted'
+      subject: "fix: uncaught exception if current version is omitted"
     - author: Juan Cruz Viotti
       body: |-
         This hook is useful to perform more advanced manipulations to the data
@@ -1166,16 +1175,16 @@
         changelog-entry: Add `transformTemplateData` option hook.
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: d6c15815d328c12f78352d492820a5809b3ee015
-      subject: 'feat: add `transformTemplateData` option hook'
+      subject: "feat: add `transformTemplateData` option hook"
     - author: Juan Cruz Viotti
       body: |-
         This project now has its own Gitter channel, where we'll point from the
         README and from error messages.
       footers:
-        see: 'https://gitter.im/resin-io/versionist'
+        see: https://gitter.im/resin-io/versionist
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: 0cc996fff8ad072a9031589cbf550207adceaefb
-      subject: 'chore: point to new versionist gitter channel'
+      subject: "chore: point to new versionist gitter channel"
     - author: Juan Cruz Viotti
       body: |-
         This module mixes a lot of synchronous and asynchronous code. To make
@@ -1186,8 +1195,8 @@
         changelog-entry: Make sure every exception is nicely displayed.
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: f465ded6b59974807f97dc2c807cda7de84c377f
-      subject: 'fix: make sure every exception is nicely displayed'
-  date: '2016-07-24T22:12:27Z'
+      subject: "fix: make sure every exception is nicely displayed"
+  date: 2016-07-24T22:12:27Z
   version: 2.1.0
 - commits:
     - author: Juan Cruz Viotti
@@ -1201,12 +1210,11 @@
         and make use of `fromLine` in our `versionist.conf.js`.
       footers:
         change-type: minor
-        changelog-entry: >-
-          Implement `fromLine` option for `addEntryToChangelog`'s `prepend`
-          preset.
+        changelog-entry: Implement `fromLine` option for `addEntryToChangelog`'s
+          `prepend` preset.
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: 11d1be4ad365e08690554a7ba016dc3c4cad1caf
-      subject: 'feat: implement addEntryToChangelog `prepend` `fromLine` option'
+      subject: "feat: implement addEntryToChangelog `prepend` `fromLine` option"
     - author: Juan Cruz Viotti
       body: |-
         This PR allows the user to make use of a preset with an optional object
@@ -1228,7 +1236,7 @@
         changelog-entry: Add support for preset options.
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: 50451201f7e1589a554ec2203d5b20e16d257a3c
-      subject: 'feat: add support for preset options'
+      subject: "feat: add support for preset options"
     - author: Juan Cruz Viotti
       body: |-
         Recent commits introduced plenty features, like automatic `CHANGELOG`
@@ -1240,7 +1248,7 @@
       footers:
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: 79f81717d26ca53de48a6c5fb05190bcbe1454d5
-      subject: 'docs: update README example to showcase new features'
+      subject: "docs: update README example to showcase new features"
     - author: Juan Cruz Viotti
       body: |-
         This option hook would be used to automatically increment the version in
@@ -1251,7 +1259,7 @@
         changelog-entry: Add `updateVersion` option hook.
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: 3b02d2cd5692fffba0807a68398b518abf8c9eee
-      subject: 'feat: add `updateVersion` option hook'
+      subject: "feat: add `updateVersion` option hook"
     - author: Juan Cruz Viotti
       body: |-
         This option is used to control whether the project version will be
@@ -1261,7 +1269,7 @@
         changelog-entry: Add `editVersion` option.
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: 9f2d93a4ee75508d3f60444bce73f371d34b8fd0
-      subject: 'feat: add `editVersion` option'
+      subject: "feat: add `editVersion` option"
     - author: Juan Cruz Viotti
       body: |-
         `semver.compare` can be passed to `Array#sort()` directly, which greatly
@@ -1269,13 +1277,13 @@
       footers:
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: b80bbfbc1c6520be92e2568b456c4b6278204932
-      subject: 'refactor: use semver.compare to sort versions'
+      subject: "refactor: use semver.compare to sort versions"
     - author: Juan Cruz Viotti
-      body: ''
+      body: ""
       footers:
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: 0afec7979f19b0e238e406d3d43687397eff8463
-      subject: 'style: fix README typo'
+      subject: "style: fix README typo"
     - author: Juan Cruz Viotti
       body: |-
         For simplicity purposes. We'll be extending presets to take arguments
@@ -1284,7 +1292,7 @@
       footers:
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: 62c4da90832da9c3f73fb4f21abbfd4767a9dae2
-      subject: 'chore: remove CHANGELOG header'
+      subject: "chore: remove CHANGELOG header"
     - author: Juan Cruz Viotti
       body: |-
         This option hook is used to resolve a git reference out of a semantic
@@ -1299,7 +1307,7 @@
         changelog-entry: Add `getGitReferenceFromVersion` option hook.
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: 580b956a159746095abe473e01e4c22558fcde66
-      subject: 'feat: add `getGitReferenceFromVersion` option hook'
+      subject: "feat: add `getGitReferenceFromVersion` option hook"
     - author: Juan Cruz Viotti
       body: |-
         Using Versionist is very manual. We require users to manually specify
@@ -1317,7 +1325,7 @@
         changelog-entry: Automatically infer the appropriate git commit range.
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: 47a7af3ae9b7dfad650af9aa57940b928bbeb274
-      subject: 'feat: infer `--from` and `--to`'
+      subject: "feat: infer `--from` and `--to`"
     - author: Juan Cruz Viotti
       body: |-
         This function makes Versionist add the generated entry to the CHANGELOG
@@ -1330,7 +1338,7 @@
         changelog-entry: Add `editChangelog` option.
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: c3805a79539b4bfa5bcaaf13859fd5040be7527b
-      subject: 'feat: add `editChangelog` option'
+      subject: "feat: add `editChangelog` option"
     - author: Juan Cruz Viotti
       body: |-
         There is a bug in the way we apply default values for boolean options.
@@ -1339,12 +1347,11 @@
         `true.
       footers:
         change-type: patch
-        changelog-entry: >-
-          Don't apply default values on boolean options explicitly set to
+        changelog-entry: Don't apply default values on boolean options explicitly set to
           `false`.
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: 8134d572f58ba86710316407a35f8da550381448
-      subject: 'fix: apply default values if the current value is not defined'
+      subject: "fix: apply default values if the current value is not defined"
     - author: Juan Cruz Viotti
       body: |-
         This hook is used to determine which versions were already documented in
@@ -1357,7 +1364,7 @@
         changelog-entry: Add `getChangelogDocumentedVersions` option hook.
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: 10a1c90c86ad50f8db8c0428b5b3e0bc51d0ef78
-      subject: 'feat: add `getChangelogDocumentedVersions` option'
+      subject: "feat: add `getChangelogDocumentedVersions` option"
     - author: Juan Cruz Viotti
       body: |-
         Currently, a generated entry is blindly added to the `CHANGELOG` file.
@@ -1370,13 +1377,13 @@
         changelog-entry: Make CHANGELOG entry addition idempotent.
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: c99f5f09a2f396fd65f3a7471dbabd01bb323d6f
-      subject: 'fix: make changelog entry addition idempotent'
+      subject: "fix: make changelog entry addition idempotent"
     - author: Juan Cruz Viotti
-      body: ''
+      body: ""
       footers:
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: 0f396776f9992e356a0cac331f050655f81c403c
-      subject: 'style: make sure all README paragraphs are wrapped'
+      subject: "style: make sure all README paragraphs are wrapped"
     - author: Juan Cruz Viotti
       body: |-
         We're currently forcing a UNIX linebreak style, which causes hundreds of
@@ -1385,7 +1392,7 @@
       footers:
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: f3e426abcf39dac67f686e52f9f2cfa8396a0a2f
-      subject: 'chore: don''t force a linebreak style in ESLint'
+      subject: "chore: don't force a linebreak style in ESLint"
     - author: Juan Cruz Viotti
       body: This option determines the file path to the project CHANGELOG file.
       footers:
@@ -1393,7 +1400,7 @@
         changelog-entry: Add `changelogFile` option.
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: a08ff608bcf4621532afb4b4b16631c8e7e7e12c
-      subject: 'feat: add `changelogFile` option'
+      subject: "feat: add `changelogFile` option"
     - author: Juan Cruz Viotti
       body: |-
         This hooks is used to determine how the CHANGELOG generated by
@@ -1406,7 +1413,7 @@
         changelog-entry: Add `addEntryToChangelog` option hook.
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: a8e37358e4319c1e53d74dbefe806a7a7492a681
-      subject: 'feat: add `addEntryToChangelog` option hook'
+      subject: "feat: add `addEntryToChangelog` option hook"
     - author: Juan Cruz Viotti
       body: |-
         We were currently blindly passing the version the user sets as the
@@ -1422,8 +1429,8 @@
         changelog-entry: Normalize `--current` version before passing it to the template.
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: 1dbbf0fd241f5ad7e985f54d83914fa3c506f2aa
-      subject: 'fix: normalize template version'
-  date: '2016-07-13T18:57:56Z'
+      subject: "fix: normalize template version"
+  date: 2016-07-13T18:57:56Z
   version: 2.0.0
 - commits:
     - author: Juan Cruz Viotti
@@ -1435,14 +1442,14 @@
       footers:
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: 74bd58c17396175c3b902821ac2b29cdf8b7188b
-      subject: 'docs: add a full reproducible example to README'
+      subject: "docs: add a full reproducible example to README"
     - author: Juan Cruz Viotti
-      body: ''
+      body: ""
       footers:
-        see: 'https://github.com/resin-io/versionist/pull/4'
+        see: https://github.com/resin-io/versionist/pull/4
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: 0df1cf851bf0b3a9f09e7189e7fa000d5c2b9e06
-      subject: 'docs: template option is no longer required'
+      subject: "docs: template option is no longer required"
     - author: Juan Cruz Viotti
       body: |-
         This means the `template` option is no longer required, and users can
@@ -1453,7 +1460,7 @@
         changelog-entry: Add a simple default template.
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: fbdfb17caabd8c5f235e9f1f218a0ce443b4af3c
-      subject: 'feat: add simple default template'
+      subject: "feat: add simple default template"
     - author: Juan Cruz Viotti
       body: |-
         We use a `versionist.conf.js` in Versionist's repo itself for
@@ -1461,7 +1468,7 @@
       footers:
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: 80c8a645159471d4e4c9bc9e8d25d992f7cb267b
-      subject: 'chore: add versionist.conf.js'
+      subject: "chore: add versionist.conf.js"
     - author: Juan Cruz Viotti
       body: |-
         Currently, `gitLog.getGitLogCommandThatOutputsYaml()` returns a string
@@ -1479,7 +1486,7 @@
       footers:
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: 89ff305afdebbebb2bf516e8f60fce08633ce88d
-      subject: 'refactor: get git log args instead of full command'
+      subject: "refactor: get git log args instead of full command"
     - author: Juan Cruz Viotti
       body: |-
         `child_process.exec` imposes a limit on the largest amount of data
@@ -1493,7 +1500,7 @@
         changelog-entry: Fix `stdout maxBuffer exceeded` when parsing big logs.
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: 0c5656c9d8227c3f3a3a791d4f570099b72b1ff2
-      subject: 'fix: `stdout maxBuffer exceeded` when parsing big logs'
+      subject: "fix: `stdout maxBuffer exceeded` when parsing big logs"
     - author: Juan Cruz Viotti
       body: |-
         We specify a very particular `git log` format through a complex
@@ -1508,7 +1515,7 @@
       footers:
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: 08acf959ce0ee2268fd3672d2c159326bd060ca2
-      subject: 'refactor: decouple how to create formatted commits in tests'
+      subject: "refactor: decouple how to create formatted commits in tests"
     - author: Juan Cruz Viotti
       body: |-
         There are some commits we've seen in the wild while using this module
@@ -1544,6 +1551,6 @@
         changelog-entry: Support commits with indented bodies.
         signed-off-by: Juan Cruz Viotti <jviottidc@gmail.com>
       hash: 1997ff2bca7e577b148b61bfbdec809d22f13af6
-      subject: 'fix: parse commits with indented body'
-  date: '2016-07-08T16:26:05Z'
+      subject: "fix: parse commits with indented body"
+  date: 2016-07-08T16:26:05Z
   version: 1.1.0
