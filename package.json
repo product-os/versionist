@@ -31,7 +31,7 @@
     "lint-staged": "^10.2.11",
     "mocha": "^6.2.3",
     "mochainon": "^1.0.0",
-    "shelljs": "^0.7.3",
+    "shelljs": "^0.8.5",
     "tmp": "0.0.28",
     "touch": "^3.1.0"
   },
