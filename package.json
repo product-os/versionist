@@ -41,7 +41,7 @@
     "@types/handlebars-helpers": "^0.5.2",
     "@types/lodash": "^4.14.157",
     "@types/semver": "^6.2.1",
-    "async": "^2.6.3",
+    "async": "^3.2.2",
     "balena-semver": "^2.3.0",
     "chalk": "^4.1.0",
     "debug": "2.5.1",
