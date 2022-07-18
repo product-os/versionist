@@ -1,4 +1,18 @@
 - commits:
+    - subject: Update dependency debug to 2.6.9 [SECURITY]
+      hash: a3e1475152820d130e6501eba6cf95354bed72d5
+      body: |
+        Update debug to 2.6.9
+
+        Update debug from 2.5.1 to 2.6.9
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Renovate Bot
+  version: 6.8.0
+  title: "'Update dependency debug to 2.6.9 [SECURITY]'"
+  date: 2022-07-18T23:44:16.916Z
+- commits:
     - subject: Update dependency shelljs to 0.8.5 [SECURITY]
       hash: 1d9e8038899d41e1a9cbfbe3cc5526903bcb5f94
       body: |
