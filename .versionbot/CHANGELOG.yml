@@ -1,4 +1,18 @@
 - commits:
+    - subject: Update dependency handlebars to 4.7.7 [SECURITY]
+      hash: 2ab2db835b3f4dd3af037c439ff79c2a8cfe0ef9
+      body: |
+        Update handlebars to 4.7.7
+
+        Update handlebars from 4.7.6 to 4.7.7
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Renovate Bot
+  version: 6.7.3
+  title: "'Update dependency handlebars to 4.7.7 [SECURITY]'"
+  date: 2022-07-18T20:39:11.736Z
+- commits:
     - subject: Update dependency lodash to 4.17.21 [SECURITY]
       hash: 2276dd220b4728141070cb1d66209278fa4ed338
       body: |
