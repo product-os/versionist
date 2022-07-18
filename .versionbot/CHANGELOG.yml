@@ -1,4 +1,28 @@
 - commits:
+    - subject: Update dependency shelljs to 0.8.5 [SECURITY]
+      hash: 1d9e8038899d41e1a9cbfbe3cc5526903bcb5f94
+      body: |
+        Update shelljs to 0.8.5
+
+        Update shelljs from 0.7.8 to 0.8.5
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Renovate Bot
+    - subject: Update dependency async to 2.6.4 [SECURITY]
+      hash: 9ba86fd14ca0dd99d6704a92e46ede1d2eedca68
+      body: |
+        Update async to 2.6.4
+
+        Update async from 2.6.3 to 2.6.4
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Renovate Bot
+  version: 6.7.4
+  title: "'Update dependency shelljs to 0.8.5 [SECURITY]'"
+  date: 2022-07-18T23:03:07.781Z
+- commits:
     - subject: Update dependency handlebars to 4.7.7 [SECURITY]
       hash: 2ab2db835b3f4dd3af037c439ff79c2a8cfe0ef9
       body: |
