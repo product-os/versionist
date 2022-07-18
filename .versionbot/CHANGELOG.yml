@@ -1,4 +1,18 @@
 - commits:
+    - subject: Update dependency lodash to 4.17.21 [SECURITY]
+      hash: 2276dd220b4728141070cb1d66209278fa4ed338
+      body: |
+        Update lodash to 4.17.21
+
+        Update lodash from 4.17.15 to 4.17.21
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Renovate Bot
+  version: 6.7.2
+  title: "'Update dependency lodash to 4.17.21 [SECURITY]'"
+  date: 2022-07-18T18:02:51.093Z
+- commits:
     - subject: Deduce submodule update versions automatically
       hash: 996fe604f48b6af47d9af04fa8e9cb5501711248
       body: >
