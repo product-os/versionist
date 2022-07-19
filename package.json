@@ -32,7 +32,7 @@
     "mocha": "^6.2.3",
     "mochainon": "^1.0.0",
     "shelljs": "^0.8.0",
-    "tmp": "0.0.28",
+    "tmp": "0.2.1",
     "touch": "^3.1.0"
   },
   "dependencies": {
