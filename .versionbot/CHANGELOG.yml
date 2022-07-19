@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency tmp to 0.2.1
+      hash: 2b9865f32fbed4421442cf0075c7e60876fd3716
+      body: |
+        Update tmp to 0.2.1
+
+        Update tmp from 0.0.28 to 0.2.1
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Renovate Bot
+  version: 6.8.1
+  date: 2022-07-19T00:05:42.327Z
+- commits:
     - subject: Update dependency debug to 2.6.9 [SECURITY]
       hash: a3e1475152820d130e6501eba6cf95354bed72d5
       body: |
