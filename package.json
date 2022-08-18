@@ -25,7 +25,7 @@
   "author": "Juan Cruz Viotti <juan@balena.io>",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@balena/lint": "^5.1.0",
+    "@balena/lint": "^6.0.0",
     "husky": "^4.2.5",
     "indent-string": "^3.0.0",
     "lint-staged": "^10.2.11",
