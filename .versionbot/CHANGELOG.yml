@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency @balena/lint to 6.2.0
+      hash: 35a465c95b9cb4ab606c6a9f9ea643c20d93ac86
+      body: |
+        Update @balena/lint to 6.2.0
+
+        Update @balena/lint from 5.1.0 to 6.2.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Renovate Bot
+  version: 6.8.1
+  date: 2022-08-18T20:05:19.830Z
+- commits:
     - subject: Update dependency debug to 2.6.9 [SECURITY]
       hash: a3e1475152820d130e6501eba6cf95354bed72d5
       body: |
