@@ -1,4 +1,14 @@
 - commits:
+    - subject: Move balena-semver to prod dependency
+      hash: 699912636b4b22ffd0010c657e97132fc8be9c10
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+  version: 6.8.3
+  date: 2022-10-12T15:27:47.928Z
+- commits:
     - subject: Update dependencies
       hash: 042c57d7c29763e424c9f57f3cffe096645813fe
       body: ""
