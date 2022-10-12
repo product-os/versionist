@@ -1,6 +1,6 @@
 {
   "name": "versionist",
-  "version": "6.8.2",
+  "version": "6.8.3",
   "main": "bin/versionist.js",
   "description": "Flexible CHANGELOG generation toolkit that adapts to your commit conventions",
   "homepage": "https://github.com/balena-io/versionist",
@@ -60,6 +60,6 @@
     }
   },
   "versionist": {
-    "publishedAt": "2022-10-12T14:43:06.562Z"
+    "publishedAt": "2022-10-12T15:27:52.085Z"
   }
 }
