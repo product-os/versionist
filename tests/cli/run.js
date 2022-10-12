@@ -26,8 +26,9 @@ _.each(fs.readdirSync(path.join(__dirname, 'cases')), (file) => {
 		return;
 	}
 
-	const exitCode = shelljs.exec(`node ${path.join(__dirname, 'cases', file)}`)
-		.code;
+	const exitCode = shelljs.exec(
+		`node ${path.join(__dirname, 'cases', file)}`,
+	).code;
 
 	if (exitCode !== 0) {
 		console.error(`${file} - Test failed with exit code: ${exitCode}`);

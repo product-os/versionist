@@ -193,9 +193,8 @@ async.waterfall(
 				return callback(new Error(stopError));
 			}
 
-			const gitReference = argv.configuration.getGitReferenceFromVersion(
-				latest,
-			);
+			const gitReference =
+				argv.configuration.getGitReferenceFromVersion(latest);
 			if (getCurrentCommand(argv) === 'get' && argv.target === 'reference') {
 				console.log(gitReference);
 				return callback(new Error(stopError));
