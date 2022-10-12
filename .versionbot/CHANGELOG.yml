@@ -1,4 +1,15 @@
 - commits:
+    - subject: Update dependencies
+      hash: 042c57d7c29763e424c9f57f3cffe096645813fe
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+  version: 6.8.2
+  title: ""
+  date: 2022-10-12T14:43:06.381Z
+- commits:
     - subject: Switch from balenaCI to flowzone
       hash: 1feaf3cd88e1e24454c1f442f1d5d748f6bbb1d1
       body: ""
