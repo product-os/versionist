@@ -1,4 +1,15 @@
 - commits:
+    - subject: Fix generate-changelog.sh script when there are no versioned PRs
+      hash: b5c4b026b822a788f443ed4c80c785df4dffe377
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+  version: 6.8.4
+  title: ""
+  date: 2022-10-19T13:57:03.262Z
+- commits:
     - subject: Move balena-semver to prod dependency
       hash: 699912636b4b22ffd0010c657e97132fc8be9c10
       body: ""
@@ -375,8 +386,7 @@
     - subject: Bump lodash from 4.17.11 to 4.17.13
       hash: ceec848d1aaba47a2298ca95a3aa10d025114158
       body: >
-        Bumps [lodash](https://github.com/lodash/lodash) from 4.17.11 to
-        4.17.13.
+        Bumps [lodash](https://github.com/lodash/lodash) from 4.17.11 to 4.17.13.
 
         - [Release notes](https://github.com/lodash/lodash/releases)
 
