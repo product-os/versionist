@@ -95,10 +95,14 @@ while curl -H "Authorization: token ${GH_TOKEN}" -s "${REPO_API_URL}/pulls"'?sta
     done
 done
 mkdir -p "${REPO_PATH}/.versionbot"
-mapfile -t versions < <(sort -Vr <(printf "%s\n" "${tmp}"/v*.yml))
-if [ "${#versions[@]}" -eq 0 ]; then
-    echo "No versioned PRs found"
+
+# Ensure the glob is expanded even if it doesn't match anything
+shopt -s nullglob
+if [ -z "$(echo "${tmp}"/v*.yml)" ]; then
+    echo "No versioned PRs found, using empty placeholder"
+    touch "${REPO_PATH}/.versionbot/CHANGELOG.yml"
 else
+    mapfile -t versions < <(sort -Vr <(printf "%s\n" "${tmp}"/v*.yml))
     echo "Generating CHANGELOG.yml..."
     if [ "${#versions[@]}" -eq 1 ]; then
         mv "${versions[0]}" "${REPO_PATH}/.versionbot/CHANGELOG.yml"
