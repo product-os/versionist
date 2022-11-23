@@ -1,4 +1,15 @@
 - commits:
+    - subject: "NestedChangelogs: Fetch the default branch from GitHub if not provided"
+      hash: 2e86d14285a6299cc86d90a6aa1d2bb6bae20c3a
+      body: ""
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Thodoris Greasidis
+  version: 6.9.0
+  title: ""
+  date: 2022-11-23T19:58:31.054Z
+- commits:
     - subject: Fix generate-changelog.sh script when there are no versioned PRs
       hash: b5c4b026b822a788f443ed4c80c785df4dffe377
       body: ""
