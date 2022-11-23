@@ -123,32 +123,36 @@ const extractContentsBetween = (changelog, repo, start, end) => {
 		.value();
 };
 
-const getNestedChangeLog = (
+const getNestedChangeLog = async (
 	options,
 	commit,
 	startVersion,
 	endVersion,
 	callback,
 ) => {
-	const { owner, repo, ref = 'master' } = options;
+	const {
+		owner,
+		repo,
+		ref = await github.getDefaultBranch(octokit, owner, repo),
+	} = options;
 
-	const blob = github
-		.getChangelogYML(owner, repo, ref, octokit)
-		.then((response) => {
-			const changelog = yaml.parse(Buffer.from(response, 'base64').toString());
-			const nested = extractContentsBetween(
-				changelog,
-				repo,
-				startVersion,
-				endVersion,
-			);
-			return callback(null, nested);
-		})
-		.catch((error) => {
-			return callback(
-				new Error(`Could not find .versionbot/CHANGELOG.yml in ${repo}`),
-			);
-		});
+	try {
+		const response = await github.getChangelogYML(owner, repo, ref, octokit);
+		const changelog = yaml.parse(Buffer.from(response, 'base64').toString());
+		const nested = extractContentsBetween(
+			changelog,
+			repo,
+			startVersion,
+			endVersion,
+		);
+		return callback(null, nested);
+	} catch (err) {
+		return callback(
+			new Error(
+				`Could not find .versionbot/CHANGELOG.yml in ${repo} under branch ${ref}`,
+			),
+		);
+	}
 };
 
 const resolveTag = (shash, upstream) => {
