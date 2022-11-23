@@ -1,5 +1,17 @@
 import { Octokit } from '@octokit/rest';
 
+export const getDefaultBranch = async (
+	octokit: Octokit,
+	owner: string,
+	repo: string,
+): Promise<string> => {
+	const { data } = await octokit.repos.get({
+		owner,
+		repo,
+	});
+	return data.default_branch;
+};
+
 /**
  * @summary Get CHANGELOG.yml
  * @function
