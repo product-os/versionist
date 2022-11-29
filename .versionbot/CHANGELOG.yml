@@ -1,4 +1,15 @@
 - commits:
+    - subject: "patch: Resolve missing blockquote"
+      hash: 7cd4f4e184a73f2ef1cf9aa205f85f6b02c1f938
+      body: ""
+      footer:
+        Signed-off-by: Vipul Gupta (@vipulgupta2048) <vipul@balena.io>
+        signed-off-by: Vipul Gupta (@vipulgupta2048) <vipul@balena.io>
+      author: Vipul Gupta (@vipulgupta2048)
+  version: 6.9.2
+  title: ""
+  date: 2022-11-29T21:17:16.659Z
+- commits:
     - subject: "patch: Update `change log` spelling to `changelog`"
       hash: 806d8f7aa07bd7cfa3b3fe51616b702a19868de5
       body: ""
