@@ -1,4 +1,15 @@
 - commits:
+    - subject: "patch: Update `change log` spelling to `changelog`"
+      hash: 806d8f7aa07bd7cfa3b3fe51616b702a19868de5
+      body: ""
+      footer:
+        Signed-off-by: Vipul Gupta <vipulgupta2048@gmail.com>
+        signed-off-by: Vipul Gupta <vipulgupta2048@gmail.com>
+      author: Vipul Gupta
+  version: 6.9.1
+  title: ""
+  date: 2022-11-29T19:28:01.997Z
+- commits:
     - subject: "NestedChangelogs: Fetch the default branch from GitHub if not provided"
       hash: 2e86d14285a6299cc86d90a6aa1d2bb6bae20c3a
       body: ""
