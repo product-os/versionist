@@ -59,6 +59,7 @@ const templateDefaults = [
         '{{#each this.nested}}',
           '{{> commits nesting=(append ../nesting "#") block=(append ../block ">") }}',
         '{{/each}}',
+      '{{> block-newline}}',
       '{{> block-prefix}}</details>',
       '{{> block-newline}}',
     '{{~else~}}',

@@ -106,6 +106,7 @@ m.chai
 			'> ',
 			'> * qux [Test]',
 			'> ',
+			'',
 			'</details>',
 			'',
 			'* feat: implement x',
