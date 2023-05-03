@@ -1,4 +1,19 @@
 - commits:
+    - subject: Update nested npm-shrinkwrap version
+      hash: 649c0054589e9f1c6842f598aee00cb84d586937
+      body: >
+        Updates the nested packages[""].version in the same way as the root
+        version. We already do this for package-lock.json
+      footer:
+        Change-type: minor
+        change-type: minor
+        Relates-to: "#199"
+        relates-to: "#199"
+      author: Felipe Lalanne
+  version: 6.10.0
+  title: ""
+  date: 2023-05-03T19:11:59.474Z
+- commits:
     - subject: "patch: Resolve missing blockquote"
       hash: 7cd4f4e184a73f2ef1cf9aa205f85f6b02c1f938
       body: ""
@@ -419,7 +434,8 @@
     - subject: Bump lodash from 4.17.11 to 4.17.13
       hash: ceec848d1aaba47a2298ca95a3aa10d025114158
       body: >
-        Bumps [lodash](https://github.com/lodash/lodash) from 4.17.11 to 4.17.13.
+        Bumps [lodash](https://github.com/lodash/lodash) from 4.17.11 to
+        4.17.13.
 
         - [Release notes](https://github.com/lodash/lodash/releases)
 
