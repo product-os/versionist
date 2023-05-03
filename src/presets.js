@@ -888,6 +888,36 @@ module.exports = {
 				return callback(new Error(`Invalid version: ${version}`));
 			}
 
+			const updateNestedVersion = (manifestJSON, done) =>
+				readJSON(manifestJSON, (readError, pljObj) => {
+					if (readError && readError.code === 'ENOENT') {
+						return done(null);
+					}
+
+					if (
+						pljObj.lockfileVersion >= 2 &&
+						pljObj.packages &&
+						pljObj.packages[''] &&
+						pljObj.packages[''].version
+					) {
+						pljObj.packages[''].version = cleanedVersion;
+						updateJSON(
+							manifestJSON,
+							{
+								packages: pljObj.packages,
+							},
+							(updateError) => {
+								if (updateError && updateError.code === 'ENOENT') {
+									return done(null);
+								}
+								return done(updateError);
+							},
+						);
+					} else {
+						return done(null);
+					}
+				});
+
 			async.waterfall(
 				[
 					(done) => readJSON(packageJSON, done),
@@ -916,36 +946,7 @@ module.exports = {
 							},
 						);
 					},
-					(done) =>
-						readJSON(packageLockJSON, (readError, pljObj) => {
-							if (readError && readError.code === 'ENOENT') {
-								return done(null);
-							}
-
-							if (
-								pljObj.lockfileVersion >= 2 &&
-								pljObj.packages &&
-								pljObj.packages[''] &&
-								pljObj.packages[''].version
-							) {
-								pljObj.packages[''].version = cleanedVersion;
-								updateJSON(
-									packageLockJSON,
-									{
-										packages: pljObj.packages,
-									},
-									(updateError) => {
-										if (updateError && updateError.code === 'ENOENT') {
-											return done(null);
-										}
-										return done(updateError);
-									},
-								);
-							} else {
-								return done(null);
-							}
-						}),
-
+					(done) => updateNestedVersion(packageLockJSON, done),
 					(done) => {
 						updateJSON(
 							npmShrinkwrapJSON,
@@ -960,6 +961,7 @@ module.exports = {
 							},
 						);
 					},
+					(done) => updateNestedVersion(npmShrinkwrapJSON, done),
 				],
 				callback,
 			);
