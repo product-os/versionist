@@ -15,7 +15,7 @@ for dep in jq yq; do
   fi
 done
 
-yq_min_version="2.4.0"
+yq_min_version="4.1.0"
 yq_version="$(yq --version 2>&1 | awk '{print $3}')"
 if [ "${yq_version}" != "${yq_min_version}" ] && [ "${yq_version}" = "$(echo -e "${yq_version}\n${yq_min_version}" | sort -V | head -1)" ]; then
   echo "ERROR: yq version >= ${yq_min_version} is required" >&2
@@ -65,8 +65,7 @@ while curl -H "Authorization: token ${GH_TOKEN}" -s "${REPO_API_URL}/pulls"'?sta
         fi
         echo "Gathering CHANGELOG for PR #${pullId} (${version})..."
         if [ ! -r "${tmp}/${version}.yml" ]; then
-            yq new '[0].version' "${version#v}" > "${tmp}/${version}.yml"
-            yq write -i "${tmp}/${version}.yml" '[0].date' "${merge_date}"
+            yq -n "[{\"version\": \"${version#v}\", \"date\": \"${merge_date}\"}]" > "${tmp}/${version}.yml"
         fi
         i=${vcc[${version}]-0}
         [ "${i}" -gt 0 ] && echo "WARNING: PR #${pullId} is a duplicate for ${version}, merging commits"
@@ -75,20 +74,19 @@ while curl -H "Authorization: token ${GH_TOKEN}" -s "${REPO_API_URL}/pulls"'?sta
             if [ "${author}" = "resin-io-versionbot[bot]" ] || [ "${author}" = "resin-io-modules-versionbot[bot]" ]; then
                 continue
             fi
-            yq write -i "${tmp}/${version}.yml" '[0].commits[+].hash' "${sha}"
-            yq write -i "${tmp}/${version}.yml" '[0].commits['"${i}"'].author' "${author}"
+            yq ".[0].commits[${i}] = {\"hash\": \"${sha}\", \"author\": \"${author}\"}" -i "${tmp}/${version}.yml"
             mapfile -t msg < <(jq -cr '.[] | select(.sha == "'"${sha}"'") | .commit.message' <"${tmp}/pr${pullId}.json" | awk '{gsub(/^ +| +$/,"")} NF {print $0}')
             subject="${msg[0]}"
             while read -r trailer; do
                 key=$(cut -f1 -d':' <<<"${trailer}" | tr '[:upper:]' '[:lower:]')
                 val=$(cut -f2- -d':' <<<"${trailer}" | sed -e 's/^[[:space:]]*//')
-                yq write -i "${tmp}/${version}.yml" '[0].commits['"${i}"'].footers.'"${key}" "${val}"
+                val="${val}" yq ".[0].commits[${i}].footers.\"${key}\" = strenv(val)" -i "${tmp}/${version}.yml"
                 unset 'msg['$((${#msg[@]} - 1))']'
             done < <(jq -cr '.[] | select(.sha == "'"${sha}"'") | .commit.message' <"${tmp}/pr${pullId}.json" | git interpret-trailers --parse)
             unset 'msg[0]'
-            yq write -i "${tmp}/${version}.yml" '[0].commits['"${i}"'].subject' "${subject}"
+            subject="${subject}" yq ".[0].commits[${i}].subject = strenv(subject)" -i "${tmp}/${version}.yml"
             body=$(awk '{gsub(/^ +| +$/,"")} NF {print $0}' < <(printf "%s\n" "${msg[@]}"))
-            yq write -i "${tmp}/${version}.yml" '[0].commits['"${i}"'].body' -- "${body}"
+            body="${body}" yq ".[0].commits[${i}].body = strenv(body)" -i "${tmp}/${version}.yml"
             i=$((i + 1))
         done < <(jq -cr '.[] | .sha' <"${tmp}/pr${pullId}.json")
         vcc[${version}]=$i
@@ -107,7 +105,7 @@ else
     if [ "${#versions[@]}" -eq 1 ]; then
         mv "${versions[0]}" "${REPO_PATH}/.versionbot/CHANGELOG.yml"
     else
-        yq merge -a "${versions[@]}" > "${REPO_PATH}/.versionbot/CHANGELOG.yml"
+        yq eval-all '.' "${versions[@]}" > "${REPO_PATH}/.versionbot/CHANGELOG.yml"
     fi
 fi
 [ -d "${tmp}" ] && rm -r "${tmp}"
