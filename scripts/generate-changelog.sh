@@ -36,7 +36,7 @@ fi
 
 REPO_URL="$(command git -C "${REPO_PATH}" config --get remote.origin.url)"
 REPO_URL_PATH="${REPO_URL/*github.com[:\/]}"
-REPO="${REPO_URL_PATH/.git}"
+REPO="${REPO_URL_PATH%.git}"
 
 GITHUB_API_HOST="api.github.com"
 REPO_API_URL="https://${GITHUB_API_HOST}/repos/${REPO}"
