@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update expressions yq v4
+      hash: 94e4672c9a39c3c9b26d981761ae9c61ad931ea7
+      body: ""
+      footer:
+        Change-type: major
+        change-type: major
+        Signed-off-by: Kyle Harding <kyle@balena.io>
+        signed-off-by: Kyle Harding <kyle@balena.io>
+      author: Kyle Harding
+  version: 7.0.0
+  title: ""
+  date: 2023-05-29T17:43:50.198Z
+- commits:
     - subject: Update nested npm-shrinkwrap version
       hash: 649c0054589e9f1c6842f598aee00cb84d586937
       body: >
