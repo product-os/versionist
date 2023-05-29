@@ -1,4 +1,17 @@
 - commits:
+    - subject: Fix changelog generation to handle special .github repo names
+      hash: 9d34bf4436a40a403bfe0f5ef05b6c962a39568c
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Kyle Harding <kyle@balena.io>
+        signed-off-by: Kyle Harding <kyle@balena.io>
+      author: Kyle Harding
+  version: 7.0.1
+  title: ""
+  date: 2023-05-29T17:54:52.610Z
+- commits:
     - subject: Update expressions yq v4
       hash: 94e4672c9a39c3c9b26d981761ae9c61ad931ea7
       body: ""
