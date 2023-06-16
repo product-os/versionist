@@ -105,7 +105,7 @@ else
     if [ "${#versions[@]}" -eq 1 ]; then
         mv "${versions[0]}" "${REPO_PATH}/.versionbot/CHANGELOG.yml"
     else
-        yq eval-all '.' "${versions[@]}" > "${REPO_PATH}/.versionbot/CHANGELOG.yml"
+        yq eval-all '.' "${versions[@]}" | grep -v -- '---' > "${REPO_PATH}/.versionbot/CHANGELOG.yml"
     fi
 fi
 [ -d "${tmp}" ] && rm -r "${tmp}"
