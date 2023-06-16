@@ -1,4 +1,17 @@
 - commits:
+    - subject: Exclude document breaks when merging changelog files
+      hash: 6827dcade4a0758d4aedb350afd4fe0181dd9502
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Kyle Harding <kyle@balena.io>
+        signed-off-by: Kyle Harding <kyle@balena.io>
+      author: Kyle Harding
+  version: 7.0.2
+  title: ""
+  date: 2023-06-16T13:51:43.937Z
+- commits:
     - subject: Fix changelog generation to handle special .github repo names
       hash: 9d34bf4436a40a403bfe0f5ef05b6c962a39568c
       body: ""
