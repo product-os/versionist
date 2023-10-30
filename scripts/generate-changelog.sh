@@ -44,7 +44,7 @@ REPO_API_URL="https://${GITHUB_API_HOST}/repos/${REPO}"
 tmp="$(mktemp -d)"
 echo 'Generating CHANGELOG.yml for `'"${REPO}"'`'
 page=1
-while curl -H "Authorization: token ${GH_TOKEN}" -s "${REPO_API_URL}/pulls"'?state=closed&per_page=100&page='"${page}" > "${tmp}/pulls.json"; do
+while curl -f -H "Authorization: token ${GH_TOKEN}" -s "${REPO_API_URL}/pulls"'?state=closed&per_page=100&page='"${page}" > "${tmp}/pulls.json"; do
     items=$(jq '. | length' "${tmp}/pulls.json")
     if [ "$items" -eq 0 ]; then
         break
