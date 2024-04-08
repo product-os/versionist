@@ -1,10 +1,23 @@
 - commits:
+    - subject: Update dependency yaml to v2.2.2 [SECURITY]
+      hash: c45c2ddd4a63c22271514d0f97e2c92f5b16f0e7
+      body: |
+        Update yaml from 2.1.3 to 2.2.2
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Self-hosted Renovate Bot
+  version: 7.0.4
+  title: ""
+  date: 2024-04-08T17:48:30.328Z
+- commits:
     - subject: Fail changelog generation if not authorized
       hash: 38775a199ed9826f8c22ec8ef46ca5302d9af600
       body: >
         By default the `curl` command will not return an error reponse for non
 
-        2xx HTTP response. This change adds the [-f flag](https://curl.se/docs/manpage.html#-f) to
+        2xx HTTP response. This change adds the [-f
+        flag](https://curl.se/docs/manpage.html#-f) to
 
         the pull request query to allow it to fail if authorization fails
 
@@ -228,7 +241,8 @@
         update submodule dependencies like renovatebot.
 
 
-        This commit keeps the legacy behaviour but will extract the version range
+        This commit keeps the legacy behaviour but will extract the version
+        range
 
         from git metadata when not provided. This new behaviour can be used by
 
@@ -977,9 +991,16 @@
       body: >-
         We are doing more heavy regex processing now.
 
-        First the package name is extracted from Cargo.toml. It is located in the  `[package]` section of Cargo.toml. The package name is used for detecting the proper `version = "..."` definition in Cargo.lock. Cargo.lock is generated automatically, so `version` always follows `name`, and the code takes advantage of that fact for simplification purposes.
+        First the package name is extracted from Cargo.toml. It is located in
+        the  `[package]` section of Cargo.toml. The package name is used for
+        detecting the proper `version = "..."` definition in Cargo.lock.
+        Cargo.lock is generated automatically, so `version` always follows
+        `name`, and the code takes advantage of that fact for simplification
+        purposes.
 
-        The proper `version = "..."` definition in Cargo.toml is inside the `[package]` section, so the regex looks for first occurrence after `[package]`.
+        The proper `version = "..."` definition in Cargo.toml is inside the
+        `[package]` section, so the regex looks for first occurrence after
+        `[package]`.
       footers:
         change-type: patch
         connects-to: "#101"
@@ -1119,7 +1140,8 @@
       body: >-
         Connects to #42.
 
-        Added debug module so stack trace will only be output when running with DEBUG=* or DEBUG=versionist.
+        Added debug module so stack trace will only be output when running with
+        DEBUG=* or DEBUG=versionist.
       footers:
         change-type: patch
       hash: 56ed543a1c6824d408692f6b1efa0d3f9beb4aab
@@ -1168,7 +1190,8 @@
       body: >-
         The hash of the commit is retrieved by git, and parsed from the yaml,
 
-        and passed through as part of the commit object to the configuration file.
+        and passed through as part of the commit object to the configuration
+        file.
 
         Tests have also been changed to reflect the new output, and some
 
