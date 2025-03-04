@@ -1,4 +1,16 @@
 - commits:
+    - subject: Drop support for nodejs < 20.0.0
+      hash: b0cdd3921a66f3a6455baa01f78113c1ef52d2e0
+      body: ""
+      footer:
+        Change-type: major
+        change-type: major
+      author: Thodoris Greasidis
+      nested: []
+  version: 8.0.0
+  title: ""
+  date: 2025-03-04T13:53:22.376Z
+- commits:
     - subject: Update dependency yaml to v2.2.2 [SECURITY]
       hash: c45c2ddd4a63c22271514d0f97e2c92f5b16f0e7
       body: |
@@ -335,9 +347,8 @@
 - commits:
     - subject: Delete CODEOWNERS
       hash: 9bcf8096d3cc398d4cefa38a8e437a81cc77d656
-      body: >
-        See
-        https://www.flowdock.com/app/rulemotion/pub/threads/trLcZFnSX9fLZn4LiaIv4xuBbah
+      body: |
+        See https://www.flowdock.com/app/rulemotion/pub/threads/trLcZFnSX9fLZn4LiaIv4xuBbah
       footer:
         Change-type: patch
         change-type: patch
