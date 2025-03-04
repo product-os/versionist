@@ -3351,6 +3351,27 @@ describe('Presets', function () {
 				const version = presets.incrementVersion.semver({}, '1.0.0', 'patch');
 				m.chai.expect(version).to.equal('1.0.1');
 			});
+
+			it('should be able to increment versions that have parts with many digits', function () {
+				for (const [currentVersion, changeType, nextVersion] of [
+					['10000.20000.300000', 'patch', '10000.20000.300001'],
+					['10000.20001.300001', 'patch', '10000.20001.300002'],
+					['12345.23456.345678', 'patch', '12345.23456.345679'],
+					['10000.20000.300000', 'minor', '10000.20001.0'],
+					['10000.20001.300001', 'minor', '10000.20002.0'],
+					['12345.23456.345678', 'minor', '12345.23457.0'],
+					['10000.20000.300000', 'major', '10001.0.0'],
+					['10001.20001.300001', 'major', '10002.0.0'],
+					['12345.23456.345678', 'major', '12346.0.0'],
+				]) {
+					const version = presets.incrementVersion.semver(
+						{},
+						currentVersion,
+						changeType,
+					);
+					m.chai.expect(version).to.equal(nextVersion);
+				}
+			});
 		});
 	});
 	describe('.getIncrementLevelFromCommit', () => {
