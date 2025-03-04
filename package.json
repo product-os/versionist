@@ -12,6 +12,9 @@
   "bin": {
     "versionist": "./bin/cli.js"
   },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "pretest": "npm run prepack && npx tsc --noEmit --project tsconfig.dev.json",
     "test": "mocha tests -R spec && node tests/cli/run",
