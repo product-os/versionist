@@ -30,6 +30,9 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "@balena/lint": "^6.2.0",
+    "@types/handlebars": "^4.1.0",
+    "@types/handlebars-helpers": "^0.5.3",
+    "@types/lodash": "^4.14.186",
     "husky": "^8.0.1",
     "indent-string": "^4.0.0",
     "lint-staged": "^13.0.3",
@@ -42,9 +45,6 @@
   },
   "dependencies": {
     "@octokit/rest": "^18.12.0",
-    "@types/handlebars": "^4.1.0",
-    "@types/handlebars-helpers": "^0.5.3",
-    "@types/lodash": "^4.14.186",
     "async": "^2.6.4",
     "balena-semver": "^3.0.1",
     "chalk": "^4.1.2",
