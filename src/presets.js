@@ -1006,6 +1006,17 @@ module.exports = {
 					(contents, done) => {
 						// Check if this is a workspace
 						const workspaceMatch = contents.match(/\[workspace\]/m);
+						const packageMatch = contents.match(/\[package\]/m);
+
+						if (workspaceMatch && packageMatch) {
+							// Versionist doesn't support both workspace and package sections as both
+							// could have different versions and the module would not know which one to update
+							return done(
+								new Error(
+									`Only one of [workspace] or [package] Cargo.toml sections are supported by versionist.`,
+								),
+							);
+						}
 
 						if (workspaceMatch) {
 							// For workspaces, extract member names from the members array

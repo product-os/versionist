@@ -1948,6 +1948,49 @@ describe('Presets', function () {
 				});
 			});
 
+			describe('both workspace and package in Cargo.toml', function () {
+				beforeEach(function () {
+					this.cwd = tmp.dirSync();
+					this.cargoToml = path.join(this.cwd.name, 'Cargo.toml');
+
+					fs.writeFileSync(
+						this.cargoToml,
+						[
+							'[workspace]',
+							'members = ["foo", "foo-derive"]',
+							'',
+							'[package]',
+							'version = "1.0.0"',
+							'',
+							'[workspace.package]',
+							'version = "1.0.0"',
+							'',
+							'[dependencies]',
+							'name = "bar"',
+							'version = "2.0.0"',
+							'',
+						].join('\n'),
+					);
+				});
+
+				afterEach(function () {
+					fs.unlinkSync(this.cargoToml);
+					this.cwd.removeCallback();
+				});
+
+				it('should yield an error', function (done) {
+					presets.updateVersion.cargo({}, this.cwd.name, '1.1.0', (error) => {
+						m.chai.expect(error).to.be.an.instanceof(Error);
+						m.chai
+							.expect(error.message)
+							.to.equal(
+								`Only one of [workspace] or [package] Cargo.toml sections are supported by versionist.`,
+							);
+						done();
+					});
+				});
+			});
+
 			describe('well-formed Cargo.toml with workspace without a Cargo.lock', function () {
 				beforeEach(function () {
 					this.cwd = tmp.dirSync();
