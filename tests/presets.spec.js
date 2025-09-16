@@ -1947,6 +1947,262 @@ describe('Presets', function () {
 					});
 				});
 			});
+
+			describe('well-formed Cargo.toml with workspace without a Cargo.lock', function () {
+				beforeEach(function () {
+					this.cwd = tmp.dirSync();
+					this.cargoToml = path.join(this.cwd.name, 'Cargo.toml');
+
+					fs.writeFileSync(
+						this.cargoToml,
+						[
+							'[workspace]',
+							'members = ["foo", "foo-derive"]',
+							'',
+							'[workspace.package]',
+							'version = "1.0.0"',
+							'',
+							'[dependencies.bar]',
+							'version = "2.0.0"',
+							'',
+						].join('\n'),
+					);
+				});
+
+				afterEach(function () {
+					fs.unlinkSync(this.cargoToml);
+					this.cwd.removeCallback();
+				});
+
+				it('should be able to update the version', function (done) {
+					presets.updateVersion.cargo({}, this.cwd.name, '1.1.0', (error) => {
+						m.chai.expect(error).to.not.exist;
+
+						m.chai
+							.expect(fs.readFileSync(this.cargoToml, 'utf8'))
+							.to.equal(
+								[
+									'[workspace]',
+									'members = ["foo", "foo-derive"]',
+									'',
+									'[workspace.package]',
+									'version = "1.1.0"',
+									'',
+									'[dependencies.bar]',
+									'version = "2.0.0"',
+									'',
+								].join('\n'),
+							);
+
+						done();
+					});
+				});
+
+				it('should be able to preserve the version', function (done) {
+					presets.updateVersion.cargo({}, this.cwd.name, '1.0.0', (error) => {
+						m.chai.expect(error).to.not.exist;
+
+						m.chai
+							.expect(fs.readFileSync(this.cargoToml, 'utf8'))
+							.to.equal(
+								[
+									'[workspace]',
+									'members = ["foo", "foo-derive"]',
+									'',
+									'[workspace.package]',
+									'version = "1.0.0"',
+									'',
+									'[dependencies.bar]',
+									'version = "2.0.0"',
+									'',
+								].join('\n'),
+							);
+
+						done();
+					});
+				});
+
+				it('should yield an error when trying to update with a non-semver version', function (done) {
+					presets.updateVersion.cargo(
+						{},
+						this.cwd.name,
+						'not-a-semver',
+						(error) => {
+							m.chai.expect(error).to.be.an.instanceof(Error);
+							m.chai
+								.expect(error.message)
+								.to.equal('Invalid version: not-a-semver');
+							done();
+						},
+					);
+				});
+			});
+
+			describe('well-formed Cargo.toml with workspace and Cargo.lock', function () {
+				beforeEach(function () {
+					this.cwd = tmp.dirSync();
+					this.cargoToml = path.join(this.cwd.name, 'Cargo.toml');
+					this.cargoLock = path.join(this.cwd.name, 'Cargo.lock');
+
+					fs.writeFileSync(
+						this.cargoToml,
+						[
+							'[workspace]',
+							'members = ["foo", "foo-derive"]',
+							'',
+							'[workspace.package]',
+							'version = "1.0.0"',
+							'',
+							'[dependencies.bar]',
+							'version = "2.0.0"',
+							'',
+						].join('\n'),
+					);
+
+					fs.writeFileSync(
+						this.cargoLock,
+						[
+							'[[package]]',
+							'name = "bar"',
+							'version = "2.0.0"',
+							'source = "registry+https://github.com/rust-lang/crates.io-index"',
+							'',
+							'[[package]]',
+							'name = "foo"',
+							'version = "1.0.0"',
+							'dependencies = []',
+							'',
+							'[[package]]',
+							'name = "foo-derive"',
+							'version = "1.0.0"',
+							'dependencies = []',
+							'',
+							'[metadata]',
+							'"checksum bar 2.0.0 (registry+https://...)" = "..."',
+							'',
+						].join('\n'),
+					);
+				});
+
+				afterEach(function () {
+					fs.unlinkSync(this.cargoToml);
+					fs.unlinkSync(this.cargoLock);
+					this.cwd.removeCallback();
+				});
+
+				it('should be able to update the version in both files', function (done) {
+					presets.updateVersion.cargo({}, this.cwd.name, '1.0.1', (error) => {
+						m.chai.expect(error).to.not.exist;
+
+						m.chai
+							.expect(fs.readFileSync(this.cargoToml, 'utf8'))
+							.to.equal(
+								[
+									'[workspace]',
+									'members = ["foo", "foo-derive"]',
+									'',
+									'[workspace.package]',
+									'version = "1.0.1"',
+									'',
+									'[dependencies.bar]',
+									'version = "2.0.0"',
+									'',
+								].join('\n'),
+							);
+
+						m.chai
+							.expect(fs.readFileSync(this.cargoLock, 'utf8'))
+							.to.equal(
+								[
+									'[[package]]',
+									'name = "bar"',
+									'version = "2.0.0"',
+									'source = "registry+https://github.com/rust-lang/crates.io-index"',
+									'',
+									'[[package]]',
+									'name = "foo"',
+									'version = "1.0.1"',
+									'dependencies = []',
+									'',
+									'[[package]]',
+									'name = "foo-derive"',
+									'version = "1.0.1"',
+									'dependencies = []',
+									'',
+									'[metadata]',
+									'"checksum bar 2.0.0 (registry+https://...)" = "..."',
+									'',
+								].join('\n'),
+							);
+
+						done();
+					});
+				});
+
+				it('should be able to preserve the version in both files', function (done) {
+					presets.updateVersion.cargo({}, this.cwd.name, '1.0.0', (error) => {
+						m.chai.expect(error).to.not.exist;
+
+						m.chai
+							.expect(fs.readFileSync(this.cargoToml, 'utf8'))
+							.to.equal(
+								[
+									'[workspace]',
+									'members = ["foo", "foo-derive"]',
+									'',
+									'[workspace.package]',
+									'version = "1.0.0"',
+									'',
+									'[dependencies.bar]',
+									'version = "2.0.0"',
+									'',
+								].join('\n'),
+							);
+
+						m.chai
+							.expect(fs.readFileSync(this.cargoLock, 'utf8'))
+							.to.equal(
+								[
+									'[[package]]',
+									'name = "bar"',
+									'version = "2.0.0"',
+									'source = "registry+https://github.com/rust-lang/crates.io-index"',
+									'',
+									'[[package]]',
+									'name = "foo"',
+									'version = "1.0.0"',
+									'dependencies = []',
+									'',
+									'[[package]]',
+									'name = "foo-derive"',
+									'version = "1.0.0"',
+									'dependencies = []',
+									'',
+									'[metadata]',
+									'"checksum bar 2.0.0 (registry+https://...)" = "..."',
+									'',
+								].join('\n'),
+							);
+
+						done();
+					});
+				});
+
+				it('should yield an error when trying to update with a non-semver version', function (done) {
+					presets.updateVersion.cargo(
+						{},
+						this.cwd.name,
+						'not-a-semver',
+						(error) => {
+							m.chai.expect(error).to.be.an.instanceof(Error);
+							m.chai
+								.expect(error.message)
+								.to.equal('Invalid version: not-a-semver');
+							done();
+						},
+					);
+				});
+			});
 		});
 
 		describe('.quoted', function () {
