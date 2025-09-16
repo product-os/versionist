@@ -1004,43 +1004,98 @@ module.exports = {
 					},
 
 					(contents, done) => {
-						// Capture first `name = "..."` occurrence immediately after `[package]`
-						const matches = contents.match(
-							/\[package\][^[]+?name\s*=\s*("|')(.+?)\1/m,
-						);
-						if (_.isNull(matches)) {
-							done(new Error(`Package name not found in ${cargoToml}`));
+						// Check if this is a workspace
+						const workspaceMatch = contents.match(/\[workspace\]/m);
+
+						if (workspaceMatch) {
+							// For workspaces, extract member names from the members array
+							const membersMatch = contents.match(/members\s*=\s*\[(.*?)\]/s);
+							if (membersMatch) {
+								// Extract member names from the array
+								const membersStr = membersMatch[1];
+								const memberMatches = membersStr.match(/"([^"]+)"/g);
+								if (memberMatches) {
+									const members = memberMatches.map(m => m.slice(1, -1));
+									done(null, { isWorkspace: true, members });
+								} else {
+									done(null, { isWorkspace: true, members: [] });
+								}
+							} else {
+								done(null, { isWorkspace: true, members: [] });
+							}
 						} else {
-							done(null, matches[2]);
+							// Regular package - capture first `name = "..."` occurrence immediately after `[package]`
+							const matches = contents.match(
+								/\[package\][^[]+?name\s*=\s*("|')(.+?)\1/m,
+							);
+							if (_.isNull(matches)) {
+								done(new Error(`Package name not found in ${cargoToml}`));
+							} else {
+								done(null, { isWorkspace: false, packageName: matches[2] });
+							}
 						}
 					},
 
-					(packageName, done) => {
+					(packageInfo, done) => {
 						if (fs.existsSync(cargoLock)) {
-							// Update first `version = "..."` occurrence immediately after `name = "${packageName}"`
-							replace(
-								cargoLock,
-								new RegExp(
-									`(name\\s*=\\s*(?:"|')${packageName}(?:"|')[^[]+?version\\s*=\\s*)("|').*?\\2`,
-									'm',
-								),
-								'$1$2' + cleanedVersion + '$2',
-								(err) => {
-									return done(err || null);
-								},
-							);
+							if (packageInfo.isWorkspace) {
+								// Update versions for all workspace members in Cargo.lock
+								let cargoLockContent = fs.readFileSync(cargoLock, 'utf8');
+
+								for (const member of packageInfo.members) {
+									cargoLockContent = cargoLockContent.replace(
+										new RegExp(
+											`(name\\s*=\\s*"${member}"[^[]*?version\\s*=\\s*)"[^"]*"`,
+											'g'
+										),
+										`$1"${cleanedVersion}"`
+									);
+								}
+
+								fs.writeFileSync(cargoLock, cargoLockContent);
+								done(null);
+							} else {
+								// Update first `version = "..."` occurrence immediately after `name = "${packageName}"`
+								replace(
+									cargoLock,
+									new RegExp(
+										`(name\\s*=\\s*(?:"|')${packageInfo.packageName}(?:"|')[^[]+?version\\s*=\\s*)("|').*?\\2`,
+										'm',
+									),
+									'$1$2' + cleanedVersion + '$2',
+									(err) => {
+										return done(err || null);
+									},
+								);
+							}
 						} else {
 							done(null);
 						}
 					},
 
 					(done) => {
-						// Update first `version = "..."` occurrence immediately after `[package]`
+						// Update version in Cargo.toml - check for workspace or package section
+						const workspaceVersionRegex = /(\[workspace\.package\][^[]+?version\s*=\s*)("|').*?\2/m;
+						const packageVersionRegex = /(\[package\][^[]+?version\s*=\s*)("|').*?\2/m;
+
+						// Try workspace section first
 						replace(
 							cargoToml,
-							/(\[package\][^[]+?version\s*=\s*)("|').*?\2/m,
+							workspaceVersionRegex,
 							'$1$2' + cleanedVersion + '$2',
-							done,
+							(err) => {
+								if (err) {
+									// If workspace section not found, try package section
+									replace(
+										cargoToml,
+										packageVersionRegex,
+										'$1$2' + cleanedVersion + '$2',
+										done,
+									);
+								} else {
+									done(null);
+								}
+							}
 						);
 					},
 				],
