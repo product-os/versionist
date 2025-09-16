@@ -1015,7 +1015,7 @@ module.exports = {
 								const membersStr = membersMatch[1];
 								const memberMatches = membersStr.match(/"([^"]+)"/g);
 								if (memberMatches) {
-									const members = memberMatches.map(m => m.slice(1, -1));
+									const members = memberMatches.map((m) => m.slice(1, -1));
 									done(null, { isWorkspace: true, members });
 								} else {
 									done(null, { isWorkspace: true, members: [] });
@@ -1046,9 +1046,9 @@ module.exports = {
 									cargoLockContent = cargoLockContent.replace(
 										new RegExp(
 											`(name\\s*=\\s*"${member}"[^[]*?version\\s*=\\s*)"[^"]*"`,
-											'g'
+											'g',
 										),
-										`$1"${cleanedVersion}"`
+										`$1"${cleanedVersion}"`,
 									);
 								}
 
@@ -1075,8 +1075,10 @@ module.exports = {
 
 					(done) => {
 						// Update version in Cargo.toml - check for workspace or package section
-						const workspaceVersionRegex = /(\[workspace\.package\][^[]+?version\s*=\s*)("|').*?\2/m;
-						const packageVersionRegex = /(\[package\][^[]+?version\s*=\s*)("|').*?\2/m;
+						const workspaceVersionRegex =
+							/(\[workspace\.package\][^[]+?version\s*=\s*)("|').*?\2/m;
+						const packageVersionRegex =
+							/(\[package\][^[]+?version\s*=\s*)("|').*?\2/m;
 
 						// Try workspace section first
 						replace(
@@ -1095,7 +1097,7 @@ module.exports = {
 								} else {
 									done(null);
 								}
-							}
+							},
 						);
 					},
 				],
