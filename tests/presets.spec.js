@@ -1390,9 +1390,9 @@ describe('Presets', function () {
 							'name = "foo"',
 							'version = "1.0.0"',
 							'',
+							'[dependencies]',
 							'[dependencies.bar]',
 							'version = "2.0.0"',
-							'',
 						].join('\n'),
 					);
 				});
@@ -1414,9 +1414,9 @@ describe('Presets', function () {
 									'name = "foo"',
 									'version = "1.1.0"',
 									'',
+									'[dependencies]',
 									'[dependencies.bar]',
 									'version = "2.0.0"',
-									'',
 								].join('\n'),
 							);
 
@@ -1436,9 +1436,9 @@ describe('Presets', function () {
 									'name = "foo"',
 									'version = "1.0.0"',
 									'',
+									'[dependencies]',
 									'[dependencies.bar]',
 									'version = "2.0.0"',
-									'',
 								].join('\n'),
 							);
 
@@ -1475,9 +1475,9 @@ describe('Presets', function () {
 							'name = "foo"',
 							'version = "1.0.0"',
 							'',
+							'[dependencies]',
 							'[dependencies.bar]',
 							'version = "2.0.0"',
-							'',
 						].join('\n'),
 					);
 
@@ -1521,9 +1521,9 @@ describe('Presets', function () {
 									'name = "foo"',
 									'version = "1.0.1"',
 									'',
+									'[dependencies]',
 									'[dependencies.bar]',
 									'version = "2.0.0"',
-									'',
 								].join('\n'),
 							);
 
@@ -1565,9 +1565,9 @@ describe('Presets', function () {
 									'name = "foo"',
 									'version = "1.0.0"',
 									'',
+									'[dependencies]',
 									'[dependencies.bar]',
 									'version = "2.0.0"',
-									'',
 								].join('\n'),
 							);
 
@@ -1610,98 +1610,6 @@ describe('Presets', function () {
 							done();
 						},
 					);
-				});
-			});
-
-			describe('single-quotes in Cargo.toml and Cargo.lock', function () {
-				beforeEach(function () {
-					this.cwd = tmp.dirSync();
-					this.cargoToml = path.join(this.cwd.name, 'Cargo.toml');
-					this.cargoLock = path.join(this.cwd.name, 'Cargo.lock');
-
-					fs.writeFileSync(
-						this.cargoToml,
-						[
-							'[package]',
-							"name = 'foo'",
-							"version = '1.0.0'",
-							'',
-							'[dependencies.bar]',
-							"version = '2.0.0'",
-							'',
-						].join('\n'),
-					);
-
-					fs.writeFileSync(
-						this.cargoLock,
-						[
-							'[[package]]',
-							"name = 'bar'",
-							"version = '2.0.0'",
-							"source = 'registry+https://github.com/rust-lang/crates.io-index'",
-							'',
-							'[[package]]',
-							"name = 'foo'",
-							"version = '1.0.0'",
-							'dependencies = [',
-							" 'bar 2.0.0 (registry+https://github.com/rust-lang/crates.io-index)',",
-							']',
-							'',
-							'[metadata]',
-							"'checksum bar 2.0.0 (registry+https://...)' = '...'",
-							'',
-						].join('\n'),
-					);
-				});
-
-				afterEach(function () {
-					fs.unlinkSync(this.cargoToml);
-					fs.unlinkSync(this.cargoLock);
-					this.cwd.removeCallback();
-				});
-
-				it('should be able to update the version (and preserve the single-quotes)', function (done) {
-					presets.updateVersion.cargo({}, this.cwd.name, '1.1.0', (error) => {
-						m.chai.expect(error).to.not.exist;
-
-						m.chai
-							.expect(fs.readFileSync(this.cargoToml, 'utf8'))
-							.to.equal(
-								[
-									'[package]',
-									"name = 'foo'",
-									"version = '1.1.0'",
-									'',
-									'[dependencies.bar]',
-									"version = '2.0.0'",
-									'',
-								].join('\n'),
-							);
-
-						m.chai
-							.expect(fs.readFileSync(this.cargoLock, 'utf8'))
-							.to.equal(
-								[
-									'[[package]]',
-									"name = 'bar'",
-									"version = '2.0.0'",
-									"source = 'registry+https://github.com/rust-lang/crates.io-index'",
-									'',
-									'[[package]]',
-									"name = 'foo'",
-									"version = '1.1.0'",
-									'dependencies = [',
-									" 'bar 2.0.0 (registry+https://github.com/rust-lang/crates.io-index)',",
-									']',
-									'',
-									'[metadata]',
-									"'checksum bar 2.0.0 (registry+https://...)' = '...'",
-									'',
-								].join('\n'),
-							);
-
-						done();
-					});
 				});
 			});
 
@@ -1752,47 +1660,7 @@ describe('Presets', function () {
 						m.chai.expect(error).to.be.an.instanceof(Error);
 						m.chai
 							.expect(error.message)
-							.to.equal(`Package name not found in ${this.cargoToml}`);
-						done();
-					});
-				});
-			});
-
-			describe('missing target package name in Cargo.lock', function () {
-				beforeEach(function () {
-					this.cwd = tmp.dirSync();
-					this.cargoToml = path.join(this.cwd.name, 'Cargo.toml');
-					this.cargoLock = path.join(this.cwd.name, 'Cargo.lock');
-
-					fs.writeFileSync(
-						this.cargoToml,
-						['[package]', 'name = "foo"', 'version = "1.0.0"', ''].join('\n'),
-					);
-
-					fs.writeFileSync(
-						this.cargoLock,
-						[
-							'[[package]]',
-							'name = "bar"',
-							'version = "2.0.0"',
-							'source = "registry+https://github.com/rust-lang/crates.io-index"',
-							'',
-						].join('\n'),
-					);
-				});
-
-				afterEach(function () {
-					fs.unlinkSync(this.cargoToml);
-					fs.unlinkSync(this.cargoLock);
-					this.cwd.removeCallback();
-				});
-
-				it('should yield an error', function (done) {
-					presets.updateVersion.cargo({}, this.cwd.name, '1.0.1', (error) => {
-						m.chai.expect(error).to.be.an.instanceof(Error);
-						m.chai
-							.expect(error.message)
-							.to.equal(`Pattern does not match ${this.cargoLock}`);
+							.to.equal(`Missing property 'package.name' in Cargo.toml`);
 						done();
 					});
 				});
@@ -1826,57 +1694,7 @@ describe('Presets', function () {
 						m.chai.expect(error).to.be.an.instanceof(Error);
 						m.chai
 							.expect(error.message)
-							.to.equal(`Pattern does not match ${this.cargoToml}`);
-						done();
-					});
-				});
-			});
-
-			describe('missing version in Cargo.lock', function () {
-				beforeEach(function () {
-					this.cwd = tmp.dirSync();
-					this.cargoToml = path.join(this.cwd.name, 'Cargo.toml');
-					this.cargoLock = path.join(this.cwd.name, 'Cargo.lock');
-
-					fs.writeFileSync(
-						this.cargoToml,
-						[
-							'[package]',
-							'name = "foo"',
-							'version = "1.0.0"',
-							'',
-							'[dependencies.bar]',
-							'version = "2.0.0"',
-							'',
-						].join('\n'),
-					);
-
-					fs.writeFileSync(
-						this.cargoLock,
-						[
-							'[[package]]',
-							'name = "foo"',
-							'',
-							'[[package]]',
-							'name = "bar"',
-							'version = "2.0.0"',
-							'',
-						].join('\n'),
-					);
-				});
-
-				afterEach(function () {
-					fs.unlinkSync(this.cargoToml);
-					fs.unlinkSync(this.cargoLock);
-					this.cwd.removeCallback();
-				});
-
-				it('should yield an error', function (done) {
-					presets.updateVersion.cargo({}, this.cwd.name, '1.0.1', (error) => {
-						m.chai.expect(error).to.be.an.instanceof(Error);
-						m.chai
-							.expect(error.message)
-							.to.equal(`Pattern does not match ${this.cargoLock}`);
+							.to.equal(`Missing property 'package.version' in Cargo.toml`);
 						done();
 					});
 				});
@@ -1938,9 +1756,7 @@ describe('Presets', function () {
 						m.chai
 							.expect(fs.readFileSync(this.cargoToml, 'utf8'))
 							.to.equal(
-								['[package]', 'name = "foo"', 'version = "1.1.0"', ''].join(
-									'\n',
-								),
+								['[package]', 'name = "foo"', 'version = "1.1.0"'].join('\n'),
 							);
 
 						done();
@@ -2026,14 +1842,14 @@ describe('Presets', function () {
 							.to.equal(
 								[
 									'[workspace]',
-									'members = ["foo", "foo-derive"]',
+									'members = [ "foo", "foo-derive" ]',
 									'',
 									'[workspace.package]',
 									'version = "1.1.0"',
 									'',
+									'[dependencies]',
 									'[dependencies.bar]',
 									'version = "2.0.0"',
-									'',
 								].join('\n'),
 							);
 
@@ -2050,14 +1866,14 @@ describe('Presets', function () {
 							.to.equal(
 								[
 									'[workspace]',
-									'members = ["foo", "foo-derive"]',
+									'members = [ "foo", "foo-derive" ]',
 									'',
 									'[workspace.package]',
 									'version = "1.0.0"',
 									'',
+									'[dependencies]',
 									'[dependencies.bar]',
 									'version = "2.0.0"',
-									'',
 								].join('\n'),
 							);
 
@@ -2142,14 +1958,14 @@ describe('Presets', function () {
 							.to.equal(
 								[
 									'[workspace]',
-									'members = ["foo", "foo-derive"]',
+									'members = [ "foo", "foo-derive" ]',
 									'',
 									'[workspace.package]',
 									'version = "1.0.1"',
 									'',
+									'[dependencies]',
 									'[dependencies.bar]',
 									'version = "2.0.0"',
-									'',
 								].join('\n'),
 							);
 
@@ -2191,14 +2007,14 @@ describe('Presets', function () {
 							.to.equal(
 								[
 									'[workspace]',
-									'members = ["foo", "foo-derive"]',
+									'members = [ "foo", "foo-derive" ]',
 									'',
 									'[workspace.package]',
 									'version = "1.0.0"',
 									'',
+									'[dependencies]',
 									'[dependencies.bar]',
 									'version = "2.0.0"',
-									'',
 								].join('\n'),
 							);
 

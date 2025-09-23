@@ -33,6 +33,7 @@ const yaml = require('yaml');
 const execSync = require('child_process').execSync;
 const { Octokit } = require('@octokit/rest');
 const childProcess = require('child_process');
+const TOML = require('smol-toml');
 
 const octokit = new Octokit({
 	debug: Boolean(process.env.DEBUG),
@@ -1004,11 +1005,9 @@ module.exports = {
 					},
 
 					(contents, done) => {
-						// Check if this is a workspace
-						const workspaceMatch = contents.match(/\[workspace\]/m);
-						const packageMatch = contents.match(/\[package\]/m);
+						const config = TOML.parse(contents);
 
-						if (workspaceMatch && packageMatch) {
+						if (config.workspace != null && config.package != null) {
 							// Versionist doesn't support both workspace and package sections as both
 							// could have different versions and the module would not know which one to update
 							return done(
@@ -1018,98 +1017,81 @@ module.exports = {
 							);
 						}
 
-						if (workspaceMatch) {
+						if (config.workspace != null) {
 							// For workspaces, extract member names from the members array
-							const membersMatch = contents.match(/members\s*=\s*\[(.*?)\]/s);
-							if (membersMatch) {
-								// Extract member names from the array
-								const membersStr = membersMatch[1];
-								const memberMatches = membersStr.match(/"([^"]+)"/g);
-								if (memberMatches) {
-									const members = memberMatches.map((m) => m.slice(1, -1));
-									done(null, { isWorkspace: true, members });
-								} else {
-									done(null, { isWorkspace: true, members: [] });
+							const members = config.workspace.members ?? [];
+							if (config.workspace.package == null) {
+								return done(
+									new Error(
+										`Missing 'workspace.package' section in Cargo.toml`,
+									),
+								);
+							}
+
+							if (config.workspace.package.version == null) {
+								done(
+									new Error(
+										`Missing property 'workspace.package.version' in Cargo.toml`,
+									),
+								);
+							}
+
+							done(null, { config, members });
+						} else if (config.package != null) {
+							// validate necessary properties exist under the package section
+							for (const prop of ['name', 'version']) {
+								if (!config.package.hasOwnProperty(prop)) {
+									return done(
+										new Error(
+											`Missing property 'package.${prop}' in Cargo.toml`,
+										),
+									);
 								}
-							} else {
-								done(null, { isWorkspace: true, members: [] });
 							}
+
+							done(null, { config, members: [config.package.name] });
 						} else {
-							// Regular package - capture first `name = "..."` occurrence immediately after `[package]`
-							const matches = contents.match(
-								/\[package\][^[]+?name\s*=\s*("|')(.+?)\1/m,
+							done(
+								new Error(
+									`No [workspace] or [package] sections found in Cargo.toml.`,
+								),
 							);
-							if (_.isNull(matches)) {
-								done(new Error(`Package name not found in ${cargoToml}`));
-							} else {
-								done(null, { isWorkspace: false, packageName: matches[2] });
-							}
 						}
 					},
 
 					(packageInfo, done) => {
 						if (fs.existsSync(cargoLock)) {
-							if (packageInfo.isWorkspace) {
-								// Update versions for all workspace members in Cargo.lock
-								let cargoLockContent = fs.readFileSync(cargoLock, 'utf8');
+							// Update versions for all members in Cargo.lock
+							let cargoLockContent = fs.readFileSync(cargoLock, 'utf8');
 
-								for (const member of packageInfo.members) {
-									cargoLockContent = cargoLockContent.replace(
-										new RegExp(
-											`(name\\s*=\\s*"${member}"[^[]*?version\\s*=\\s*)"[^"]*"`,
-											'g',
-										),
-										`$1"${cleanedVersion}"`,
-									);
-								}
-
-								fs.writeFileSync(cargoLock, cargoLockContent);
-								done(null);
-							} else {
-								// Update first `version = "..."` occurrence immediately after `name = "${packageName}"`
-								replace(
-									cargoLock,
+							for (const member of packageInfo.members) {
+								// Update first `version = "..."` occurrence immediately after `name = "${member}"`
+								cargoLockContent = cargoLockContent.replace(
 									new RegExp(
-										`(name\\s*=\\s*(?:"|')${packageInfo.packageName}(?:"|')[^[]+?version\\s*=\\s*)("|').*?\\2`,
-										'm',
+										`(name\\s*=\\s*"${member}"[^[]*?version\\s*=\\s*)"[^"]*"`,
+										'g',
 									),
-									'$1$2' + cleanedVersion + '$2',
-									(err) => {
-										return done(err || null);
-									},
+									`$1"${cleanedVersion}"`,
 								);
 							}
-						} else {
-							done(null);
+
+							fs.writeFileSync(cargoLock, cargoLockContent);
 						}
+						done(null, packageInfo.config);
 					},
 
-					(done) => {
+					(config, done) => {
 						// Update version in Cargo.toml - check for workspace or package section
-						const workspaceVersionRegex =
-							/(\[workspace\.package\][^[]+?version\s*=\s*)("|').*?\2/m;
-						const packageVersionRegex =
-							/(\[package\][^[]+?version\s*=\s*)("|').*?\2/m;
+						if (config.workspace != null && config.workspace.package != null) {
+							config.workspace.package.version = cleanedVersion;
+						}
 
-						// Try workspace section first
-						replace(
-							cargoToml,
-							workspaceVersionRegex,
-							'$1$2' + cleanedVersion + '$2',
-							(err) => {
-								if (err) {
-									// If workspace section not found, try package section
-									replace(
-										cargoToml,
-										packageVersionRegex,
-										'$1$2' + cleanedVersion + '$2',
-										done,
-									);
-								} else {
-									done(null);
-								}
-							},
-						);
+						if (config.package != null) {
+							config.package.version = cleanedVersion;
+						}
+
+						fs.writeFileSync(cargoToml, TOML.stringify(config));
+						done(null);
 					},
 				],
 				callback,
