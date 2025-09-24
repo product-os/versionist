@@ -1,4 +1,46 @@
 - commits:
+    - subject: Use smol-toml for parsing Cargo.toml
+      hash: bcb34f7cd9b6c10c98b9427dc2749c84ae4ffd75
+      body: |
+        Replace regex usage with a more robust dependency.
+
+        This has the side effect of re-formatting `Cargo.toml` as this also uses
+        the `stringify` method of `smol-toml`, so removed a couple of tests that
+        checked for preservation of single quotes.
+
+        This also removes validation for Cargo.lock as that file should be
+        validated by cargo.
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: felipe
+      nested: []
+    - subject: Disallow both workspace and package sections
+      hash: 06d7440ab876bdea74829c7250e10c4a1a8338e9
+      body: |
+        If a package section is present in the top level Cargo.toml when there
+        is also a workspace section, the version on that package won't get
+        updated. This prevents that scenario to avoid a silent failure.
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: felipe
+      nested: []
+    - subject: Add support for Cargo workspaces
+      hash: 8c63762939e027707c70d780a41b5fe8bd813a75
+      body: |
+        This adds support for using Cargo workspaces where the version of the
+        workspace is managed by the workspace configuration and inherited by the
+        members.
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: felipe
+      nested: []
+  version: 8.1.0
+  title: ""
+  date: 2025-09-24T20:42:22.103Z
+- commits:
     - subject: Move types dependencies to dev dependencies
       hash: 10b7a7b59397c4dc18c2d6821f9ee560a0f5f161
       body: ""
