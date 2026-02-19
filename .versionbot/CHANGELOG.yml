@@ -1,4 +1,18 @@
 - commits:
+    - subject: "Add id-token: write permission for NPM OIDC publishing"
+      hash: 488ab02308c56193e9e634b0baf7e01dbdc26f14
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Kyle Harding <kyle@balena.io>
+        signed-off-by: Kyle Harding <kyle@balena.io>
+      author: Kyle Harding
+      nested: []
+  version: 8.1.1
+  title: ""
+  date: 2026-02-19T02:09:54.009Z
+- commits:
     - subject: Use smol-toml for parsing Cargo.toml
       hash: bcb34f7cd9b6c10c98b9427dc2749c84ae4ffd75
       body: |
