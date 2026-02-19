@@ -6,7 +6,7 @@
   "homepage": "https://github.com/balena-io/versionist",
   "repository": {
     "type": "git",
-    "url": "git@github.com:balena-io/versionist.git"
+    "url": "git@github.com:product-os/versionist.git"
   },
   "preferGlobal": true,
   "bin": {
