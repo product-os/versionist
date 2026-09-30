@@ -1414,9 +1414,9 @@ describe('Presets', function () {
 									'name = "foo"',
 									'version = "1.1.0"',
 									'',
-									'[dependencies]',
 									'[dependencies.bar]',
 									'version = "2.0.0"',
+									'',
 								].join('\n'),
 							);
 
@@ -1436,9 +1436,9 @@ describe('Presets', function () {
 									'name = "foo"',
 									'version = "1.0.0"',
 									'',
-									'[dependencies]',
 									'[dependencies.bar]',
 									'version = "2.0.0"',
+									'',
 								].join('\n'),
 							);
 
@@ -1521,9 +1521,9 @@ describe('Presets', function () {
 									'name = "foo"',
 									'version = "1.0.1"',
 									'',
-									'[dependencies]',
 									'[dependencies.bar]',
 									'version = "2.0.0"',
+									'',
 								].join('\n'),
 							);
 
@@ -1565,9 +1565,9 @@ describe('Presets', function () {
 									'name = "foo"',
 									'version = "1.0.0"',
 									'',
-									'[dependencies]',
 									'[dependencies.bar]',
 									'version = "2.0.0"',
+									'',
 								].join('\n'),
 							);
 
@@ -1756,7 +1756,9 @@ describe('Presets', function () {
 						m.chai
 							.expect(fs.readFileSync(this.cargoToml, 'utf8'))
 							.to.equal(
-								['[package]', 'name = "foo"', 'version = "1.1.0"'].join('\n'),
+								['[package]', 'name = "foo"', 'version = "1.1.0"', ''].join(
+									'\n',
+								),
 							);
 
 						done();
@@ -1847,9 +1849,9 @@ describe('Presets', function () {
 									'[workspace.package]',
 									'version = "1.1.0"',
 									'',
-									'[dependencies]',
 									'[dependencies.bar]',
 									'version = "2.0.0"',
+									'',
 								].join('\n'),
 							);
 
@@ -1871,9 +1873,9 @@ describe('Presets', function () {
 									'[workspace.package]',
 									'version = "1.0.0"',
 									'',
-									'[dependencies]',
 									'[dependencies.bar]',
 									'version = "2.0.0"',
+									'',
 								].join('\n'),
 							);
 
@@ -1963,9 +1965,9 @@ describe('Presets', function () {
 									'[workspace.package]',
 									'version = "1.0.1"',
 									'',
-									'[dependencies]',
 									'[dependencies.bar]',
 									'version = "2.0.0"',
+									'',
 								].join('\n'),
 							);
 
@@ -2012,9 +2014,9 @@ describe('Presets', function () {
 									'[workspace.package]',
 									'version = "1.0.0"',
 									'',
-									'[dependencies]',
 									'[dependencies.bar]',
 									'version = "2.0.0"',
+									'',
 								].join('\n'),
 							);
 

@@ -1040,7 +1040,10 @@ module.exports = {
 						} else if (config.package != null) {
 							// validate necessary properties exist under the package section
 							for (const prop of ['name', 'version']) {
-								if (!config.package.hasOwnProperty(prop)) {
+								// smol-toml >= 1.9.0 returns null-prototype objects
+								if (
+									!Object.prototype.hasOwnProperty.call(config.package, prop)
+								) {
 									return done(
 										new Error(
 											`Missing property 'package.${prop}' in Cargo.toml`,
