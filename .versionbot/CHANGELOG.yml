@@ -1,4 +1,25 @@
 - commits:
+    - subject: "cargo: Fix crash with null-prototype TOML objects"
+      hash: 9d35675f61e7a6d79ec5db8af9067e9250a6aa02
+      body: |
+        smol-toml 1.9.0 returns objects with a null prototype, so
+        config.package.hasOwnProperty is undefined and every [package]
+        Cargo.toml fails. Call Object.prototype.hasOwnProperty instead.
+
+        Bump the lockfile to smol-toml 1.9.0 so the existing cargo tests cover
+        it, and update their expected output for the stringify changes from
+        1.5.x (no redundant [dependencies] header, trailing newline).
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Kyle Harding <kyle@balena.io>
+        signed-off-by: Kyle Harding <kyle@balena.io>
+      author: Kyle Harding
+      nested: []
+  version: 8.1.3
+  title: ""
+  date: 2026-09-30T15:02:16.299Z
+- commits:
     - subject: Update dependency flowzonify to v0.4.4
       hash: 0afa00ca8ed9d84ad6cd64b0b5e775b848bb84d7
       body: |
